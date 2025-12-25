@@ -1,0 +1,13 @@
+Contact: mailto:security@rrray.com
+Expires: 2026-12-31T23:59:59.000Z
+Preferred-Languages: en
+Canonical: https://rayy-partner-flow.preview.emergentagent.com/.well-known/security.txt
+
+# Our security policy
+Policy: https://rayy-partner-flow.preview.emergentagent.com/security-policy
+
+# Acknowledgments page
+Acknowledgments: https://rayy-partner-flow.preview.emergentagent.com/security-acknowledgments
+
+# If you find a vulnerability, please report it responsibly
+# We appreciate your help in keeping RRRAY secure

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rayy - Download App Assets</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+        .asset-section {
+            margin-bottom: 3rem;
+        }
+        .asset-section h2 {
+            color: #3B82F6;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .asset-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        .asset-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        .asset-card:hover {
+            border-color: #3B82F6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+        .asset-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        .asset-title {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 1.1rem;
+        }
+        .asset-size {
+            background: #f1f5f9;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+        .asset-desc {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        .asset-preview {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .asset-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 4px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-primary {
+            background: #3B82F6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        .instructions {
+            background: #f0f9ff;
+            border-left: 4px solid #3B82F6;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+        .instructions h3 {
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        .instructions ol {
+            margin-left: 1.5rem;
+            color: #475569;
+        }
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+        .icon {
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 rayy App Assets</h1>
+        <p class="subtitle">Download all assets for iOS and Android app store submission</p>
+
+        <!-- iOS Assets -->
+        <div class="asset-section">
+            <h2><span class="icon">📱</span> iOS App Store Assets</h2>
+            
+            <div class="asset-grid">
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-title">App Icon (iOS)</div>
+                        <div class="asset-size">1024 × 1024</div>
+                    </div>
+                    <div class="asset-desc">
+                        Main app icon with gradient blue background and white "R" letter. Required for App Store submission.
+                    </div>
+                    <div class="asset-preview" id="ios-icon-preview">
+                        <svg width="150" height="150" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="iconGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#06B6D4;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <rect width="1024" height="1024" rx="226" ry="226" fill="url(#iconGradient)"/>
+                            <text x="512" y="680" font-family="sans-serif" font-size="600" font-weight="800" fill="#FFFFFF" text-anchor="middle">R</text>
+                        </svg>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="downloadSVG('ios-icon')">Download SVG</button>
+                        <button class="btn btn-secondary" onclick="copyCode('ios-icon')">Copy Code</button>
+                    </div>
+                </div>
+
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-title">Splash Screen (iOS)</div>
+                        <div class="asset-size">2436 × 1125</div>
+                    </div>
+                    <div class="asset-desc">
+                        Launch screen with rayy logo and tagline. Responsive for all iPhone sizes.
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="downloadSVG('splash')">Download SVG</button>
+                        <button class="btn btn-secondary" onclick="copyCode('splash')">Copy Code</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Android Assets -->
+        <div class="asset-section">
+            <h2><span class="icon">🤖</span> Google Play Store Assets</h2>
+            
+            <div class="asset-grid">
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-title">Feature Graphic (Version 1)</div>
+                        <div class="asset-size">1024 × 500</div>
+                    </div>
+                    <div class="asset-desc">
+                        Text-focused design with rayy branding, tagline, and feature badges. Clean and professional.
+                    </div>
+                    <div class="asset-preview" id="feature-v1-preview">
+                        <svg width="300" height="147" viewBox="0 0 1024 500" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="featureGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#06B6D4;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <rect width="1024" height="500" fill="url(#featureGradient)"/>
+                            <text x="512" y="250" font-family="sans-serif" font-size="72" font-weight="800" fill="#FFFFFF" text-anchor="middle">rayy</text>
+                        </svg>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="downloadSVG('feature-v1')">Download SVG</button>
+                        <button class="btn btn-secondary" onclick="copyCode('feature-v1')">Copy Code</button>
+                    </div>
+                </div>
+
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-title">Feature Graphic (Version 2)</div>
+                        <div class="asset-size">1024 × 500</div>
+                    </div>
+                    <div class="asset-desc">
+                        Includes phone mockup showing app interface. Visual demonstration of the app experience.
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="downloadSVG('feature-v2')">Download SVG</button>
+                        <button class="btn btn-secondary" onclick="copyCode('feature-v2')">Copy Code</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <h3>📋 How to Use These Assets</h3>
+            <ol>
+                <li>Click "Download SVG" to get the file</li>
+                <li>Convert to PNG using <a href="https://cloudconvert.com/svg-to-png" target="_blank">CloudConvert</a></li>
+                <li>For App Store: Generate all icon sizes using <a href="https://appicon.co/" target="_blank">AppIcon.co</a></li>
+                <li>Upload to respective app stores</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const assets = {
+            'ios-icon': `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#06B6D4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="226" ry="226" fill="url(#iconGradient)"/>
+  <text x="512" y="680" font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" font-size="600" font-weight="800" fill="#FFFFFF" text-anchor="middle">R</text>
+</svg>`,
+            'splash': 'See full file at /app/frontend/ios-assets/splash-screen-2436x1125.svg',
+            'feature-v1': 'See full file at /app/frontend/play-store-assets/feature-graphic-1024x500.svg',
+            'feature-v2': 'See full file at /app/frontend/play-store-assets/feature-graphic-with-phone-1024x500.svg'
+        };
+
+        function downloadSVG(assetId) {
+            const content = assets[assetId];
+            const blob = new Blob([content], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${assetId}.svg`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function copyCode(assetId) {
+            const content = assets[assetId];
+            navigator.clipboard.writeText(content).then(() => {
+                alert('SVG code copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>

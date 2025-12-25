@@ -1,0 +1,132 @@
+/* Home Page Mobile Responsive Styles */
+
+/* Age Bands Grid - Desktop: 3 columns (2 rows of 3) */
+.age-bands-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Tablet - 2 columns */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .age-bands-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile - 1 column (stacked) */
+@media (max-width: 768px) {
+  .age-bands-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+  
+  /* Make age band cards slightly smaller on mobile */
+  .age-bands-grid > * {
+    min-height: 120px !important;
+  }
+}
+
+/* Extra small mobile */
+@media (max-width: 480px) {
+  .age-bands-grid {
+    gap: 0.75rem;
+  }
+}
+
+/* Category carousel responsive */
+@media (max-width: 768px) {
+  .category-carousel {
+    padding: 0 0.5rem;
+  }
+  
+  .category-card {
+    min-width: 140px !important;
+  }
+}
+
+/* Workshop carousel responsive */
+@media (max-width: 768px) {
+  .workshop-carousel {
+    padding: 0 0.5rem;
+  }
+  
+  .workshop-card {
+    min-width: 280px !important;
+    max-width: 320px !important;
+  }
+}
+
+/* Hero section responsive */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 2rem 1rem !important;
+  }
+  
+  .hero-title {
+    font-size: 2rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem !important;
+  }
+}
+
+/* Search bar responsive */
+@media (max-width: 768px) {
+  .search-bar-container {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+  
+  .search-bar-container > * {
+    width: 100% !important;
+  }
+}
+
+/* Stats section responsive */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Testimonials responsive */
+@media (max-width: 768px) {
+  .testimonial-card {
+    padding: 1.5rem !important;
+  }
+  
+  .testimonial-text {
+    font-size: 0.95rem !important;
+  }
+}
+
+/* CTA section responsive */
+@media (max-width: 768px) {
+  .cta-section {
+    padding: 3rem 1rem !important;
+    text-align: center !important;
+  }
+  
+  .cta-buttons {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+  
+  .cta-buttons > * {
+    width: 100% !important;
+    max-width: 300px !important;
+  }
+}

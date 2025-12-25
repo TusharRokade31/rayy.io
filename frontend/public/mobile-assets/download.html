@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rayy Mobile App Assets - Download</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            color: #06B6D4;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .asset-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .asset-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
+            border-color: #06B6D4;
+        }
+        
+        .asset-preview {
+            width: 100%;
+            max-width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .asset-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .asset-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        
+        .asset-size {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+        
+        .asset-dimensions {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 16px;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background: #06B6D4;
+            color: white;
+            padding: 12px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .download-btn:hover {
+            background: #0891B2;
+            transform: scale(1.05);
+        }
+        
+        .download-all {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
+            border-radius: 16px;
+            margin-top: 40px;
+        }
+        
+        .download-all h2 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .download-all-btn {
+            display: inline-block;
+            background: white;
+            color: #06B6D4;
+            padding: 16px 48px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .download-all-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .instructions {
+            background: #f1f5f9;
+            padding: 24px;
+            border-radius: 12px;
+            margin-top: 40px;
+            border-left: 4px solid #06B6D4;
+        }
+        
+        .instructions h3 {
+            color: #06B6D4;
+            margin-bottom: 16px;
+            font-size: 1.3rem;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+            line-height: 1.8;
+            color: #475569;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 rayy Mobile App Assets</h1>
+        <p class="subtitle">Ready for iOS & Android Deployment <span class="status-badge">✓ Ready</span></p>
+        
+        <div class="assets-grid">
+            <!-- App Icon -->
+            <div class="asset-card">
+                <div class="asset-preview">
+                    <img src="icon.png" alt="App Icon">
+                </div>
+                <div class="asset-name">App Icon</div>
+                <div class="asset-size">📦 56 KB</div>
+                <div class="asset-dimensions">📐 1024 x 1024 pixels</div>
+                <a href="icon.png" download="icon.png" class="download-btn">Download</a>
+            </div>
+            
+            <!-- Adaptive Icon -->
+            <div class="asset-card">
+                <div class="asset-preview">
+                    <img src="adaptive-icon.png" alt="Adaptive Icon">
+                </div>
+                <div class="asset-name">Adaptive Icon</div>
+                <div class="asset-size">📦 28 KB</div>
+                <div class="asset-dimensions">📐 1024 x 1024 pixels</div>
+                <a href="adaptive-icon.png" download="adaptive-icon.png" class="download-btn">Download</a>
+            </div>
+            
+            <!-- Splash Screen -->
+            <div class="asset-card">
+                <div class="asset-preview" style="height: 250px;">
+                    <img src="splash.png" alt="Splash Screen">
+                </div>
+                <div class="asset-name">Splash Screen</div>
+                <div class="asset-size">📦 114 KB</div>
+                <div class="asset-dimensions">📐 1284 x 2778 pixels</div>
+                <a href="splash.png" download="splash.png" class="download-btn">Download</a>
+            </div>
+            
+            <!-- Favicon -->
+            <div class="asset-card">
+                <div class="asset-preview">
+                    <img src="favicon.png" alt="Favicon">
+                </div>
+                <div class="asset-name">Favicon</div>
+                <div class="asset-size">📦 1 KB</div>
+                <div class="asset-dimensions">📐 48 x 48 pixels</div>
+                <a href="favicon.png" download="favicon.png" class="download-btn">Download</a>
+            </div>
+        </div>
+        
+        <div class="download-all">
+            <h2>💾 Need All Files?</h2>
+            <p style="color: white; margin-bottom: 20px; font-size: 1rem;">Download all assets at once</p>
+            <a href="rrray-mobile-assets.zip" class="download-all-btn">Download All Assets (ZIP)</a>
+        </div>
+        
+        <div class="instructions">
+            <h3>📋 Next Steps After Download:</h3>
+            <ol>
+                <li><strong>Save the files</strong> to your computer in a safe location</li>
+                <li><strong>Upload to your project:</strong> Copy all PNG files to <code>/app/mobile/assets/</code></li>
+                <li><strong>Continue deployment:</strong> Follow Step 2 in the deployment guide</li>
+                <li><strong>Install EAS CLI:</strong> Run <code>npm install -g eas-cli</code></li>
+                <li><strong>Build your app:</strong> Run <code>eas build --platform all</code></li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>

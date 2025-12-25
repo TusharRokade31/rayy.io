@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">rayy</string>
+    <string name="title_activity_main">rayy</string>
+    <string name="package_name">com.rayy.app</string>
+    <string name="custom_url_scheme">com.rayy.app</string>
+</resources>

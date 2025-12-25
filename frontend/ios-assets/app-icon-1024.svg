@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- New Magical Gradient: Blue → Purple → Pink -->
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#A855F7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EC4899;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Subtle glow effect -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Rounded rectangle background with new gradient -->
+  <rect width="1024" height="1024" rx="226" ry="226" fill="url(#iconGradient)"/>
+  
+  <!-- Large "R" in white with subtle glow, centered -->
+  <text x="512" y="680" 
+        font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+        font-size="600" 
+        font-weight="800" 
+        fill="#FFFFFF" 
+        text-anchor="middle"
+        filter="url(#glow)">R</text>
+</svg>

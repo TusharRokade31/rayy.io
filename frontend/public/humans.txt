@@ -1,0 +1,22 @@
+/* TEAM */
+
+Product: RRRAY
+Website: https://rayy-partner-flow.preview.emergentagent.com
+Location: India
+
+/* THANKS */
+
+Built with: React, FastAPI, MongoDB
+Icons: Lucide Icons
+Fonts: Space Grotesk (Google Fonts)
+Images: Unsplash
+
+/* SITE */
+
+Last update: 2025/11/12
+Standards: HTML5, CSS3, ES6+
+Components: React 18, Axios, React Router
+Software: VS Code, Git
+Accessibility: WCAG 2.1 AA compliant
+Performance: Lighthouse optimized
+SEO: Structured data, Open Graph, Twitter Cards

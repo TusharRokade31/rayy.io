@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="500" viewBox="0 0 1024 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06B6D4;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#2B95D6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#06B6D4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background gradient -->
+  <rect width="1024" height="500" fill="url(#bgGradient)"/>
+  
+  <!-- Phone mockup on the left -->
+  <g transform="translate(100, 100)">
+    <!-- Phone frame -->
+    <rect x="0" y="0" width="160" height="300" rx="20" ry="20" fill="#1e293b" stroke="#64748b" stroke-width="2"/>
+    
+    <!-- Phone screen -->
+    <rect x="8" y="30" width="144" height="240" rx="12" ry="12" fill="#FFFFFF"/>
+    
+    <!-- Mini app preview inside phone -->
+    <g transform="translate(8, 30)">
+      <!-- Header bar -->
+      <rect x="0" y="0" width="144" height="35" fill="#3B82F6"/>
+      <text x="72" y="23" 
+            font-family="Space Grotesk, sans-serif" 
+            font-size="12" 
+            font-weight="700" 
+            fill="#FFFFFF" 
+            text-anchor="middle">RRRAY</text>
+      
+      <!-- Content cards (simplified) -->
+      <rect x="10" y="45" width="124" height="50" rx="8" fill="#f1f5f9"/>
+      <rect x="10" y="105" width="124" height="50" rx="8" fill="#f1f5f9"/>
+      <rect x="10" y="165" width="124" height="50" rx="8" fill="#f1f5f9"/>
+    </g>
+    
+    <!-- Home indicator -->
+    <rect x="60" y="280" width="40" height="4" rx="2" fill="#94a3b8"/>
+  </g>
+  
+  <!-- Main content on the right -->
+  <g transform="translate(320, 100)">
+    <!-- Logo pill -->
+    <rect x="0" y="0" width="80" height="80" rx="40" fill="url(#logoGradient)"/>
+    <text x="40" y="55" 
+          font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+          font-size="50" 
+          font-weight="800" 
+          fill="#FFFFFF" 
+          text-anchor="middle">R</text>
+    
+    <!-- Brand name -->
+    <text x="100" y="60" 
+          font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+          font-size="60" 
+          font-weight="800" 
+          fill="#FFFFFF" 
+          letter-spacing="3">RRRAY</text>
+  </g>
+  
+  <!-- Tagline and features -->
+  <g transform="translate(320, 220)">
+    <!-- Tagline -->
+    <text x="0" y="0" 
+          font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+          font-size="28" 
+          font-weight="500" 
+          fill="#E0F2FE" 
+          letter-spacing="2">Learn • Play • Shine</text>
+    
+    <!-- Main description -->
+    <text x="0" y="50" 
+          font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+          font-size="22" 
+          font-weight="600" 
+          fill="#FFFFFF">Find Amazing Kids Classes & Activities</text>
+    
+    <!-- Features list -->
+    <g transform="translate(0, 85)">
+      <!-- Feature 1 -->
+      <circle cx="6" cy="-3" r="4" fill="#FFFFFF"/>
+      <text x="20" y="0" 
+            font-family="Space Grotesk, sans-serif" 
+            font-size="18" 
+            font-weight="400" 
+            fill="#FFFFFF">1000+ Verified Classes</text>
+      
+      <!-- Feature 2 -->
+      <circle cx="6" cy="27" r="4" fill="#FFFFFF"/>
+      <text x="20" y="30" 
+            font-family="Space Grotesk, sans-serif" 
+            font-size="18" 
+            font-weight="400" 
+            fill="#FFFFFF">Book Trials Instantly</text>
+      
+      <!-- Feature 3 -->
+      <circle cx="6" cy="57" r="4" fill="#FFFFFF"/>
+      <text x="20" y="60" 
+            font-family="Space Grotesk, sans-serif" 
+            font-size="18" 
+            font-weight="400" 
+            fill="#FFFFFF">Ages 1-18 • All Categories</text>
+    </g>
+  </g>
+  
+  <!-- Decorative elements -->
+  <circle cx="900" cy="100" r="50" fill="rgba(255,255,255,0.1)"/>
+  <circle cx="950" cy="350" r="35" fill="rgba(255,255,255,0.12)"/>
+  <circle cx="850" cy="420" r="25" fill="rgba(255,255,255,0.09)"/>
+  <circle cx="50" cy="50" r="30" fill="rgba(255,255,255,0.08)"/>
+</svg>

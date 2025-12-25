@@ -1,0 +1,148 @@
+/* Admin Panel Mobile Responsive Styles */
+
+/* Mobile-first responsive breakpoints */
+@media (max-width: 768px) {
+  /* Dashboard grid adjustments */
+  .admin-dashboard {
+    padding: 1rem !important;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .chart-container {
+    width: 100% !important;
+    overflow-x: auto;
+  }
+
+  /* Card adjustments */
+  .admin-card {
+    padding: 1rem !important;
+    margin-bottom: 1rem;
+  }
+
+  /* Table responsiveness */
+  .admin-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-table {
+    min-width: 600px;
+  }
+
+  /* Hide less important columns on mobile */
+  .hide-mobile {
+    display: none !important;
+  }
+
+  /* Button groups */
+  .button-group {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+
+  .button-group button {
+    width: 100% !important;
+  }
+
+  /* Activity feed */
+  .activity-item {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Stat cards */
+  .stat-card {
+    padding: 1rem !important;
+  }
+
+  .stat-value {
+    font-size: 1.5rem !important;
+  }
+
+  /* Modal adjustments */
+  .modal-content {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin: 1rem auto !important;
+  }
+
+  /* Search and filter bars */
+  .filter-bar {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+
+  .filter-bar input,
+  .filter-bar select,
+  .filter-bar button {
+    width: 100% !important;
+  }
+
+  /* Header navigation */
+  .admin-header {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+
+  /* Chart legends */
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .chart-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  a,
+  .clickable {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+}
+
+/* Scrollbar styling for mobile */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .admin-table {
+    min-width: auto !important;
+  }
+}

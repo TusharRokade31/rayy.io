@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="500" viewBox="0 0 1024 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="featureGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06B6D4;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#2B95D6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="pillGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#06B6D4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background gradient -->
+  <rect width="1024" height="500" fill="url(#featureGradient)"/>
+  
+  <!-- Left side: Icon and branding -->
+  <g transform="translate(150, 250)">
+    <!-- Pill-shaped icon with gradient -->
+    <rect x="-70" y="-70" width="140" height="140" rx="70" ry="70" fill="url(#pillGradient)"/>
+    
+    <!-- "R" letter -->
+    <text x="0" y="40" 
+          font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+          font-size="100" 
+          font-weight="800" 
+          fill="#FFFFFF" 
+          text-anchor="middle">R</text>
+  </g>
+  
+  <!-- Right side: Text content -->
+  <g transform="translate(320, 150)">
+    <!-- Main title -->
+    <text x="0" y="0" 
+          font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+          font-size="72" 
+          font-weight="800" 
+          fill="#FFFFFF" 
+          letter-spacing="4">RRRAY</text>
+    
+    <!-- Tagline -->
+    <text x="0" y="60" 
+          font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+          font-size="32" 
+          font-weight="500" 
+          fill="#E0F2FE" 
+          letter-spacing="2">Learn • Play • Shine</text>
+    
+    <!-- Description line 1 -->
+    <text x="0" y="120" 
+          font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+          font-size="24" 
+          font-weight="400" 
+          fill="#FFFFFF">Discover the Best Kids Classes</text>
+    
+    <!-- Description line 2 -->
+    <text x="0" y="155" 
+          font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+          font-size="24" 
+          font-weight="400" 
+          fill="#FFFFFF">& Activities Near You</text>
+    
+    <!-- Feature badges -->
+    <g transform="translate(0, 200)">
+      <!-- Badge 1 -->
+      <rect x="0" y="0" width="130" height="35" rx="17.5" fill="rgba(255,255,255,0.2)"/>
+      <text x="65" y="23" 
+            font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+            font-size="16" 
+            font-weight="600" 
+            fill="#FFFFFF" 
+            text-anchor="middle">1000+ Classes</text>
+      
+      <!-- Badge 2 -->
+      <rect x="145" y="0" width="130" height="35" rx="17.5" fill="rgba(255,255,255,0.2)"/>
+      <text x="210" y="23" 
+            font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+            font-size="16" 
+            font-weight="600" 
+            fill="#FFFFFF" 
+            text-anchor="middle">Book in 3 Taps</text>
+      
+      <!-- Badge 3 -->
+      <rect x="290" y="0" width="130" height="35" rx="17.5" fill="rgba(255,255,255,0.2)"/>
+      <text x="355" y="23" 
+            font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+            font-size="16" 
+            font-weight="600" 
+            fill="#FFFFFF" 
+            text-anchor="middle">Ages 1-18</text>
+    </g>
+  </g>
+  
+  <!-- Decorative elements -->
+  <!-- Top right circle -->
+  <circle cx="920" cy="80" r="60" fill="rgba(255,255,255,0.1)"/>
+  <!-- Bottom left circle -->
+  <circle cx="100" cy="420" r="40" fill="rgba(255,255,255,0.08)"/>
+  <!-- Small circles -->
+  <circle cx="850" cy="400" r="25" fill="rgba(255,255,255,0.12)"/>
+  <circle cx="950" cy="200" r="30" fill="rgba(255,255,255,0.09)"/>
+</svg>

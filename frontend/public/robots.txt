@@ -1,0 +1,13 @@
+# RRRAY Robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /partner/
+Disallow: /checkout/
+Disallow: /profile/
+Disallow: /wallet/
+Disallow: /bookings/
+Disallow: /invoices/
+Disallow: /api/
+
+Sitemap: https://rayy-partner-flow.preview.emergentagent.com/sitemap.xml

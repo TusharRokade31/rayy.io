@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="2436" height="1125" viewBox="0 0 2436 1125" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- New Magical Background Gradient: Blue → Purple → Pink -->
+    <linearGradient id="splashGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#A855F7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EC4899;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Icon Gradient matching app icon -->
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#A855F7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EC4899;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Glow effect for text -->
+    <filter id="textGlow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background gradient -->
+  <rect width="2436" height="1125" fill="url(#splashGradient)"/>
+  
+  <!-- Icon pill shape with gradient, centered -->
+  <g transform="translate(1218, 562.5)">
+    <!-- Pill background -->
+    <rect x="-100" y="-100" width="200" height="200" rx="100" ry="100" fill="url(#iconGradient)"/>
+    
+    <!-- "R" letter in white -->
+    <text x="0" y="60" 
+          font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+          font-size="140" 
+          font-weight="800" 
+          fill="#FFFFFF" 
+          text-anchor="middle">R</text>
+  </g>
+  
+  <!-- RRRAY text below icon with glow -->
+  <text x="1218" y="762.5" 
+        font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+        font-size="120" 
+        font-weight="700" 
+        fill="#FFFFFF" 
+        text-anchor="middle"
+        letter-spacing="8"
+        filter="url(#textGlow)">RRRAY</text>
+  
+  <!-- Tagline -->
+  <text x="1218" y="862.5" 
+        font-family="Space Grotesk, -apple-system, BlinkMacSystemFont, sans-serif" 
+        font-size="42" 
+        font-weight="400" 
+        fill="#FFFFFF" 
+        opacity="0.9"
+        text-anchor="middle"
+        letter-spacing="4">Learn • Play • Shine</text>
+</svg>

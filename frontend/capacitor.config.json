@@ -1,0 +1,46 @@
+{
+  "appId": "com.rayy.marketplace",
+  "appName": "rayy",
+  "webDir": "build",
+  "bundledWebRuntime": false,
+  "version": "2.2.1",
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "capacitor"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0,
+      "launchAutoHide": true,
+      "backgroundColor": "#9333ea",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "androidSpinnerStyle": "large",
+      "iosSpinnerStyle": "small",
+      "spinnerColor": "#ffffff",
+      "splashFullScreen": true,
+      "splashImmersive": true
+    },
+    "StatusBar": {
+      "style": "LIGHT",
+      "backgroundColor": "#a855f7"
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    },
+    "Geolocation": {
+      "requestPermissions": true
+    },
+    "Camera": {
+      "presentationStyle": "fullscreen"
+    }
+  },
+  "ios": {
+    "contentInset": "always"
+  },
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true
+  }
+}

@@ -1,0 +1,13 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Transparent background for adaptive icon -->
+  <rect width="1024" height="1024" fill="transparent"/>
+  
+  <!-- Safe zone circle (660x660 center) -->
+  <circle cx="512" cy="512" r="330" fill="#06B6D4"/>
+  
+  <!-- White letter R -->
+  <text x="512" y="650" font-family="Arial, sans-serif" font-size="380" font-weight="900" fill="white" text-anchor="middle">R</text>
+  
+  <!-- Small star accent -->
+  <path d="M650 350 L665 380 L695 380 L670 400 L685 430 L650 410 L615 430 L630 400 L605 380 L635 380 Z" fill="#FBBF24"/>
+</svg>

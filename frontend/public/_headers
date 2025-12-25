@@ -1,0 +1,72 @@
+# RRRAY - Security & Performance Headers
+# This file configures HTTP headers for enhanced security and performance
+
+/*
+  # Security Headers
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=(self)
+  
+  # Content Security Policy (CSP) - Adjust as needed
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://d2adkz2s9zrlge.cloudfront.net https://us.i.posthog.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://rayy-partner-flow.preview.emergentagent.com https://us.i.posthog.com wss:; frame-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self';
+  
+  # Performance & Caching
+  Cache-Control: public, max-age=0, must-revalidate
+  
+# Static assets with long cache (immutable)
+/static/*
+  Cache-Control: public, max-age=31536000, immutable
+  
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: application/javascript; charset=utf-8
+  
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: text/css; charset=utf-8
+  
+# Images - cache for 1 year
+/*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+  
+/*.jpeg
+  Cache-Control: public, max-age=31536000, immutable
+  
+/*.png
+  Cache-Control: public, max-age=31536000, immutable
+  
+/*.svg
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: image/svg+xml; charset=utf-8
+  
+/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+  
+# Fonts
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: font/woff2
+  
+/*.woff
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: font/woff
+  
+# Service Worker - no cache
+/service-worker.js
+  Cache-Control: no-cache, no-store, must-revalidate
+  
+# Manifest
+/manifest.json
+  Cache-Control: public, max-age=86400
+  Content-Type: application/manifest+json; charset=utf-8
+  
+# Sitemap & Robots
+/sitemap.xml
+  Cache-Control: public, max-age=86400
+  Content-Type: application/xml; charset=utf-8
+  
+/robots.txt
+  Cache-Control: public, max-age=86400
+  Content-Type: text/plain; charset=utf-8
