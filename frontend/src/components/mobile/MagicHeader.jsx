@@ -15,7 +15,7 @@ const MagicHeader = ({ title, subtitle, gradient = 'from-blue-500 via-purple-500
   };
 
   return (
-    <div className={`relative bg-gradient-to-br ${gradient} pt-safe pb-6 overflow-hidden`}>
+    <div className={`relative bg-gradient-to-br ${gradient} pt-5 pb-6 overflow-hidden`}>
       {/* Top overlay to hide blue line - matches page gradient */}
       <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${gradient}`} style={{ zIndex: 999999 }} />
       

@@ -16,7 +16,7 @@ import MobileSplashScreenV2 from '../../components/mobile/MobileSplashScreenV2';
 import { toast } from 'sonner';
 
 const MobileHome = () => {
-  const { user, showAuthModal } = useContext(AuthContext);
+  const { user, showAuthModal, showAuth } = useContext(AuthContext);
   const { loc, setLoc } = useLocationPref();
   const navigate = useNavigate();
   
@@ -408,21 +408,20 @@ const MobileHome = () => {
               {/* Login/Profile Buttons */}
               <div className="flex items-center gap-2">
                 {/* Become a Partner Link - HIDDEN FOR MOBILE RELEASE */}
-                {/* <motion.button
+                <motion.button
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate('/mobile/become-partner')}
                   className="bg-white/20 backdrop-blur-sm text-white px-3 py-2 rounded-full font-semibold text-xs shadow-lg hover:shadow-xl transition-all border border-white/30"
                 >
                   Become a Partner
-                </motion.button> */}
+                </motion.button>
 
                 {/* Login/Profile Button */}
                 {!user ? (
                  <>
-                 <motion.button onClick={() => navigate('/mobile/become-partner')} className=" bg-white  text-emerald-500  px-4 py-2 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl transition-all flex items-center gap-2"> Become a Partner </motion.button>
                   <motion.button
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => showAuthModal && showAuthModal()}
+                    onClick={() =>  showAuth()}
                     className="bg-white text-purple-600 px-4 py-2 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
                   >
                     <Users className="w-4 h-4" />

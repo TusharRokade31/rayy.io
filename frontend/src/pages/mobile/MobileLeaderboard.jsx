@@ -153,7 +153,7 @@ const MobileLeaderboard = () => {
     <MobileLayout>
       <div className="bg-gradient-to-b from-yellow-50 to-gray-50 min-h-screen">
         {/* Header */}
-        <div className="bg-gradient-to-br from-yellow-400 to-orange-500 pt-safe px-4 py-8 rounded-b-3xl shadow-xl">
+        <div className="bg-gradient-to-br from-yellow-400 to-orange-500 pt-4 px-4 py-8 rounded-b-3xl shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
@@ -217,7 +217,7 @@ const MobileLeaderboard = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-500 border-t-transparent"></div>
           </div>
         ) : (
-          <div className="px-4 space-y-3 pb-24">
+          <div className="px-4 pt-4 space-y-3 pb-10">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold text-gray-900">Top Performers</h2>
               <div className="flex items-center text-sm text-gray-600">
@@ -233,7 +233,7 @@ const MobileLeaderboard = () => {
         )}
 
         {/* Info Card */}
-        <div className="px-4 pb-24 mt-6">
+        <div className="px-4 pb-10 mt-6">
           <div className="bg-gradient-to-r from-purple-100 to-blue-100 rounded-2xl p-4">
             <h3 className="font-bold text-gray-900 mb-2">How to earn points?</h3>
             <ul className="space-y-1 text-sm text-gray-700">

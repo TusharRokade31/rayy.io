@@ -212,9 +212,9 @@ function App() {
     const accessibilityObserver = setupAccessibilityObserver();
     
     // Add skip to main content link
-    import('./utils/accessibility').then(({ addSkipLink }) => {
-      addSkipLink();
-    });
+    // import('./utils/accessibility').then(({ addSkipLink }) => {
+    //   addSkipLink();
+    // });
     
     // Initialize Capacitor native features
     if (CapacitorService.isNative()) {
@@ -224,8 +224,8 @@ function App() {
       }, 1000);
       
       // Set status bar style
-      CapacitorService.setStatusBarStyle('light');
-      CapacitorService.setStatusBarColor('#3B82F6');
+      // CapacitorService.setStatusBarStyle('light');
+      // CapacitorService.setStatusBarColor('#3B82F6');
       
       // Add app lifecycle listeners
       CapacitorService.addAppListeners({
@@ -400,7 +400,8 @@ function App() {
       showAuth: (mode = 'customer') => { setAuthMode(mode); setShowAuth(true); },
       showAuthModal: (mode = 'customer') => { setAuthMode(mode); setShowAuth(true); },
       location: loc,
-      setLocation: setShowLocationSheet
+      setLocation: setShowLocationSheet,
+      setShowAuth:setShowAuth
     }}>
       <div className="App">
         <BrowserRouter>
@@ -512,7 +513,7 @@ function App() {
           {/* AI Advisor Chatbot - Persistent across all pages */}
           <AIAdvisor />
           
-          {showAuth && (
+          {/* {showAuth && (
             CapacitorService.isNative() || window.innerWidth <= 768 ? (
               <ModernAuthModalV2 
                 isOpen={showAuth}
@@ -524,7 +525,11 @@ function App() {
             ) : (
               <AuthModal mode={authMode} onClose={() => setShowAuth(false)} />
             )
-          )}
+          )} */}
+           {showAuth &&  (
+              <AuthModal mode={authMode} onClose={() => setShowAuth(false)} />
+            )
+          }
         </BrowserRouter>
         
         {/* Location Sheet */}

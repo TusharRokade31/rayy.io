@@ -10,11 +10,11 @@ const MobileLayout = ({ children }) => {
   const { user } = useContext(AuthContext);
 
   const navItems = [
-    { icon: Home, label: 'Explore', path: '/mobile' },
-    { icon: Heart, label: 'Wishlist', path: '/mobile/wishlist' },
+    { icon: Home, label: 'Home', path: '/mobile' },
+    // { icon: Heart, label: 'Wishlist', path: '/mobile/wishlist' },
     { icon: Calendar, label: 'Bookings', path: '/mobile/bookings' },
-    { icon: User, label: 'Profile', path: '/mobile/profile' },
-    { icon: Trophy, label: 'Leaderboard', path: '/mobile/leaderboard' }
+    // { icon: User, label: 'Profile', path: '/mobile/profile' },
+    // { icon: Trophy, label: 'Leaderboard', path: '/mobile/leaderboard' }
   ];
 
   const isActive = (path) => location.pathname === path;
