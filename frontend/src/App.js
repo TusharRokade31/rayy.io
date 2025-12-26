@@ -513,7 +513,7 @@ function App() {
           {/* AI Advisor Chatbot - Persistent across all pages */}
           <AIAdvisor />
           
-          {/* {showAuth && (
+          {showAuth && (
             CapacitorService.isNative() || window.innerWidth <= 768 ? (
               <ModernAuthModalV2 
                 isOpen={showAuth}
@@ -525,11 +525,11 @@ function App() {
             ) : (
               <AuthModal mode={authMode} onClose={() => setShowAuth(false)} />
             )
-          )} */}
-           {showAuth &&  (
+          )}
+           {/* {showAuth &&  (
               <AuthModal mode={authMode} onClose={() => setShowAuth(false)} />
             )
-          }
+          } */}
         </BrowserRouter>
         
         {/* Location Sheet */}

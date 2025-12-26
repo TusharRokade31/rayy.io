@@ -322,6 +322,8 @@ ${window.location.href}`;
           </div>
         )}
       </div>
+      
+      {console.log(listing)}
 
       {/* Content */}
       <div className="px-6">

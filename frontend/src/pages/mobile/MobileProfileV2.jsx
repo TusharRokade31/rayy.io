@@ -7,7 +7,10 @@ import MagicHeader from '../../components/mobile/MagicHeader';
 import GlassCard from '../../components/mobile/GlassCard';
 import { 
   User, Calendar, Heart, Trophy, Wallet, Settings, Shield, 
-  HelpCircle, ChevronRight, Edit2, Sparkles, Star, LogOut
+  HelpCircle, ChevronRight, Edit2, Sparkles, LogOut, 
+  LayoutDashboard, UserCircle, 
+  ShieldCheck,
+  BarChart3
 } from 'lucide-react';
 
 const MobileProfileV2 = () => {
@@ -43,7 +46,9 @@ const MobileProfileV2 = () => {
     );
   }
 
-  const menuSections = [
+  // --- MENU CONFIGURATIONS ---
+
+  const customerSections = [
     {
       title: 'My Activity',
       items: [
@@ -70,14 +75,73 @@ const MobileProfileV2 = () => {
     }
   ];
 
+  const partnerSections = [
+    {
+      title: 'Partner Management',
+      items: [
+        { icon: LayoutDashboard, label: 'Dashboard', path: '/mobile/partner/dashboard', gradient: 'from-blue-600 to-indigo-600' },
+        { icon: UserCircle, label: 'Partner Profile', path: '/mobile/partner/profile', gradient: 'from-violet-600 to-purple-600' },
+        { icon: Wallet, label: 'Financials', path: '/partner/financials', gradient: 'from-emerald-500 to-teal-500' },
+      ]
+    },
+    {
+      title: 'Account',
+      items: [
+        { icon: Settings, label: 'Settings', path: '/mobile/settings', gradient: 'from-gray-500 to-slate-600' },
+        { icon: Shield, label: 'Privacy & Security', path: '/mobile/settings', gradient: 'from-indigo-500 to-purple-600' },
+      ]
+    },
+    {
+      title: 'Support',
+      items: [
+        { icon: HelpCircle, label: 'Help Center', path: '/help-center', gradient: 'from-cyan-500 to-blue-600' },
+      ]
+    }
+  ];
+
+  const adminSections = [
+  {
+    title: 'Admin Portal',
+    items: [
+      {
+        icon: ShieldCheck,
+        label: 'Admin Overview',
+        path: '/admin',
+        gradient: 'from-red-500 to-orange-500' // Distinct styling for admin
+      },
+      {
+        icon: BarChart3,
+        label: 'Analytics',
+        path: '/admin/analytics',
+        gradient: 'from-pink-500 to-rose-500'
+      },
+    ]
+  },
+  {
+    title: 'Account',
+    items: [
+      { icon: Settings, label: 'Settings', path: '/mobile/settings', gradient: 'from-gray-500 to-slate-600' },
+    ]
+  }
+];
+
+  // Select sections based on role
+const menuSections =
+  user.role === 'admin'
+    ? adminSections
+    : user.role === 'partner_owner'
+    ? partnerSections
+    : customerSections;
+  const isPartner = user.role === 'partner_owner';
+
   return (
     <MobileLayout>
       <div className="bg-gradient-to-br from-gray-50 to-purple-50 min-h-screen">
         {/* Magic Header */}
         <MagicHeader
-          title={user.name || 'My Profile'}
+          title={user.name || (isPartner ? 'Partner Profile' : 'My Profile')}
           subtitle={user.email}
-          gradient="from-purple-500 via-pink-500 to-rose-500"
+          gradient={isPartner ? "from-indigo-500 via-purple-500 to-blue-500" : "from-purple-500 via-pink-500 to-rose-500"}
         >
           {/* Profile Avatar */}
           <motion.div
@@ -90,8 +154,10 @@ const MobileProfileV2 = () => {
               <div className="w-24 h-24 bg-gradient-to-br from-white to-purple-100 rounded-full flex items-center justify-center text-3xl font-bold text-purple-600 shadow-2xl">
                 {user.name?.charAt(0).toUpperCase() || 'U'}
               </div>
+              
+              {/* Edit Profile Button (Restored for both roles) */}
               <button
-                onClick={() => navigate('/mobile/edit-profile')}
+                onClick={() => navigate(user.role === 'partner_owner' ? '/partner/profile/edit' : '/mobile/edit-profile')}
                 className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg"
               >
                 <Edit2 className="w-4 h-4 text-purple-600" />
@@ -102,8 +168,9 @@ const MobileProfileV2 = () => {
 
         {/* Content */}
         <div className="p-4 pb-24 -mt-4">
-          {/* Child Profiles */}
-          {user.child_profiles && user.child_profiles.length > 0 && (
+          
+          {/* Child Profiles (Customer Only) */}
+          {!isPartner && user.child_profiles && user.child_profiles.length > 0 && (
             <GlassCard className="mb-6" delay={0.1}>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-bold text-gray-900">Child Profiles</h2>
@@ -136,7 +203,7 @@ const MobileProfileV2 = () => {
             </GlassCard>
           )}
 
-          {/* Menu Sections */}
+          {/* Menu Sections (Dynamic based on Role) */}
           {menuSections.map((section, sectionIndex) => (
             <div key={section.title} className="mb-6">
               <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-3 px-2">

@@ -12,8 +12,15 @@ import {
 
 const MobileBecomePartner = () => {
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
+  const { login, user } = useContext(AuthContext); // Access user from context
   const [showAuthModal, setShowAuthModal] = useState(false);
+
+  // REDIRECT LOGIC: Check if user is already a partner
+  useEffect(() => {
+    if (user && user.role === 'partner_owner') {
+      navigate('/mobile/partner/dashboard');
+    }
+  }, [user, navigate]);
 
   // Cleanup: Restore body scroll on component unmount
   useEffect(() => {
@@ -44,7 +51,7 @@ const MobileBecomePartner = () => {
     {
       icon: Shield,
       title: 'Trusted Platform',
-      description: 'Join India&apos;s most trusted kids activity marketplace',
+      description: 'Join India\'s most trusted kids activity marketplace',
       color: 'from-orange-400 to-amber-500'
     }
   ];
@@ -56,8 +63,15 @@ const MobileBecomePartner = () => {
   ];
 
   const handleGetStarted = () => {
-    // Open modal directly - button is already at top
-    setShowAuthModal(true);
+    // If user is a customer, they might want to become a partner
+    // If user is not logged in, show auth modal
+    if (user && user.role === 'customer') {
+        // Optional: You could logout the customer first or handle role switching
+        // For now, let's just show the modal which handles partner login/signup
+        setShowAuthModal(true);
+    } else {
+        setShowAuthModal(true);
+    }
     // Prevent body scroll when modal is open
     document.body.style.overflow = 'hidden';
   };
@@ -204,7 +218,7 @@ const MobileBecomePartner = () => {
                     Trusted by 10,000+ Parents
                     <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
                   </p>
-                  <p className="text-xs text-gray-600">Join India&apos;s #1 kids activity platform</p>
+                  <p className="text-xs text-gray-600">Join India's #1 kids activity platform</p>
                 </div>
               </div>
             </div>
@@ -218,7 +232,7 @@ const MobileBecomePartner = () => {
         onClose={handleModalClose}
         onSuccess={handleAuthSuccess}
         mode="partner"
-        isSignupFlow={true}
+        // No strict allowModeToggle needed here as we force partner mode
       />
 
       <style>{`

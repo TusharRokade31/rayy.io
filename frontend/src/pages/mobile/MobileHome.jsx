@@ -336,7 +336,7 @@ const MobileHome = () => {
           </div>
           
           <button 
-            onClick={() => navigate('/search')}
+            onClick={() => navigate('/mobile/search')}
             className="text-sm font-semibold text-blue-600 hover:text-blue-700"
           >
             See all
@@ -408,20 +408,21 @@ const MobileHome = () => {
               {/* Login/Profile Buttons */}
               <div className="flex items-center gap-2">
                 {/* Become a Partner Link - HIDDEN FOR MOBILE RELEASE */}
+                {(!user || user.role === 'customer') && (
                 <motion.button
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate('/mobile/become-partner')}
                   className="bg-white/20 backdrop-blur-sm text-white px-3 py-2 rounded-full font-semibold text-xs shadow-lg hover:shadow-xl transition-all border border-white/30"
                 >
                   Become a Partner
-                </motion.button>
+                </motion.button>)}
 
                 {/* Login/Profile Button */}
                 {!user ? (
                  <>
                   <motion.button
                     whileTap={{ scale: 0.95 }}
-                    onClick={() =>  showAuth()}
+                    onClick={() =>  showAuthModal()}
                     className="bg-white text-purple-600 px-4 py-2 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
                   >
                     <Users className="w-4 h-4" />
@@ -688,6 +689,7 @@ const MobileHome = () => {
             </div>
 
             {/* Become a Partner CTA - HIDDEN FOR MOBILE RELEASE */}
+            {(!user || user.role === 'customer') && (
             <div className="px-4 mb-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -712,7 +714,7 @@ const MobileHome = () => {
                   </div>
                 </div>
               </motion.div>
-            </div>
+            </div>)}
           </div>
         )}
       </div>
