@@ -7,7 +7,7 @@ const Safety = () => {
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #F9FAFB 0%, #EFF6FF 100%)' }}>
       <Navbar />
       
-      <div className="mobile-container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 2rem' }}>
+      <div className="mobile-container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1rem' }}>
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
           <h1 className="mobile-heading-xl" style={{
             fontSize: '3rem',

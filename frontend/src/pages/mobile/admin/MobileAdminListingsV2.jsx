@@ -26,7 +26,9 @@ const MobileAdminListingsV2 = () => {
       const response = await axios.get(`${API}/admin/listings`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setListings(Array.isArray(response.data) ? response.data : []);
+
+      console.log('Fetched listings:', response);
+      setListings(Array.isArray(response.data.listings) ? response.data.listings : []);
     } catch (error) {
       console.error('Failed to fetch listings:', error);
       setListings([]);
@@ -39,7 +41,7 @@ const MobileAdminListingsV2 = () => {
   const handleListingAction = async (listingId, action) => {
     try {
       const token = localStorage.getItem('yuno_token');
-      await axios.patch(
+      await axios.post(
         `${API}/admin/listings/${listingId}/${action}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
@@ -72,7 +74,7 @@ const MobileAdminListingsV2 = () => {
           gradient="from-green-500 via-emerald-500 to-teal-500"
         />
 
-        <div className="px-4 pb-24 -mt-4">
+        <div className="px-4 pb-24 mt-10">
           {/* Filter Pills */}
           <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
             {filterOptions.map(option => (

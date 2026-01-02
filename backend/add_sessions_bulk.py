@@ -10,8 +10,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
-DB_NAME = os.getenv("DB_NAME", "yuno_db")
+MONGO_URL = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
+DB_NAME = os.getenv("DATABASE_NAME", "rayy_db")
+
 
 async def add_sessions_for_all_listings():
     """Add sessions for all active listings until January 2026"""

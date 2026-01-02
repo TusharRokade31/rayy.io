@@ -25,7 +25,7 @@ const MobileAdminUsers = () => {
       const response = await axios.get(`${API}/admin/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setUsers(Array.isArray(response.data) ? response.data : []);
+      setUsers(Array.isArray(response.data.users) ? response.data.users : []);
     } catch (error) {
       console.error('Failed to fetch users:', error);
       setUsers([]);
@@ -57,7 +57,7 @@ const MobileAdminUsers = () => {
           gradient="from-blue-500 via-cyan-500 to-teal-500"
         />
 
-        <div className="px-4 pb-24 -mt-4">
+        <div className="px-4 pb-24 mt-10">
           {/* Search Bar */}
           <GlassCard delay={0.1}>
             <div className="relative">

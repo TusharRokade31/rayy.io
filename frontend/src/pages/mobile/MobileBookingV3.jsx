@@ -17,6 +17,8 @@ const MobileBookingV3 = () => {
   const { user, showAuthModal } = useContext(AuthContext);
   
   const [bookingOptions, setBookingOptions] = useState(null);
+  const [bookinglisting, setBookinglisting] = useState(null);
+  const [batches, setBatches] = useState(null);
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [wallet, setWallet] = useState(null);
@@ -42,9 +44,10 @@ const MobileBookingV3 = () => {
       setLoading(true);
       const response = await axios.get(`${API}/listings/${id}/booking-options`);
       
+      // console.log('📊 Booking Options Response:', response.data);
+      // console.log('📊 Response type:', typeof response.data);
+      // console.log('📊 Is Array?:', Array.isArray(response.data));
       console.log('📊 Booking Options Response:', response.data);
-      console.log('📊 Response type:', typeof response.data);
-      console.log('📊 Is Array?:', Array.isArray(response.data));
       
       // Check if response is a Pydantic validation error
       if (response.data && response.data.detail && Array.isArray(response.data.detail)) {
@@ -53,6 +56,7 @@ const MobileBookingV3 = () => {
         setLoading(false);
         return;
       }
+
       
       // Validate response has required structure
       if (!response.data || !response.data.listing || !response.data.plan_options) {
@@ -63,7 +67,9 @@ const MobileBookingV3 = () => {
       }
       
       console.log('✅ Setting valid booking options');
-      setBookingOptions(response.data);
+      setBookingOptions(response.data.plan_options);
+      setBookinglisting(response.data.listing);
+      setBatches(response.data.batches);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching booking options:', error);
@@ -75,6 +81,7 @@ const MobileBookingV3 = () => {
   const fetchBatchSessions = async (batchId) => {
     try {
       const response = await axios.get(`${API}/listings/${id}/batches/${batchId}/sessions`);
+      console.log('📊 Batch Sessions Response:', response.data);
       
       // Validate response structure
       if (response.data && typeof response.data === 'object' && !Array.isArray(response.data)) {
@@ -115,7 +122,9 @@ const MobileBookingV3 = () => {
       endDate.setDate(endDate.getDate() + 90);
       const endDateStr = endDate.toISOString().split('T')[0];
       
-      const response = await axios.get(`${API}/listings/${id}/sessions?from_date=${today}&to_date=${endDateStr}`);
+      const response = await axios.get(`${API}/listings/${id}/sessions`);
+
+      console.log(response, "session ")
       
       // Validate response structure - defend against Pydantic errors
       if (response.data && typeof response.data === 'object') {
@@ -166,6 +175,7 @@ const MobileBookingV3 = () => {
   };
 
   const handlePlanSelect = (plan) => {
+    console.log("handlePlanSelect,plan", plan);
     setSelectedPlan(plan);
     setSelectedBatch(null);
     setSelectedSessions([]);
@@ -174,6 +184,8 @@ const MobileBookingV3 = () => {
     
     // Check timing type to determine next step
     const timingType = plan.timing_type || 'FLEXIBLE';
+
+    fetchAllSessions();
     
     if (timingType === 'FIXED') {
       // Fixed plans need batch selection
@@ -187,6 +199,7 @@ const MobileBookingV3 = () => {
   };
 
   const handleBatchSelect = async (batch) => {
+    console.log("handleBatchSelect", batch);
     setSelectedBatch(batch);
     setSelectedSessions([]);
     await fetchBatchSessions(batch.id);
@@ -251,10 +264,10 @@ const MobileBookingV3 = () => {
       return;
     }
     
-    if (!isFixed && selectedSessions.length === 0) {
-      toast.error('Please select sessions');
-      return;
-    }
+    // if (!isFixed && selectedSessions.length === 0) {
+    //   toast.error('Please select sessions');
+    //   return;
+    // }
 
     setSubmitting(true);
     try {
@@ -349,7 +362,7 @@ const MobileBookingV3 = () => {
   const calculateTotal = () => {
     if (!selectedPlan) return 0;
     const price = selectedPlan.price_inr;
-    const tax = price * (bookingOptions?.listing?.tax_percent || 18) / 100;
+    const tax = price * (bookinglisting?.listing?.tax_percent || 18) / 100;
     let total = price + tax;
     
     if (useCredits && wallet) {
@@ -372,32 +385,32 @@ const MobileBookingV3 = () => {
   }
 
   // Validate bookingOptions is not an error object
-  if (!bookingOptions || !bookingOptions.listing || !bookingOptions.plan_options || bookingOptions.detail) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4">
-        <div className="max-w-md mx-auto mt-8 text-center">
-          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Booking Not Available</h2>
-          <p className="text-gray-600 mb-4">
-            {bookingOptions?.detail ? 'Invalid booking configuration' : 'This listing is not available for booking.'}
-          </p>
-          <button
-            onClick={() => navigate(-1)}
-            className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-medium"
-          >
-            Go Back
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // if (!bookingOptions || !bookingOptions.listing || !bookingOptions.plan_options || bookingOptions.detail) {
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4">
+  //       <div className="max-w-md mx-auto mt-8 text-center">
+  //         <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+  //         <h2 className="text-xl font-bold text-gray-900 mb-2">Booking Not Available</h2>
+  //         <p className="text-gray-600 mb-4">
+  //           {bookingOptions?.detail ? 'Invalid booking configuration' : 'This listing is not available for booking.'}
+  //         </p>
+  //         <button
+  //           onClick={() => navigate(-1)}
+  //           className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-medium"
+  //         >
+  //           Go Back
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   // CRITICAL: Safe destructuring with default values to prevent undefined variables
-  const { 
-    listing = {}, 
-    plan_options = [], 
-    batches = [] 
-  } = bookingOptions || {};
+  // const { 
+  //   listing = {}, 
+  //   plan_options = [], 
+  //   // batches = [] 
+  // } = bookingOptions || {};
 
   // Filter batches based on selected plan with comprehensive validation
   const availableBatches = selectedPlan && Array.isArray(batches)
@@ -411,6 +424,10 @@ const MobileBookingV3 = () => {
         !b.type && !b.loc && !b.msg  // Filter out Pydantic errors
       )
     : [];
+
+    console.log(availableBatches, "availableBatches");
+
+    console.log(selectedPlan, "below availableBatches");
 
   // CRITICAL: Wrap entire render in try-catch to prevent any render crashes
   try {
@@ -426,7 +443,7 @@ const MobileBookingV3 = () => {
             <ArrowLeft className="w-6 h-6 text-gray-700" />
           </button>
           <div className="flex-1">
-            <h1 className="text-lg font-bold text-gray-900">{listing.title}</h1>
+            <h1 className="text-lg font-bold text-gray-900">{bookinglisting.title}</h1>
             <p className="text-sm text-gray-500">
               Step {bookingStep} of 3
             </p>
@@ -458,14 +475,14 @@ const MobileBookingV3 = () => {
                 <p className="text-gray-600">Select the plan that works best for you</p>
               </div>
 
-              {!Array.isArray(plan_options) || plan_options.length === 0 ? (
+              {!Array.isArray(bookingOptions) || bookingOptions.length === 0 ? (
                 <div className="bg-white rounded-2xl p-8 text-center">
                   <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                   <p className="text-gray-600">No plans available for this listing</p>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {plan_options.filter(plan => plan && plan.id).map((plan) => {
+                  {bookingOptions.filter(plan => plan && plan.id).map((plan) => {
                     const Icon = getPlanIcon(plan.plan_type);
                     const color = getPlanColor(plan.plan_type);
                     
@@ -566,7 +583,7 @@ const MobileBookingV3 = () => {
               </div>
 
               {/* FIXED TIMING: Show Batch Selection */}
-              {(selectedPlan.timing_type || 'FLEXIBLE') === 'FIXED' ? (
+              
                 <>
                   <div className="bg-white rounded-2xl p-6 shadow-sm">
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">Choose Your Batch</h2>
@@ -620,163 +637,7 @@ const MobileBookingV3 = () => {
                     </div>
                   )}
                 </>
-              ) : (
-                /* FLEXIBLE TIMING: Show Unified Slot Picker */
-                <>
-                  <div className="bg-white rounded-2xl p-6 shadow-sm">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Pick Your Sessions</h2>
-                    <p className="text-gray-600">
-                      Choose {selectedPlan.sessions_count} session{selectedPlan.sessions_count > 1 ? 's' : ''} that work for you
-                    </p>
-                    
-                    {/* Progress Bar */}
-                    <div className="mt-4 p-4 bg-purple-50 rounded-xl border border-purple-200">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-semibold text-gray-700">Sessions Selected</span>
-                        <span className="text-lg font-bold text-purple-600">
-                          {selectedSessions.length} / {selectedPlan.sessions_count}
-                        </span>
-                      </div>
-                      <div className="h-2.5 bg-purple-200 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300"
-                          style={{ width: `${(selectedSessions.length / selectedPlan.sessions_count) * 100}%` }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Unified Scrollable Slot Picker */}
-                  {sessions.length === 0 ? (
-                    <div className="bg-white rounded-2xl p-8 text-center">
-                      <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                      <p className="text-gray-600">No sessions available</p>
-                    </div>
-                  ) : (
-                    <>
-                      {/* Week Navigation */}
-                      <div className="bg-white rounded-xl p-3 flex items-center justify-between shadow-sm">
-                        <button
-                          onClick={() => setCurrentWeekOffset(Math.max(0, currentWeekOffset - 1))}
-                          disabled={currentWeekOffset === 0}
-                          className="px-4 py-2 bg-gray-100 rounded-lg font-semibold text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed"
-                        >
-                          ← Previous
-                        </button>
-                        <div className="text-center">
-                          <div className="text-xs text-gray-500">Viewing</div>
-                          <div className="text-sm font-bold text-gray-900">
-                            {(() => {
-                              const today = new Date();
-                              const weekStart = new Date(today);
-                              weekStart.setDate(today.getDate() + (currentWeekOffset * 7));
-                              const weekEnd = new Date(weekStart);
-                              weekEnd.setDate(weekStart.getDate() + 6);
-                              return `${format(weekStart, 'MMM d')} - ${format(weekEnd, 'MMM d')}`;
-                            })()}
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => setCurrentWeekOffset(currentWeekOffset + 1)}
-                          disabled={currentWeekOffset >= 12}
-                          className="px-4 py-2 bg-gray-100 rounded-lg font-semibold text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed"
-                        >
-                          Next →
-                        </button>
-                      </div>
-
-                      {/* Sessions Grid */}
-                      <div className="space-y-2 max-h-[500px] overflow-y-auto">
-                        {sessions
-                          .filter((session) => {
-                            // Filter sessions by week offset (7 days per week)
-                            const sessionDate = new Date(session.date || session.start_at);
-                            const today = new Date();
-                            today.setHours(0, 0, 0, 0);
-                            
-                            const weekStartDate = new Date(today);
-                            weekStartDate.setDate(today.getDate() + (currentWeekOffset * 7));
-                            
-                            const weekEndDate = new Date(weekStartDate);
-                            weekEndDate.setDate(weekStartDate.getDate() + 6);
-                            weekEndDate.setHours(23, 59, 59, 999);
-                            
-                            return sessionDate >= weekStartDate && sessionDate <= weekEndDate;
-                          })
-                          .map((session) => {
-                          const isSelected = selectedSessions.find(s => s.id === session.id);
-                          const isFull = session.seats_available <= 0;
-                          const isDisabled = isFull || (selectedSessions.length >= selectedPlan.sessions_count && !isSelected);
-                          
-                          return (
-                            <motion.button
-                              key={session.id}
-                              whileHover={!isDisabled ? { scale: 1.01 } : {}}
-                              whileTap={!isDisabled ? { scale: 0.99 } : {}}
-                              onClick={() => !isDisabled && handleSessionToggle(session)}
-                              disabled={isDisabled}
-                              className={`
-                                w-full bg-white rounded-xl p-4 border-2 transition-all text-left
-                                ${isSelected ? 'border-purple-500 bg-purple-50 shadow-md' : 'border-gray-200'}
-                                ${isDisabled ? 'opacity-40 cursor-not-allowed' : 'hover:shadow-md hover:border-purple-300'}
-                              `}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3 flex-1">
-                                  {/* Date Badge */}
-                                  <div className={`w-14 h-14 rounded-xl flex flex-col items-center justify-center font-bold ${
-                                    isSelected ? 'bg-purple-500 text-white' : 'bg-gray-100 text-gray-700'
-                                  }`}>
-                                    <span className="text-xs">{format(parseISO(session.date || session.start_at), 'MMM')}</span>
-                                    <span className="text-xl">{format(parseISO(session.date || session.start_at), 'd')}</span>
-                                  </div>
-                                  
-                                  <div className="flex-1">
-                                    <div className="font-bold text-gray-900 mb-1">
-                                      {format(parseISO(session.date || session.start_at), 'EEEE')}
-                                    </div>
-                                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                                      <Clock className="w-3.5 h-3.5" />
-                                      <span>{session.time || format(parseISO(session.start_at), 'h:mm a')}</span>
-                                      {session.seats_available && (
-                                        <>
-                                          <span className="text-gray-400">•</span>
-                                          <Users className="w-3.5 h-3.5" />
-                                          <span>{session.seats_available} spots</span>
-                                        </>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                                
-                                {/* Checkmark */}
-                                {isSelected && (
-                                  <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center">
-                                    <CheckCircle2 className="w-5 h-5 text-white" />
-                                  </div>
-                                )}
-                              </div>
-                            </motion.button>
-                          );
-                        })}
-                      </div>
-
-                      {/* Continue Button for Flexible */}
-                      {selectedSessions.length === selectedPlan.sessions_count && (
-                        <motion.button
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          onClick={() => setBookingStep(3)}
-                          className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2"
-                        >
-                          <CheckCircle2 className="w-5 h-5" />
-                          Continue to Payment
-                        </motion.button>
-                      )}
-                    </>
-                  )}
-                </>
-              )}
+              
             </motion.div>
           )}
 
@@ -915,9 +776,9 @@ const MobileBookingV3 = () => {
                     <span className="font-semibold text-gray-900">₹{selectedPlan.price_inr}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Tax ({listing?.tax_percent || 18}%)</span>
+                    <span className="text-gray-600">Tax ({bookinglisting?.tax_percent || 18}%)</span>
                     <span className="font-semibold text-gray-900">
-                      ₹{(selectedPlan.price_inr * (listing?.tax_percent || 18) / 100).toFixed(2)}
+                      ₹{(selectedPlan.price_inr * (bookinglisting?.tax_percent || 18) / 100).toFixed(2)}
                     </span>
                   </div>
                   <div className="pt-3 border-t-2 border-gray-200 flex justify-between items-center">

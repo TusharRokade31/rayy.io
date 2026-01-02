@@ -56,7 +56,7 @@ const MobileAdminSettings = () => {
           gradient="from-blue-500 via-cyan-500 to-teal-500"
         />
 
-        <div className="px-4 pb-24 -mt-4">
+        <div className="px-4 pb-24 mt-10">
           {/* Profile Card */}
           <GlassCard delay={0.1}>
             <div className="p-6">

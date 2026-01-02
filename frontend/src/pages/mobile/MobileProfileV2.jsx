@@ -106,13 +106,13 @@ const MobileProfileV2 = () => {
       {
         icon: ShieldCheck,
         label: 'Admin Overview',
-        path: '/admin',
+        path: '/mobile/admin/dashboard',
         gradient: 'from-red-500 to-orange-500' // Distinct styling for admin
       },
       {
         icon: BarChart3,
         label: 'Analytics',
-        path: '/admin/analytics',
+        path: '/mobile/admin/analytics',
         gradient: 'from-pink-500 to-rose-500'
       },
     ]

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import './App.css';
+import "./index.css";
 import './styles/ui-improvements.css';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -416,6 +417,7 @@ function App() {
               <Route path="/mobile/partner/dashboard" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerDashboard /> : <Navigate to="/mobile" />} />
               <Route path="/mobile/partner/listings" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerListings /> : <Navigate to="/mobile" />} />
               <Route path="/mobile/partner/listings/create" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobileCreateListing /> : <Navigate to="/mobile" />} />
+              <Route path="/mobile/partner/listings/edit/:id" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobileCreateListing /> : <Navigate to="/mobile" />} />
               <Route path="/mobile/partner/bookings" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerBookings /> : <Navigate to="/mobile" />} />
               <Route path="/mobile/partner/analytics" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerAnalytics /> : <Navigate to="/mobile" />} />
               <Route path="/mobile/partner/profile" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerProfile /> : <Navigate to="/mobile" />} />

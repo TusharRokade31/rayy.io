@@ -8,8 +8,8 @@ from datetime import datetime, timezone
 import os
 import random
 
-MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
-DB_NAME = 'yuno_db'
+MONGO_URL = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
+DB_NAME = os.getenv("DATABASE_NAME", "rayy_db")
 
 # Video URLs from Google's sample videos
 VIDEO_URLS = [

@@ -35,6 +35,8 @@ const MobileBookingsV2 = () => {
       const response = await axios.get(`${API}/bookings/my`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+
+      console.log('Fetched bookings:', response.data);
       // Backend returns {bookings: []} so extract the array
       const bookingsData = response.data?.bookings || response.data || [];
       setBookings(Array.isArray(bookingsData) ? bookingsData : []);

@@ -62,7 +62,7 @@ const MobilePartnerListings = () => {
           gradient="from-purple-500 via-pink-500 to-red-500"
         />
 
-        <div className="px-4 pb-24 -mt-4">
+        <div className="px-4 pb-24 mt-10">
           {/* Create New Button */}
           <div className="mb-6">
             <motion.button

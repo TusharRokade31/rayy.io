@@ -24,7 +24,9 @@ const MobileAdminPartners = () => {
       const response = await axios.get(`${API}/admin/partners`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setPartners(Array.isArray(response.data) ? response.data : []);
+
+      console.log('Fetched partners:', response);
+      setPartners(Array.isArray(response.data.partners) ? response.data.partners : []);
     } catch (error) {
       console.error('Failed to fetch partners:', error);
       setPartners([]);
@@ -37,7 +39,7 @@ const MobileAdminPartners = () => {
   const handlePartnerAction = async (partnerId, action) => {
     try {
       const token = localStorage.getItem('yuno_token');
-      await axios.patch(
+      await axios.put(
         `${API}/admin/partners/${partnerId}/${action}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
@@ -70,7 +72,7 @@ const MobileAdminPartners = () => {
           gradient="from-purple-500 via-pink-500 to-red-500"
         />
 
-        <div className="px-4 pb-24 -mt-4">
+        <div className="px-4 pb-24 mt-10">
           {/* Filter Pills */}
           <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
             {filterOptions.map(option => (

@@ -144,7 +144,7 @@ const MobilePartnerDashboard = () => {
           gradient="from-purple-500 via-pink-500 to-red-500"
         />
 
-        <div className="px-4 pb-24 -mt-4">
+        <div className="px-4 pb-24 mt-10">
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-3 mb-6">
             {statCards.map((stat, index) => {

@@ -105,7 +105,7 @@ const MobilePartnerAnalytics = () => {
           gradient="from-green-500 via-emerald-500 to-teal-500"
         />
 
-        <div className="px-4 pb-24 -mt-4">
+        <div className="px-4 pb-24 mt-10">
           {/* Time Range Filter */}
           <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
             {timeRangeOptions.map(option => (

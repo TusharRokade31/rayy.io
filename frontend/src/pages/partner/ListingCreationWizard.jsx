@@ -617,28 +617,14 @@ const ListingCreationWizard = () => {
                     }}
                   >
                     <option value="">Select a category</option>
-                    {/* {categories.map(cat => (
-                      <option key={cat.id} value={cat.id}>
+                      {categories.map(cat => (
+                      <option key={cat._id} value={cat._id}>
                         {cat.icon} {cat.name}
                       </option>
-                    ))} */}
+                    ))}
 
                     
-                      <option  value={"coding"}>
-                        coding
-                      </option>
-                       <option  value={"art-craft"}>
-                        Art & Craft
-                      </option>
-                      <option  value={"music"}>
-                        Music
-                      </option>
-                      <option  value={"dance"}>
-                        Dance
-                      </option>
-                      <option  value={"sports"}>
-                        Sports
-                      </option>
+                     
                     
                   </select>
                 </div>

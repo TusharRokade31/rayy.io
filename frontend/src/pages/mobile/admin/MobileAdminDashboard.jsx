@@ -43,13 +43,16 @@ const MobileAdminDashboard = () => {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
+
+      console.log('Fetched dashboard stats:', statsRes);
+      console.log('Fetched recent activity:', activityRes);
       
       setStats(statsRes.data || stats);
       setRecentActivity(activityRes.data || []);
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
     } finally {
-      setLoading(false);
+      setLoading(false);  
     }
   };
 
@@ -111,7 +114,7 @@ const MobileAdminDashboard = () => {
           gradient="from-blue-500 via-cyan-500 to-teal-500"
         />
 
-        <div className="px-4 pb-24 -mt-4">
+        <div className="px-4 pb-24 mt-10">
           {/* Alert for Pending Approvals */}
           {stats.pendingApprovals > 0 && (
             <GlassCard delay={0}>

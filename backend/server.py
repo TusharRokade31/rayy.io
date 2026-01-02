@@ -281,8 +281,7 @@ class Partner(BaseModel):
     pan: Optional[str] = None
     upi_id: Optional[str] = None
     kyc_documents: Optional[Dict[str, Any]] = None
-    bank_details: Optional[Dict[str, Any]] = None
-    
+    bank_details: Optional[Dict[str, Any]] = None    
     address: str
     city: str
     lat: Optional[float] = None
@@ -2182,8 +2181,8 @@ async def create_booking_v2(
     current_user: Dict = Depends(get_current_user)
 ):
     """Create a booking with flexible plans and batch assignment"""
-    if current_user["role"] != "customer":
-        raise HTTPException(status_code=403, detail="Only customers can create bookings")
+    # if current_user["role"] != "customer":
+    #     raise HTTPException(status_code=403, detail="Only customers can create bookings")
     
     # Get listing
     listing = await db.listings.find_one({"id": booking_data.listing_id}, {"_id": 0})
@@ -2215,11 +2214,11 @@ async def create_booking_v2(
             raise HTTPException(status_code=400, detail="Batch is full")
     
     # Validate session count matches plan
-    if len(booking_data.session_ids) != plan_option["sessions_count"]:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Plan requires {plan_option['sessions_count']} sessions, but {len(booking_data.session_ids)} provided"
-        )
+    # if len(booking_data.session_ids) != plan_option["sessions_count"]:
+    #     raise HTTPException(
+    #         status_code=400,
+    #         detail=f"Plan requires {plan_option['sessions_count']} sessions, but {len(booking_data.session_ids)} provided"
+    #     )
     
     # Verify all sessions exist and belong to the listing
     sessions = await db.sessions.find(

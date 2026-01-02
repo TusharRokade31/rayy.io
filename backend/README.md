@@ -109,7 +109,7 @@ pip install emergentintegrations --extra-index-url https://d33sy5i8bnduwe.cloudf
 
 Create a `.env` file in the `backend/` directory:
 
-```bash
+```bas
 cp .env.example .env
 # Edit .env with your values
 ```

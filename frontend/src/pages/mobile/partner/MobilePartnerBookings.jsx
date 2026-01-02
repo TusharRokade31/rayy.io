@@ -71,7 +71,7 @@ const MobilePartnerBookings = () => {
           gradient="from-blue-500 via-purple-500 to-pink-500"
         />
 
-        <div className="px-4 pb-24 -mt-4">
+        <div className="px-4 pb-24 mt-10">
           {/* Filter Pills */}
           <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
             {filterOptions.map(option => (
