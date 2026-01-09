@@ -408,14 +408,14 @@ const MobileHome = () => {
               {/* Login/Profile Buttons */}
               <div className="flex items-center gap-2">
                 {/* Become a Partner Link - HIDDEN FOR MOBILE RELEASE */}
-                {(!user || user.role === 'customer') && (
+                {/* {(!user || user.role === 'customer') && (
                 <motion.button
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate('/mobile/become-partner')}
                   className="bg-white/20 backdrop-blur-sm text-white px-3 py-2 rounded-full font-semibold text-xs shadow-lg hover:shadow-xl transition-all border border-white/30"
                 >
                   Become a Partner
-                </motion.button>)}
+                </motion.button>)} */}
 
                 {/* Login/Profile Button */}
                 {!user ? (
@@ -478,9 +478,9 @@ const MobileHome = () => {
                   </div>
 
                   {/* Creative Age & Location Pills */}
-                  <div className="flex gap-2 mt-4">
+                  <div className="flex gap-2">
                     {/* Age Filter - Pill Style */}
-                    <motion.button
+                    {/* <motion.button
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setShowAgeModal(true)}
                       className="flex-1 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl p-3 flex items-center justify-center gap-2 border-2 border-blue-200 hover:border-blue-400 transition-all"
@@ -492,10 +492,10 @@ const MobileHome = () => {
                         <p className="text-xs font-semibold text-gray-500">Age</p>
                         <p className="text-sm font-bold text-gray-900">{selectedAge}</p>
                       </div>
-                    </motion.button>
+                    </motion.button> */}
 
                     {/* Location Filter - Pill Style */}
-                    <motion.button
+                    {/* <motion.button
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setShowLocationModal(true)}
                       className="flex-1 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-3 flex items-center justify-center gap-2 border-2 border-purple-200 hover:border-purple-400 transition-all"
@@ -509,7 +509,7 @@ const MobileHome = () => {
                           {loc?.city || 'Set location'}
                         </p>
                       </div>
-                    </motion.button>
+                    </motion.button> */}
                   </div>
                 </div>
               </div>

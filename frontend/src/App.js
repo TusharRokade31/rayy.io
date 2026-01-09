@@ -411,7 +411,7 @@ function App() {
           <MobileRedirect />
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
-              <Route path="/" element={<HomeRebuild />} />
+              <Route path="/" element={<MobileHome />} />
               
               {/* Mobile Partner Routes - MUST come FIRST to avoid route conflicts */}
               <Route path="/mobile/partner/dashboard" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerDashboard /> : <Navigate to="/mobile" />} />

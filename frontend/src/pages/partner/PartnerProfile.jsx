@@ -91,9 +91,9 @@ const PartnerProfile = () => {
   };
 
   // Show wizard if requested
-  // if (showWizard) {
-  //   return <PartnerOnboardingWizard onComplete={handleWizardComplete} />;
-  // }
+  if (showWizard) {
+    return <PartnerOnboardingWizard onComplete={handleWizardComplete} />;
+  }
 
   if (loading) {
     return (

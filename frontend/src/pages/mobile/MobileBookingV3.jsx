@@ -78,41 +78,33 @@ const MobileBookingV3 = () => {
     }
   };
 
-  const fetchBatchSessions = async (batchId) => {
-    try {
-      const response = await axios.get(`${API}/listings/${id}/batches/${batchId}/sessions`);
-      console.log('📊 Batch Sessions Response:', response.data);
+  // const fetchBatchSessions = async (batchId) => {
+  //   try {
+  //     const response = await axios.get(`${API}/listings/${id}/batches/${batchId}/sessions`);
+  //     console.log('📊 Batch Sessions Response:', response.data);
       
-      // Validate response structure
-      if (response.data && typeof response.data === 'object' && !Array.isArray(response.data)) {
-        if ('sessions' in response.data && Array.isArray(response.data.sessions)) {
-          // CRITICAL: Filter out Pydantic error objects from sessions array
-          const validSessions = response.data.sessions.filter(session => 
-            session && 
-            typeof session === 'object' && 
-            (session.id || session._id) && 
-            (session.date || session.start_at) &&
-            !session.type && // Pydantic errors have 'type' property
-            !session.loc &&  // Pydantic errors have 'loc' property
-            !session.msg     // Pydantic errors have 'msg' property
-          );
-          setSessions(validSessions);
-        } else if (response.data.detail) {
-          console.error('API validation error:', response.data.detail);
-          setSessions([]);
-          toast.error('No sessions available');
-        } else {
-          setSessions([]);
-        }
-      } else {
-        setSessions([]);
-      }
-    } catch (error) {
-      console.error('Error fetching sessions:', error);
-      setSessions([]);
-      toast.error('Failed to load sessions');
-    }
-  };
+  //     // Validate response structure
+  //     if (response.data && typeof response.data === 'object' && !Array.isArray(response.data)) {
+  //       if ('sessions' in response.data && Array.isArray(response.data.sessions)) {
+  //         // CRITICAL: Filter out Pydantic error objects from sessions array
+        
+  //         setSessions(response.data.sessions);
+  //       } else if (response.data.detail) {
+  //         console.error('API validation error:', response.data.detail);
+  //         setSessions([]);
+  //         toast.error('No sessions available');
+  //       } else {
+  //         setSessions([]);
+  //       }
+  //     } else {
+  //       setSessions([]);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching sessions:', error);
+  //     setSessions([]);
+  //     toast.error('Failed to load sessions');
+  //   }
+  // };
 
   const fetchAllSessions = async () => {
     try {
@@ -139,7 +131,7 @@ const MobileBookingV3 = () => {
             !session.loc &&  // Pydantic errors have 'loc' property
             !session.msg     // Pydantic errors have 'msg' property
           );
-          setSessions(validSessions);
+          setSessions(response.data.sessions);
           if (validSessions.length === 0 && response.data.sessions.length > 0) {
             console.warn('All sessions were invalid/error objects');
             toast.error('No valid sessions available');
@@ -202,7 +194,7 @@ const MobileBookingV3 = () => {
     console.log("handleBatchSelect", batch);
     setSelectedBatch(batch);
     setSelectedSessions([]);
-    await fetchBatchSessions(batch.id);
+    // await fetchBatchSessions(batch.id);
     
     // For fixed batches, auto-select all sessions and skip to confirmation
     // User doesn't pick individual sessions for fixed timing
