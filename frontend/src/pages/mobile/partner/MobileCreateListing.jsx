@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 import { getErrorMessage } from '../../../utils/errorHandler';
 import PlanOptionsBuilder from '../../../components/PlanOptionsBuilder';
 import BatchManager from '../../../components/BatchManager';
+import SessionSlotGenerator from '../../../components/SessionSlotGenerator';
 
 const MobileCreateListing = () => {
   const { user } = useContext(AuthContext);
@@ -24,7 +25,19 @@ const MobileCreateListing = () => {
   const [loading, setLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [selectedCatIndex, setSelectedCatIndex] = useState("");
   const [venues, setVenues] = useState([]);
+
+  // ... inside the component
+const [sessionConfig, setSessionConfig] = useState(null);
+
+const activeSubcategories = categories[selectedCatIndex]?.subcategories || [];
+
+
+
+
+// Helper to determine if we need flexible slots
+
   
   // Theme Constants
   const THEME_GRADIENT = 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)';
@@ -67,6 +80,10 @@ const MobileCreateListing = () => {
     batches: []
   });
 
+
+  const hasFlexiblePlans = listingData.plan_options.some(p => p.timing_type === 'FLEXIBLE');
+const hasFixedPlans = listingData.plan_options.some(p => p.timing_type === 'FIXED');
+
   // Available amenities list
   const availableAmenities = [
     { value: 'AC', label: '❄️ Air Conditioning', icon: '❄️' },
@@ -82,6 +99,7 @@ const MobileCreateListing = () => {
     { value: 'Equipment', label: '🎒 Equipment Provided', icon: '🎒' },
     { value: 'Waiting Area', label: '🪑 Parent Waiting Area', icon: '🪑' }
   ];
+
 
   useEffect(() => {
     fetchCategories();
@@ -396,7 +414,7 @@ const MobileCreateListing = () => {
 
       if (isEditMode) {
         // Update existing listing
-        await axios.patch(`${API}/listings/${listingId}`, payload, {
+        await axios.post(`${API}/listings/${listingId}`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -411,6 +429,22 @@ const MobileCreateListing = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         targetListingId = createResponse.data.listing.id;
+
+        if (sessionConfig && targetListingId) {
+        try {
+          const sessionPayload = {
+            ...sessionConfig,
+            listing_id: targetListingId
+          };
+            await axios.post(`${API}/sessions/bulk-create`, sessionPayload, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            toast.success("Flexible slots generated!");
+        } catch (err) {
+            console.error("Failed to generate sessions", err);
+            toast.error("Created listing but failed to generate sessions");
+        }
+    }
         
         // STEP 2: Add Plan Options using the specific API
         if (listingData.plan_options && listingData.plan_options.length > 0) {
@@ -580,29 +614,70 @@ const MobileCreateListing = () => {
                 </div>
 
                 <div style={{ marginBottom: '1.5rem' }}>
-                  <Label style={{ fontFamily: 'Outfit, sans-serif', fontWeight: '600' }}>
-                    Category <span style={{ color: '#EF4444' }}>*</span>
-                  </Label>
-                  <select
-                    value={listingData.category_id}
-                    onChange={(e) => setListingData({ ...listingData, category_id: e.target.value })}
-                    style={{
-                      width: '100%',
-                      marginTop: '0.5rem',
-                      fontFamily: 'Outfit, sans-serif',
-                      borderRadius: '12px',
-                      padding: '0.75rem',
-                      border: '2px solid #e2e8f0'
-                    }}
-                  >
-                    <option value="">Select a category</option>
-                      {categories.map(cat => (
-                      <option key={cat._id} value={cat._id}>
-                        {cat.icon} {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+
+  {/* 1. Main Category Dropdown */}
+  <Label style={{ fontFamily: 'Outfit, sans-serif', fontWeight: '600' }}>
+    Category Type <span style={{ color: '#EF4444' }}>*</span>
+  </Label>
+  
+  <select
+    value={selectedCatIndex}
+    onChange={(e) => {
+      const newIndex = e.target.value;
+      setSelectedCatIndex(newIndex);
+      // Reset the listing's specific category_id whenever main type changes
+      setListingData({ ...listingData, category_id: "" }); 
+    }}
+    style={{
+      width: '100%',
+      marginTop: '0.5rem',
+      marginBottom: '1rem',
+      fontFamily: 'Outfit, sans-serif',
+      borderRadius: '12px',
+      padding: '0.75rem',
+      border: '2px solid #e2e8f0'
+    }}
+  >
+    <option value="">Select Category Type</option>
+    {categories.map((cat, index) => (
+      // We pass the INDEX here as the value
+      <option key={cat._id || cat.id} value={index}>
+        {cat.icon} {cat.name}
+      </option>
+    ))}
+  </select>
+
+
+  {/* 2. Subcategory Dropdown - Only shows if we found subcategories */}
+  {activeSubcategories.length > 0 && (
+    <>
+      <Label style={{ fontFamily: 'Outfit, sans-serif', fontWeight: '600' }}>
+        Specific Activity <span style={{ color: '#EF4444' }}>*</span>
+      </Label>
+      
+      <select
+        value={listingData.category_id}
+        onChange={(e) => setListingData({ ...listingData, category_id: e.target.value })}
+        style={{
+          width: '100%',
+          marginTop: '0.5rem',
+          fontFamily: 'Outfit, sans-serif',
+          borderRadius: '12px',
+          padding: '0.75rem',
+          border: '2px solid #e2e8f0'
+        }}
+      >
+        <option value="">Select Activity</option>
+        {activeSubcategories.map(sub => (
+          <option key={sub.id} value={sub.id}>
+            {sub.icon} {sub.name}
+          </option>
+        ))}
+      </select>
+    </>
+  )}
+  
+</div>
 
                 {/* Online/Offline Selection */}
                 <div style={{
@@ -1544,20 +1619,43 @@ const MobileCreateListing = () => {
 
             {/* STEP 6: Batch Management */}
             {step === 6 && (
-              <motion.div
-                key="step6"
-                initial={{ opacity: 0, x: 20 }}
+  <motion.div key="step6" initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <BatchManager
-                  batches={listingData.batches}
-                  plans={listingData.plan_options}
-                  onChange={(batches) => setListingData({ ...listingData, batches: batches })}
-                />
-              </motion.div>
-            )}
+    
+    {/* Case 1: User has Fixed Plans -> Show Batch Manager */}
+    {hasFixedPlans && (
+      <div className="mb-8">
+        <h3 className="font-bold text-lg mb-2">Create Batches (For Fixed Plans)</h3>
+        <BatchManager
+          batches={listingData.batches}
+          plans={listingData.plan_options.filter(p => p.timing_type === 'FIXED')}
+          onChange={(batches) => setListingData({ ...listingData, batches: batches })}
+        />
+      </div>
+    )}
+
+    {/* Case 2: User has Flexible Plans -> Show Session Generator */}
+    {hasFlexiblePlans && (
+      <div>
+        <h3 className="font-bold text-lg mb-2">Availability (For Flexible Plans)</h3>
+        <SessionSlotGenerator 
+           onChange={(config) => setSessionConfig(config)}
+        />
+
+          {console.log("Current Session Config:", sessionConfig)}
+
+                  {sessionConfig && (
+                      <div className="mt-4 p-3 bg-green-50 text-green-700 rounded-lg text-sm border border-green-200">
+                          ✅ Availability configured: {sessionConfig.time_slots.length} timeslots on {sessionConfig.days.length} days of the week.
+                      </div>
+                  )}
+                </div>
+              )}
+            </motion.div>
+          )}
 
             {/* STEP 7: Review */}
             {step === 7 && (

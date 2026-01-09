@@ -558,12 +558,22 @@ class UnableToAttend(BaseModel):
 
 class PlanOptionCreate(BaseModel):
     plan_type: str
+    timing_type: str = "FLEXIBLE"  # Added this field ('FIXED' or 'FLEXIBLE')
     name: str
     description: Optional[str] = None
     sessions_count: int
     price_inr: float
     discount_percent: float = 0.0
     validity_days: int = 30
+
+
+class BulkSessionGenerateRequest(BaseModel):
+    start_date: date
+    end_date: date
+    days_of_week: List[str]  # ['monday', 'wednesday']
+    times: List[str]         # ['17:00', '18:00'] (24hr format)
+    duration_minutes: int
+    capacity: int
 
 class BatchCreate(BaseModel):
     name: str
@@ -1728,6 +1738,60 @@ async def get_listing_sessions(
         # CRITICAL: Return empty array instead of error object to prevent frontend crashes
         logging.error(f"Error in get_listing_sessions for listing {listing_id}: {e}")
         return {"sessions": []}
+
+@api_router.post("/listings/{listing_id}/sessions/bulk-generate")
+async def bulk_generate_sessions(
+    listing_id: str, 
+    request: BulkSessionGenerateRequest,
+    current_user = Depends(get_current_user)
+):
+    """
+    Generates individual session slots for Flexible plans based on UI config.
+    """
+    sessions_to_create = []
+    
+    # Mapping days string to python weekday integer
+    day_map = {
+        "monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3,
+        "friday": 4, "saturday": 5, "sunday": 6
+    }
+    
+    target_days = [day_map[d.lower()] for d in request.days_of_week if d.lower() in day_map]
+    
+    current_date = request.start_date
+    end_date = request.end_date
+    
+    # Iterate through dates
+    while current_date <= end_date:
+        if current_date.weekday() in target_days:
+            # Create sessions for each time on this day
+            for time_str in request.times:
+                hour, minute = map(int, time_str.split(':'))
+                
+                # Construct datetime
+                start_dt = datetime.combine(current_date, datetime.min.time()).replace(hour=hour, minute=minute)
+                end_dt = start_dt + timedelta(minutes=request.duration_minutes)
+                
+                session_doc = {
+                    "id": str(uuid.uuid4()),
+                    "listing_id": listing_id,
+                    "start_at": start_dt,
+                    "end_at": end_dt,
+                    "seats_total": request.capacity,
+                    "seats_booked": 0,
+                    "seats_available": request.capacity,
+                    "is_bookable": True,
+                    "status": "scheduled",
+                    "created_at": datetime.now()
+                }
+                sessions_to_create.append(session_doc)
+        
+        current_date += timedelta(days=1)
+        
+    if sessions_to_create:
+        await db.sessions.insert_many(sessions_to_create)
+        
+    return {"message": f"Successfully generated {len(sessions_to_create)} sessions"}
 
 @api_router.get("/listings/{listing_id}/plans")
 async def get_listing_plans(listing_id: str):
@@ -5249,7 +5313,7 @@ async def create_listing(data: ListingCreate, request: Request, current_user: Di
 
 # Moved to before /listings/{listing_id} to avoid route conflict
 
-@api_router.patch("/listings/{listing_id}")
+@api_router.post("/listings/{listing_id}")
 async def update_listing(listing_id: str, updates: Dict[str, Any], current_user: Dict = Depends(get_current_user)):
     if current_user["role"] not in ["partner_owner", "partner_staff", "admin"]:
         raise HTTPException(status_code=403, detail="Not authorized")

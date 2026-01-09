@@ -74,7 +74,7 @@ img[loading="lazy"].loaded {
 }
 
 /* Better input fields */
-input:not([type="checkbox"]):not([type="radio"]),
+/* input:not([type="checkbox"]):not([type="radio"]),
 textarea,
 select {
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -92,7 +92,7 @@ input::placeholder,
 textarea::placeholder {
   color: #9ca3af;
   opacity: 1;
-}
+} */
 
 /* Animated checkmarks */
 @keyframes checkmark {

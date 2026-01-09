@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Edit2, Check, X, Zap, Calendar, TrendingUp, Award } from 'lucide-react';
+import { Plus, Trash2, Edit2, Check, X, Zap, Calendar, TrendingUp, Award, Clock, MousePointerClick } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -11,6 +11,7 @@ const PlanOptionsBuilder = ({ plans = [], onChange }) => {
   const [editingPlanId, setEditingPlanId] = useState(null);
   const [formData, setFormData] = useState({
     plan_type: 'single',
+    timing_type: 'FLEXIBLE', // Default to Flexible
     name: '',
     description: '',
     sessions_count: 1,
@@ -20,38 +21,10 @@ const PlanOptionsBuilder = ({ plans = [], onChange }) => {
   });
 
   const planTypeTemplates = {
-    trial: {
-      icon: Zap,
-      color: 'orange',
-      defaultName: 'Trial Class',
-      defaultDescription: 'Try before you commit',
-      defaultSessions: 1,
-      defaultValidity: 30
-    },
-    single: {
-      icon: Calendar,
-      color: 'blue',
-      defaultName: 'Single Session',
-      defaultDescription: 'Pay as you go',
-      defaultSessions: 1,
-      defaultValidity: 30
-    },
-    weekly: {
-      icon: TrendingUp,
-      color: 'green',
-      defaultName: 'Weekly Plan',
-      defaultDescription: 'Multiple sessions per week',
-      defaultSessions: 4,
-      defaultValidity: 60
-    },
-    monthly: {
-      icon: Award,
-      color: 'purple',
-      defaultName: 'Monthly Plan',
-      defaultDescription: 'Best value for regular learners',
-      defaultSessions: 12,
-      defaultValidity: 90
-    }
+    trial: { icon: Zap, color: 'orange', defaultName: 'Trial Class', defaultSessions: 1 },
+    single: { icon: Calendar, color: 'blue', defaultName: 'Single Session', defaultSessions: 1 },
+    weekly: { icon: TrendingUp, color: 'green', defaultName: 'Weekly Plan', defaultSessions: 4 },
+    monthly: { icon: Award, color: 'purple', defaultName: 'Monthly Plan', defaultSessions: 12 }
   };
 
   const handlePlanTypeChange = (type) => {
@@ -60,9 +33,7 @@ const PlanOptionsBuilder = ({ plans = [], onChange }) => {
       ...formData,
       plan_type: type,
       name: template.defaultName,
-      description: template.defaultDescription,
-      sessions_count: template.defaultSessions,
-      validity_days: template.defaultValidity
+      sessions_count: template.defaultSessions
     });
   };
 
@@ -78,8 +49,7 @@ const PlanOptionsBuilder = ({ plans = [], onChange }) => {
       price_inr: parseFloat(formData.price_inr),
       sessions_count: parseInt(formData.sessions_count),
       discount_percent: parseFloat(formData.discount_percent || 0),
-      validity_days: parseInt(formData.validity_days),
-      is_active: true
+      validity_days: parseInt(formData.validity_days)
     };
 
     onChange([...plans, newPlan]);
@@ -152,29 +122,18 @@ const PlanOptionsBuilder = ({ plans = [], onChange }) => {
     return (totalPrice / sessionCount).toFixed(2);
   };
 
+
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900">Pricing Plans</h3>
-          <p className="text-sm text-gray-500 mt-1">
-            Create flexible plans for your students
-          </p>
-        </div>
+        <h3 className="text-lg font-semibold text-gray-900">Pricing Plans</h3>
         {!isAdding && (
-          <Button
-            type="button"
-            onClick={() => setIsAdding(true)}
-            className="flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Add Plan
+          <Button onClick={() => setIsAdding(true)} className="flex items-center gap-2">
+            <Plus className="w-4 h-4" /> Add Plan
           </Button>
         )}
       </div>
 
-      {/* Plan Form */}
       <AnimatePresence>
         {isAdding && (
           <motion.div
@@ -184,153 +143,89 @@ const PlanOptionsBuilder = ({ plans = [], onChange }) => {
             className="border-2 border-dashed border-indigo-200 rounded-2xl p-6 bg-indigo-50/50"
           >
             <div className="space-y-4">
-              <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-                {editingPlanId ? <Edit2 className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                {editingPlanId ? 'Edit Plan' : 'New Plan'}
-              </h4>
+              
+              {/* TIMING TYPE SELECTION (NEW) */}
+              <div className="bg-white p-4 rounded-xl border border-indigo-100">
+                <Label className="mb-2 block">How do students book this plan? *</Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, timing_type: 'FIXED' })}
+                    className={`p-3 rounded-lg border-2 flex flex-col items-center gap-2 transition-all ${
+                      formData.timing_type === 'FIXED' 
+                        ? 'border-blue-500 bg-blue-50 text-blue-700' 
+                        : 'border-gray-200 text-gray-500'
+                    }`}
+                  >
+                    <Clock className="w-6 h-6" />
+                    <span className="font-semibold text-sm">Fixed Batch</span>
+                    <span className="text-xs text-center">User picks a specific batch (e.g., Mon/Wed 5 PM)</span>
+                  </button>
 
-              {/* Plan Type Selector */}
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, timing_type: 'FLEXIBLE' })}
+                    className={`p-3 rounded-lg border-2 flex flex-col items-center gap-2 transition-all ${
+                      formData.timing_type === 'FLEXIBLE' 
+                        ? 'border-purple-500 bg-purple-50 text-purple-700' 
+                        : 'border-gray-200 text-gray-500'
+                    }`}
+                  >
+                    <MousePointerClick className="w-6 h-6" />
+                    <span className="font-semibold text-sm">Flexible Slots</span>
+                    <span className="text-xs text-center">User picks any {formData.sessions_count} sessions from available slots</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* PLAN TYPE SELECTOR */}
               <div>
                 <Label>Plan Type *</Label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
+                <div className="grid grid-cols-4 gap-2 mt-2">
                   {Object.entries(planTypeTemplates).map(([type, template]) => {
                     const Icon = template.icon;
-                    const isSelected = formData.plan_type === type;
-                    
                     return (
                       <button
                         key={type}
                         type="button"
                         onClick={() => handlePlanTypeChange(type)}
-                        className={`
-                          p-4 rounded-xl border-2 transition-all text-center
-                          ${isSelected 
-                            ? `border-${template.color}-500 bg-${template.color}-50` 
-                            : 'border-gray-200 bg-white hover:border-gray-300'
-                          }
-                        `}
+                        className={`p-2 rounded-lg border transition-all flex flex-col items-center ${
+                          formData.plan_type === type ? `border-${template.color}-500 bg-${template.color}-50` : 'border-gray-200'
+                        }`}
                       >
-                        <Icon className={`w-6 h-6 mx-auto mb-2 ${isSelected ? `text-${template.color}-600` : 'text-gray-400'}`} />
-                        <div className={`text-sm font-medium capitalize ${isSelected ? `text-${template.color}-700` : 'text-gray-700'}`}>
-                          {type}
-                        </div>
+                        <Icon className={`w-4 h-4 mb-1 text-${template.color}-600`} />
+                        <span className="text-xs font-medium capitalize">{type}</span>
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Plan Name */}
+              {/* REST OF THE FORM INPUTS */}
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="plan-name">Plan Name *</Label>
-                  <Input
-                    id="plan-name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="e.g., 5-Day Weekend Intensive"
-                    className="mt-1"
-                  />
+                  <Label>Plan Name</Label>
+                  <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
                 </div>
-
-                {/* Sessions Count */}
                 <div>
-                  <Label htmlFor="sessions-count">Number of Sessions *</Label>
-                  <Input
-                    id="sessions-count"
-                    type="number"
-                    min="1"
-                    value={formData.sessions_count}
-                    onChange={(e) => setFormData({ ...formData, sessions_count: e.target.value })}
-                    placeholder="1"
-                    className="mt-1"
-                  />
+                  <Label>Sessions</Label>
+                  <Input type="number" value={formData.sessions_count} onChange={e => setFormData({...formData, sessions_count: e.target.value})} />
                 </div>
-
-                {/* Price */}
                 <div>
-                  <Label htmlFor="plan-price">Total Price (₹) *</Label>
-                  <Input
-                    id="plan-price"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={formData.price_inr}
-                    onChange={(e) => setFormData({ ...formData, price_inr: e.target.value })}
-                    placeholder="999"
-                    className="mt-1"
-                  />
-                  {formData.price_inr && formData.sessions_count > 0 && (
-                    <p className="text-xs text-gray-500 mt-1">
-                      ₹{calculatePricePerSession(formData.price_inr, formData.sessions_count)} per session
-                    </p>
-                  )}
+                  <Label>Price (₹)</Label>
+                  <Input type="number" value={formData.price_inr} onChange={e => setFormData({...formData, price_inr: e.target.value})} />
                 </div>
-
-                {/* Discount */}
                 <div>
-                  <Label htmlFor="discount">Discount (%)</Label>
-                  <Input
-                    id="discount"
-                    type="number"
-                    min="0"
-                    max="100"
-                    value={formData.discount_percent}
-                    onChange={(e) => setFormData({ ...formData, discount_percent: e.target.value })}
-                    placeholder="0"
-                    className="mt-1"
-                  />
-                </div>
-
-                {/* Validity */}
-                <div>
-                  <Label htmlFor="validity">Validity (Days)</Label>
-                  <Input
-                    id="validity"
-                    type="number"
-                    min="1"
-                    value={formData.validity_days}
-                    onChange={(e) => setFormData({ ...formData, validity_days: e.target.value })}
-                    placeholder="30"
-                    className="mt-1"
-                  />
+                  <Label>Validity (Days)</Label>
+                  <Input type="number" value={formData.validity_days} onChange={e => setFormData({...formData, validity_days: e.target.value})} />
                 </div>
               </div>
 
-              {/* Description */}
-              <div>
-                <Label htmlFor="plan-description">Description</Label>
-                <textarea
-                  id="plan-description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Brief description of this plan..."
-                  rows={2}
-                  className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                />
-              </div>
-
-              {/* Actions */}
               <div className="flex gap-3 pt-2">
-                <Button
-                  type="button"
-                  onClick={editingPlanId ? handleUpdatePlan : handleAddPlan}
-                  className="flex items-center gap-2"
-                >
-                  <Check className="w-4 h-4" />
-                  {editingPlanId ? 'Update Plan' : 'Add Plan'}
+                <Button onClick={editingPlanId ? handleUpdatePlan : handleAddPlan}>
+                  <Check className="w-4 h-4 mr-2" /> {editingPlanId ? 'Update' : 'Add'}
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setIsAdding(false);
-                    setEditingPlanId(null);
-                    resetForm();
-                  }}
-                  className="flex items-center gap-2"
-                >
-                  <X className="w-4 h-4" />
+                <Button variant="outline" onClick={() => { setIsAdding(false); setEditingPlanId(null); }}>
                   Cancel
                 </Button>
               </div>
@@ -339,93 +234,28 @@ const PlanOptionsBuilder = ({ plans = [], onChange }) => {
         )}
       </AnimatePresence>
 
-      {/* Plans List */}
-      {plans.length === 0 ? (
-        <div className="text-center py-12 border-2 border-dashed border-gray-200 rounded-2xl">
-          <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-500 text-sm">No plans created yet</p>
-          <p className="text-gray-400 text-xs mt-1">Click "Add Plan" to create your first pricing plan</p>
-        </div>
-      ) : (
-        <div className="grid gap-4">
-          {plans.map((plan) => {
-            const Icon = getPlanTypeIcon(plan.plan_type);
-            const color = getPlanTypeColor(plan.plan_type);
-            
-            return (
-              <motion.div
-                key={plan.id}
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="bg-white border-2 border-gray-100 rounded-2xl p-5 hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex gap-4 flex-1">
-                    <div className={`w-12 h-12 rounded-xl bg-${color}-100 flex items-center justify-center flex-shrink-0`}>
-                      <Icon className={`w-6 h-6 text-${color}-600`} />
-                    </div>
-                    
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-semibold text-gray-900">{plan.name}</h4>
-                        <span className={`text-xs px-2 py-0.5 rounded-full bg-${color}-100 text-${color}-700 font-medium capitalize`}>
-                          {plan.plan_type}
-                        </span>
-                      </div>
-                      
-                      {plan.description && (
-                        <p className="text-sm text-gray-600 mb-2">{plan.description}</p>
-                      )}
-                      
-                      <div className="flex flex-wrap gap-4 text-sm">
-                        <div className="flex items-center gap-1">
-                          <span className="text-gray-500">Sessions:</span>
-                          <span className="font-medium text-gray-900">{plan.sessions_count}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <span className="text-gray-500">Price:</span>
-                          <span className="font-semibold text-gray-900">₹{plan.price_inr}</span>
-                          <span className="text-gray-400 text-xs">
-                            (₹{calculatePricePerSession(plan.price_inr, plan.sessions_count)}/session)
-                          </span>
-                        </div>
-                        {plan.discount_percent > 0 && (
-                          <div className="flex items-center gap-1">
-                            <span className="text-green-600 font-medium">{plan.discount_percent}% OFF</span>
-                          </div>
-                        )}
-                        <div className="flex items-center gap-1">
-                          <span className="text-gray-500">Validity:</span>
-                          <span className="font-medium text-gray-900">{plan.validity_days} days</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex gap-2 ml-4">
-                    <button
-                      type="button"
-                      onClick={() => handleEditPlan(plan)}
-                      className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDeletePlan(plan.id)}
-                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      )}
+      {/* RENDER LIST OF PLANS */}
+      <div className="space-y-3">
+        {plans.map((plan) => (
+          <div key={plan.id} className="bg-white border rounded-xl p-4 flex justify-between items-center shadow-sm">
+            <div>
+              <div className="flex items-center gap-2">
+                <h4 className="font-bold">{plan.name}</h4>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${
+                  plan.timing_type === 'FIXED' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'
+                }`}>
+                  {plan.timing_type === 'FIXED' ? 'Batch' : 'Flexible'}
+                </span>
+              </div>
+              <p className="text-sm text-gray-600">{plan.sessions_count} Sessions • ₹{plan.price_inr}</p>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => handleEditPlan(plan)} className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg"><Edit2 size={16} /></button>
+              <button onClick={() => handleDeletePlan(plan.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 size={16} /></button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -512,7 +512,8 @@ const FiltersModal = ({ filters, setFilters, categories, onApply, onClear, onClo
                 type="checkbox"
                 checked={filters.trialAvailable}
                 onChange={(e) => setFilters({ ...filters, trialAvailable: e.target.checked })}
-                className="w-6 h-6 rounded border-2 border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                className="w-6 h-6 rounded border-2 border-gray-300 focus:ring-2 focus:ring-blue-500"
+                style={{ accentColor: '#2563eb', backgroundColor: 'white' }}
               />
               <span className="text-base font-semibold text-gray-900">Trial Available Only</span>
             </label>

@@ -156,7 +156,7 @@ const MobilePartnerListings = () => {
                         <div className="flex gap-2">
                           <motion.button
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => navigate(`/partner/listings/${listing.id}/edit`)}
+                            onClick={() => navigate(`/mobile/partner/listings/edit/${listing.id}`)}
                             className="flex-1 py-2 bg-purple-100 text-purple-700 rounded-lg font-semibold text-sm flex items-center justify-center gap-1"
                           >
                             <Edit className="w-4 h-4" />

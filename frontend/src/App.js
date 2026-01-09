@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import './App.css';
+// import './App.css';
 import "./index.css";
-import './styles/ui-improvements.css';
+// import './styles/ui-improvements.css';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Toaster } from 'sonner';
@@ -604,9 +604,9 @@ function App() {
           return null;
         })()}
         {/* Partner Onboarding: Desktop only - hidden for mobile release */}
-        {showOnboarding && onboardingType === 'partner' && window.innerWidth > 768 && (
+        {/* {showOnboarding && onboardingType === 'partner' && window.innerWidth > 768 && (
           <PartnerOnboardingWizard onComplete={completeOnboarding} />
-        )}
+        )} */}
         
         {/* PWA Install Prompt */}
         <InstallPrompt />

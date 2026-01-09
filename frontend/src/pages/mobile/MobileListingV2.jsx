@@ -200,7 +200,8 @@ ${window.location.href}`;
   };
   
   // Generate mock reviews if none exist but we have rating data
-  const displayReviews = reviews.length > 0 ? reviews : (totalReviews > 0 ? generateMockReviews(totalReviews, avgRating) : []);
+  // const displayReviews = reviews.length > 0 ? reviews : (totalReviews > 0 ? generateMockReviews(totalReviews, avgRating) : []);
+  const displayReviews = generateMockReviews(6, 4);
   
   function generateMockReviews(count, rating) {
     const mockComments = [

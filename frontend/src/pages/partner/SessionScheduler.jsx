@@ -74,6 +74,8 @@ const SessionScheduler = () => {
       const sessionsRes = await axios.get(`${API}/sessions/my`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+
+      console.log(sessionsRes.data, "sessions")
       setSessions(sessionsRes.data.sessions || []);
       
     } catch (error) {

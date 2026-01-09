@@ -40,6 +40,15 @@ section[style*="linear-gradient"]:not([class*="fixed"]) {
   animation: smoothHeroFadeIn 0.2s ease-out forwards;
 }
 
+input[type="number"],
+input[type="checkbox"], textarea, select, input {
+  background-color: white !important;
+}
+
+input[type="checkbox"] {
+  accent-color: #2563eb !important; /* blue-600 */
+}
+
 @keyframes smoothHeroFadeIn {
   0% {
     opacity: 0;
