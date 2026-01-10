@@ -12,17 +12,15 @@ import {
 
 const MobileBecomePartner = () => {
   const navigate = useNavigate();
-  const { login, user } = useContext(AuthContext); // Access user from context
+  const { login, user } = useContext(AuthContext);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
-  // REDIRECT LOGIC: Check if user is already a partner
   useEffect(() => {
     if (user && user.role === 'partner_owner') {
       navigate('/mobile/partner/dashboard');
     }
   }, [user, navigate]);
 
-  // Cleanup: Restore body scroll on component unmount
   useEffect(() => {
     return () => {
       document.body.style.overflow = 'unset';
@@ -63,179 +61,201 @@ const MobileBecomePartner = () => {
   ];
 
   const handleGetStarted = () => {
-    // If user is a customer, they might want to become a partner
-    // If user is not logged in, show auth modal
     if (user && user.role === 'customer') {
-        // Optional: You could logout the customer first or handle role switching
-        // For now, let's just show the modal which handles partner login/signup
         setShowAuthModal(true);
     } else {
         setShowAuthModal(true);
     }
-    // Prevent body scroll when modal is open
     document.body.style.overflow = 'hidden';
   };
 
   const handleAuthSuccess = (token, userData, isNewUser) => {
-    // For mobile partner signup, we WANT onboarding for new partners.
-    // So do NOT skip onboarding here.
     login(token, userData, isNewUser, false);
     setShowAuthModal(false);
-    
-    // Restore body scroll
     document.body.style.overflow = 'unset';
     
-    // CRITICAL: Only redirect to dashboard if onboarding is already complete
-    // For new partners, let the onboarding wizard render first (triggered by App.js)
     if (userData.onboarding_complete === true) {
       navigate('/mobile/partner/dashboard');
     }
-    // If onboarding is NOT complete, App.js will show the onboarding wizard
   };
 
   const handleModalClose = () => {
     setShowAuthModal(false);
-    // Restore body scroll when modal closes
     document.body.style.overflow = 'unset';
   };
 
   return (
     <MobileLayout hideNav>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-orange-50">
-        <MagicHeader
-          title="Become a Partner"
-          subtitle="Join 500+ trusted partners"
-          gradient="from-orange-500 via-red-500 to-pink-500"
-        />
+        
+        {/* Mobile Header */}
+        <div className="lg:hidden">
+            <MagicHeader
+            title="Become a Partner"
+            subtitle="Join 500+ trusted partners"
+            gradient="from-orange-500 via-red-500 to-pink-500"
+            />
+        </div>
 
-        {/* Content */}
-        <div className="pb-24 mt-2">
-          {/* CTA Button at Top - To fix scroll issue */}
-          <div className="px-4 mb-8">
-            <motion.button
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleGetStarted}
-              className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 hover:shadow-xl transition-shadow"
-            >
-              <UserPlus className="w-5 h-5 flex-shrink-0" />
-              <span>Start Your Journey</span>
-              <ArrowRight className="w-5 h-5 flex-shrink-0" />
-            </motion.button>
+        {/* Desktop Hero Section */}
+        <div className="hidden lg:block bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 text-white py-16">
+           <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+              <div>
+                 <h1 className="text-4xl font-bold mb-4">Become a Partner</h1>
+                 <p className="text-xl opacity-90">Join 500+ trusted partners and grow your business today.</p>
+              </div>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleGetStarted}
+                className="px-8 py-3 bg-white text-pink-600 font-bold rounded-full shadow-lg flex items-center gap-2"
+              >
+                 <UserPlus className="w-5 h-5" />
+                 Get Started
+              </motion.button>
+           </div>
+        </div>
+
+        {/* Content Container */}
+        <div className="pb-24 mt-2 lg:mt-12 max-w-7xl mx-auto lg:px-6">
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             
-            <p className="text-xs text-gray-500 text-center mt-4">
-              Sign up with OTP - Quick and secure
-            </p>
-          </div>
-
-          {/* Stats */}
-          <div className="px-4 grid grid-cols-3 gap-3 mb-8">
-            <GlassCard delay={0.1}>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600 mb-1">500+</div>
-                <div className="text-xs text-gray-600">Partners</div>
-              </div>
-            </GlassCard>
-            <GlassCard delay={0.2}>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600 mb-1">50K+</div>
-                <div className="text-xs text-gray-600">Bookings</div>
-              </div>
-            </GlassCard>
-            <GlassCard delay={0.3}>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600 mb-1">4.8</div>
-                <div className="text-xs text-gray-600">Rating</div>
-              </div>
-            </GlassCard>
-          </div>
-
-          {/* Benefits */}
-          <div className="px-4 mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Why Partner with rayy?</h2>
-            <div className="space-y-3">
-              {benefits.map((benefit, index) => {
-                const Icon = benefit.icon;
-                return (
-                  <motion.div
-                    key={benefit.title}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 * index }}
-                    className="bg-gray-50 rounded-2xl p-4 flex items-start gap-4"
-                  >
-                    <div className={`w-12 h-12 bg-gradient-to-br ${benefit.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-gray-900 mb-1">{benefit.title}</h3>
-                      <p className="text-sm text-gray-600">{benefit.description}</p>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* How it Works */}
-          <div className="px-4 mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">How It Works</h2>
-            <div className="space-y-4">
-              {steps.map((step, index) => (
-                <motion.div
-                  key={step.number}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 * index }}
-                  className="flex items-center gap-4"
-                >
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
-                    {step.number}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-gray-900">{step.title}</h3>
-                    <p className="text-sm text-gray-600">{step.description}</p>
-                  </div>
-                  {index < steps.length - 1 && (
-                    <ArrowRight className="w-5 h-5 text-gray-400" />
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* Trust Badge */}
-          <div className="px-4 mt-8">
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-4 border-2 border-green-200">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Award className="w-6 h-6 text-white" />
+            {/* Left Column */}
+            <div>
+                 {/* Mobile CTA (Hidden on Desktop) */}
+                 <div className="px-4 mb-8 lg:hidden">
+                    <motion.button
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleGetStarted}
+                    className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 hover:shadow-xl transition-shadow"
+                    >
+                    <UserPlus className="w-5 h-5 flex-shrink-0" />
+                    <span>Start Your Journey</span>
+                    <ArrowRight className="w-5 h-5 flex-shrink-0" />
+                    </motion.button>
+                    <p className="text-xs text-gray-500 text-center mt-4">Sign up with OTP - Quick and secure</p>
                 </div>
-                <div className="flex-1">
-                  <p className="font-bold text-gray-900 text-sm flex items-center gap-2">
-                    Trusted by 10,000+ Parents
-                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                  </p>
-                  <p className="text-xs text-gray-600">Join India's #1 kids activity platform</p>
+
+                {/* Stats */}
+                <div className="px-4 lg:px-0 grid grid-cols-3 gap-3 mb-8">
+                    <GlassCard delay={0.1} className="h-full flex flex-col justify-center">
+                    <div className="text-center">
+                        <div className="text-2xl lg:text-3xl font-bold text-blue-600 mb-1">500+</div>
+                        <div className="text-xs lg:text-sm text-gray-600">Partners</div>
+                    </div>
+                    </GlassCard>
+                    <GlassCard delay={0.2} className="h-full flex flex-col justify-center">
+                    <div className="text-center">
+                        <div className="text-2xl lg:text-3xl font-bold text-purple-600 mb-1">50K+</div>
+                        <div className="text-xs lg:text-sm text-gray-600">Bookings</div>
+                    </div>
+                    </GlassCard>
+                    <GlassCard delay={0.3} className="h-full flex flex-col justify-center">
+                    <div className="text-center">
+                        <div className="text-2xl lg:text-3xl font-bold text-green-600 mb-1">4.8</div>
+                        <div className="text-xs lg:text-sm text-gray-600">Rating</div>
+                    </div>
+                    </GlassCard>
                 </div>
-              </div>
+
+                {/* Benefits */}
+                <div className="px-4 lg:px-0 mb-8">
+                    <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 lg:mb-6">Why Partner with rayy?</h2>
+                    <div className="space-y-3 lg:space-y-4">
+                    {benefits.map((benefit, index) => {
+                        const Icon = benefit.icon;
+                        return (
+                        <motion.div
+                            key={benefit.title}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.1 * index }}
+                            className="bg-white lg:bg-gray-50 rounded-2xl p-4 lg:p-6 flex items-start gap-4 shadow-sm lg:shadow-none lg:border border-gray-100"
+                        >
+                            <div className={`w-12 h-12 lg:w-14 lg:h-14 bg-gradient-to-br ${benefit.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                            <Icon className="w-6 h-6 text-white" />
+                            </div>
+                            <div className="flex-1">
+                            <h3 className="font-bold text-gray-900 mb-1 lg:text-lg">{benefit.title}</h3>
+                            <p className="text-sm lg:text-base text-gray-600">{benefit.description}</p>
+                            </div>
+                        </motion.div>
+                        );
+                    })}
+                    </div>
+                </div>
+            </div>
+
+            {/* Right Column */}
+            <div>
+                 {/* How it Works */}
+                 <div className="px-4 lg:px-0 mb-8">
+                    <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 lg:mb-6">How It Works</h2>
+                    <div className="space-y-4 lg:space-y-8 bg-white lg:p-8 lg:rounded-3xl lg:shadow-xl">
+                    {steps.map((step, index) => (
+                        <motion.div
+                        key={step.number}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 * index }}
+                        className="flex items-center gap-4 relative"
+                        >
+                        <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg lg:text-xl flex-shrink-0 z-10 shadow-lg">
+                            {step.number}
+                        </div>
+                        {index < steps.length - 1 && (
+                             <div className="absolute left-6 top-12 bottom-[-32px] w-0.5 bg-gray-200 lg:hidden" />
+                        )}
+                         {index < steps.length - 1 && (
+                             <div className="absolute left-8 top-16 bottom-[-32px] w-0.5 bg-gray-200 hidden lg:block" />
+                        )}
+                        
+                        <div className="flex-1 py-2">
+                            <h3 className="font-bold text-gray-900 lg:text-lg">{step.title}</h3>
+                            <p className="text-sm lg:text-base text-gray-600">{step.description}</p>
+                        </div>
+                        <div className="hidden lg:block">
+                           <ArrowRight className="w-6 h-6 text-gray-300" />
+                        </div>
+                        </motion.div>
+                    ))}
+                    </div>
+                </div>
+
+                {/* Trust Badge */}
+                <div className="px-4 lg:px-0 mt-8">
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-4 lg:p-6 border-2 border-green-200">
+                    <div className="flex items-center gap-3 lg:gap-5">
+                        <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                        <Award className="w-6 h-6 lg:w-8 lg:h-8 text-white" />
+                        </div>
+                        <div className="flex-1">
+                        <p className="font-bold text-gray-900 text-sm lg:text-lg flex items-center gap-2">
+                            Trusted by 10,000+ Parents
+                            <Star className="w-4 h-4 lg:w-5 lg:h-5 text-yellow-500 fill-yellow-500" />
+                        </p>
+                        <p className="text-xs lg:text-base text-gray-600">Join India's #1 kids activity platform</p>
+                        </div>
+                    </div>
+                    </div>
+                </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Auth Modal for Partner Login/Signup */}
       <ModernAuthModalV2
         isOpen={showAuthModal}
         onClose={handleModalClose}
         onSuccess={handleAuthSuccess}
         mode="partner"
-        // No strict allowModeToggle needed here as we force partner mode
       />
 
-      <style>{`
+      <style jsx>{`
         .pt-safe {
           padding-top: env(safe-area-inset-top);
         }

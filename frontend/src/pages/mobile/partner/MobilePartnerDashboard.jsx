@@ -61,7 +61,6 @@ const MobilePartnerDashboard = () => {
       setRecentBookings(allBookings.slice(0, 5));
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
-      // Set default values on error
       setStats({
         totalListings: 0,
         activeListings: 0,
@@ -138,29 +137,56 @@ const MobilePartnerDashboard = () => {
   return (
     <MobilePartnerLayout>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50">
-        <MagicHeader
-          title="Partner Dashboard"
-          subtitle={`Welcome back, ${user?.name || 'Partner'}`}
-          gradient="from-purple-500 via-pink-500 to-red-500"
-        />
+        
+        {/* Mobile Header - Hidden on Desktop */}
+        <div className="md:hidden">
+            <MagicHeader
+            title="Partner Dashboard"
+            subtitle={`Welcome back, ${user?.name || 'Partner'}`}
+            gradient="from-purple-500 via-pink-500 to-red-500"
+            />
+        </div>
 
-        <div className="px-4 pb-24 mt-10">
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
+        {/* Desktop Header - Visible on Medium+ screens */}
+        <div className="hidden md:block bg-white shadow-sm border-b border-gray-100 px-8 py-6">
+            <div className="max-w-7xl mx-auto flex justify-between items-center">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900">Partner Dashboard</h1>
+                    <p className="text-gray-500">Welcome back, {user?.name || 'Partner'}</p>
+                </div>
+                <div className="flex gap-3">
+                    <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+                        Partner Account
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        {/* Main Content Container */}
+        <div className="px-4 pb-24 mt-10 md:mt-0 md:p-8 max-w-7xl mx-auto">
+          
+          {/* Stats Grid - 2 cols on mobile, 4 on desktop */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-8">
             {statCards.map((stat, index) => {
               const Icon = stat.icon;
               return (
-                <GlassCard key={stat.label} delay={0.1 * index}>
-                  <div className={`bg-gradient-to-br ${stat.bgColor} rounded-xl p-4`}>
-                    <div className={`w-10 h-10 bg-gradient-to-br ${stat.color} rounded-lg flex items-center justify-center mb-3`}>
-                      <Icon className="w-5 h-5 text-white" />
+                <GlassCard key={stat.label} delay={0.1 * index} className="h-full">
+                  <div className={`bg-gradient-to-br ${stat.bgColor} rounded-xl p-4 md:p-6 h-full transition-all hover:shadow-md`}>
+                    <div className="flex items-center justify-between mb-3">
+                        <div className={`w-10 h-10 bg-gradient-to-br ${stat.color} rounded-lg flex items-center justify-center`}>
+                        <Icon className="w-5 h-5 text-white" />
+                        </div>
+                        {stat.total && (
+                             <span className="text-xs font-medium text-gray-500 bg-white/60 px-2 py-1 rounded-full">
+                                Total: {stat.total}
+                             </span>
+                        )}
                     </div>
-                    <div className="text-2xl font-bold text-gray-900 mb-1">
+                    <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
                       {stat.value}
                     </div>
-                    <div className="text-xs text-gray-600">
+                    <div className="text-xs md:text-sm text-gray-600 font-medium">
                       {stat.label}
-                      {stat.total && ` / ${stat.total}`}
                     </div>
                   </div>
                 </GlassCard>
@@ -168,84 +194,141 @@ const MobilePartnerDashboard = () => {
             })}
           </div>
 
-          {/* Quick Actions */}
-          <div className="mb-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-3 px-2">Quick Actions</h2>
-            <div className="grid grid-cols-2 gap-3">
-              {quickActions.map((action, index) => {
-                const Icon = action.icon;
-                return (
-                  <motion.button
-                    key={action.label}
-                    onClick={action.action}
-                    whileTap={{ scale: 0.95 }}
-                    className={`bg-gradient-to-br ${action.color} rounded-2xl p-4 text-white shadow-lg`}
-                  >
-                    <Icon className="w-8 h-8 mb-2" />
-                    <div className="text-sm font-semibold text-left">{action.label}</div>
-                  </motion.button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Recent Bookings */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-3 px-2">
-              <h2 className="text-lg font-bold text-gray-900">Recent Bookings</h2>
-              <button
-                onClick={() => navigate('/mobile/partner/bookings')}
-                className="text-sm text-purple-600 font-semibold flex items-center gap-1"
-              >
-                View All
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            {loading ? (
-              <div className="flex justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-2 border-purple-500 border-t-transparent"></div>
-              </div>
-            ) : recentBookings.length > 0 ? (
-              <div className="space-y-3">
-                {recentBookings.slice(0, 5).map((booking, index) => (
-                  <GlassCard key={booking.id} delay={0.1 * index}>
-                    <div className="flex items-center justify-between p-4">
-                      <div className="flex-1">
-                        <div className="font-semibold text-gray-900 mb-1">
-                          {booking.listing_title || 'Booking'}
-                        </div>
-                        <div className="text-sm text-gray-600 mb-1">
-                          {booking.customer_name || 'Customer'}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {new Date(booking.created_at).toLocaleDateString()}
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <div className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          booking.status === 'confirmed' ? 'bg-green-100 text-green-700' :
-                          booking.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                          'bg-gray-100 text-gray-700'
-                        }`}>
-                          {booking.status}
-                        </div>
-                        <div className="text-sm font-bold text-gray-900">
-                          ₹{booking.amount}
-                        </div>
-                      </div>
+            {/* Left Column (Bookings) - Takes 2/3 width on Large screens */}
+            <div className="lg:col-span-2 space-y-6">
+                
+                {/* Quick Actions - Mobile/Tablet Only (If you prefer them above bookings on small screens) */}
+                <div className="lg:hidden mb-6">
+                    <h2 className="text-lg font-bold text-gray-900 mb-3 px-2">Quick Actions</h2>
+                    <div className="grid grid-cols-2 gap-3">
+                    {quickActions.map((action) => {
+                        const Icon = action.icon;
+                        return (
+                        <motion.button
+                            key={action.label}
+                            onClick={action.action}
+                            whileTap={{ scale: 0.95 }}
+                            className={`bg-gradient-to-br ${action.color} rounded-2xl p-4 text-white shadow-lg flex flex-col items-center justify-center text-center h-24`}
+                        >
+                            <Icon className="w-8 h-8 mb-2" />
+                            <div className="text-sm font-semibold">{action.label}</div>
+                        </motion.button>
+                        );
+                    })}
                     </div>
-                  </GlassCard>
-                ))}
-              </div>
-            ) : (
-              <GlassCard>
-                <div className="text-center py-8 text-gray-500">
-                  <Calendar className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-                  <p>No recent bookings</p>
                 </div>
-              </GlassCard>
-            )}
+
+                {/* Recent Bookings */}
+                <div>
+                    <div className="flex items-center justify-between mb-4 px-2">
+                        <h2 className="text-lg md:text-xl font-bold text-gray-900">Recent Bookings</h2>
+                        <button
+                            onClick={() => navigate('/mobile/partner/bookings')}
+                            className="text-sm text-purple-600 font-semibold flex items-center gap-1 hover:text-purple-700 transition-colors"
+                        >
+                            View All
+                            <ArrowRight className="w-4 h-4" />
+                        </button>
+                    </div>
+                    
+                    {loading ? (
+                    <div className="flex justify-center py-12">
+                        <div className="animate-spin rounded-full h-8 w-8 border-2 border-purple-500 border-t-transparent"></div>
+                    </div>
+                    ) : recentBookings.length > 0 ? (
+                    <div className="space-y-3">
+                        {recentBookings.map((booking, index) => (
+                        <GlassCard key={booking.id} delay={0.1 * index}>
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 gap-4 hover:bg-white/40 transition-colors rounded-xl">
+                            <div className="flex-1">
+                                <div className="font-semibold text-gray-900 mb-1 text-base">
+                                {booking.listing_title || 'Booking'}
+                                </div>
+                                <div className="flex items-center gap-3 text-sm text-gray-600">
+                                    <span className="flex items-center gap-1">
+                                        <Users className="w-3 h-3" />
+                                        {booking.customer_name || 'Customer'}
+                                    </span>
+                                    <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                                    <span className="flex items-center gap-1">
+                                        <Clock className="w-3 h-3" />
+                                        {new Date(booking.created_at).toLocaleDateString()}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div className="flex items-center justify-between sm:justify-end gap-4 border-t sm:border-t-0 pt-3 sm:pt-0 border-gray-100">
+                                <div className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide ${
+                                booking.status === 'confirmed' ? 'bg-green-100 text-green-700' :
+                                booking.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                                'bg-gray-100 text-gray-700'
+                                }`}>
+                                {booking.status}
+                                </div>
+                                <div className="text-base font-bold text-gray-900">
+                                ₹{booking.amount}
+                                </div>
+                            </div>
+                            </div>
+                        </GlassCard>
+                        ))}
+                    </div>
+                    ) : (
+                    <GlassCard>
+                        <div className="text-center py-12 text-gray-500">
+                        <Calendar className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                        <p className="font-medium">No recent bookings found</p>
+                        </div>
+                    </GlassCard>
+                    )}
+                </div>
+            </div>
+
+            {/* Right Column (Quick Actions Desktop) - Takes 1/3 width on Large screens */}
+            <div className="hidden lg:block space-y-6">
+                <div className="bg-white/60 backdrop-blur-md rounded-2xl p-6 shadow-sm border border-white/50">
+                    <h2 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h2>
+                    <div className="grid grid-cols-2 gap-4">
+                        {quickActions.map((action) => {
+                            const Icon = action.icon;
+                            return (
+                            <motion.button
+                                key={action.label}
+                                onClick={action.action}
+                                whileHover={{ scale: 1.02, translateY: -2 }}
+                                whileTap={{ scale: 0.98 }}
+                                className={`bg-gradient-to-br ${action.color} rounded-xl p-4 text-white shadow-lg flex flex-col items-center justify-center text-center aspect-square`}
+                            >
+                                <Icon className="w-8 h-8 mb-3" />
+                                <div className="text-sm font-semibold leading-tight">{action.label}</div>
+                            </motion.button>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Additional Sidebar Content (Optional Placeholder) */}
+                <div className="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl p-6 text-white shadow-lg">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-white/20 rounded-lg">
+                            <TrendingUp className="w-6 h-6" />
+                        </div>
+                        <h3 className="font-bold">Pro Tip</h3>
+                    </div>
+                    <p className="text-sm text-purple-100 leading-relaxed mb-4">
+                        Complete your listing details to increase visibility by up to 40%.
+                    </p>
+                    <button 
+                        onClick={() => navigate('/mobile/partner/listings')}
+                        className="w-full py-2 bg-white text-purple-600 rounded-lg text-sm font-bold hover:bg-purple-50 transition-colors"
+                    >
+                        Manage Listings
+                    </button>
+                </div>
+            </div>
+
           </div>
         </div>
       </div>

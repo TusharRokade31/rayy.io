@@ -290,7 +290,6 @@ const hasFixedPlans = listingData.plan_options.some(p => p.timing_type === 'FIXE
         toast.error('Please fill in all required fields');
         return;
       }
-      // Validate venue selection for offline listings
       if (!listingData.is_online && !listingData.venue_id) {
         toast.error('⚠️ Please select a venue for offline/in-person classes');
         return;
@@ -309,25 +308,31 @@ const hasFixedPlans = listingData.plan_options.some(p => p.timing_type === 'FIXE
       }
       setStep(4);
     } else if (step === 4) {
-      // Validate media upload
       if (listingData.media.length === 0) {
         toast.error('⚠️ Please upload at least one photo or video');
         return;
       }
       setStep(5);
     } else if (step === 5) {
-      // Plan Options - optional but recommended
       if (listingData.plan_options.length === 0) {
         toast.error('⚠️ Please create at least one pricing plan');
         return;
       }
       setStep(6);
     } else if (step === 6) {
-      // Batches - optional but recommended if plans exist
-      if (listingData.batches.length === 0) {
-        toast.error('⚠️ Please create at least one batch for your classes');
+      // UPDATED LOGIC HERE:
+      // Only require batches if the user has created FIXED timing plans
+      if (hasFixedPlans && listingData.batches.length === 0) {
+        toast.error('⚠️ Please create at least one batch for your fixed plans');
         return;
       }
+      
+      // Optional: You might also want to ensure they generated slots if they have Flexible plans
+      if (hasFlexiblePlans && !sessionConfig) {
+         toast.error('⚠️ Please generate availability slots for your flexible plans');
+         return;
+      }
+
       setStep(7);
     } else if (step === 7) {
       handleSubmit();

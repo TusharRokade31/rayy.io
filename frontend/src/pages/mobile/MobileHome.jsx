@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useContext, useMemo, useCallback, memo } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { AuthContext, API } from '../../App';
 import { useLocationPref } from '../../hooks/useLocationPref';
 import MobileLayout from '../../layouts/MobileLayout';
-import AirbnbStyleCategories from '../../components/mobile/AirbnbStyleCategories';
-import SearchBar from '../../components/mobile/SearchBar';
-import { Star, MapPin, TrendingUp, Sparkles, Award, Clock, Heart, Tent, Users, Palette, Code, Dumbbell, Music, Search, LayoutDashboard } from 'lucide-react';
+// Note: You might want to rename MobileLayout to MainLayout if using across devices, 
+// or ensure MobileLayout allows full width on desktop.
+import { Star, MapPin, TrendingUp, Sparkles, Award, Clock, Heart, Tent, Users, Palette, Code, Dumbbell, Music, Search } from 'lucide-react';
 import MobileWorkshopCard from '../../components/mobile/MobileWorkshopCard';
 import MobileCampCard from '../../components/mobile/MobileCampCard';
 import SafetySection from '../../components/mobile/SafetySection';
@@ -16,7 +16,7 @@ import MobileSplashScreenV2 from '../../components/mobile/MobileSplashScreenV2';
 import { toast } from 'sonner';
 
 const MobileHome = () => {
-  const { user, showAuthModal, showAuth } = useContext(AuthContext);
+  const { user, showAuthModal } = useContext(AuthContext);
   const { loc, setLoc } = useLocationPref();
   const navigate = useNavigate();
   
@@ -33,7 +33,7 @@ const MobileHome = () => {
   const [musicClasses, setMusicClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState([]);
-  // Show V2 splash screen on first visit
+  
   const [showSplash, setShowSplash] = useState(() => {
     const hasSeenSplash = sessionStorage.getItem('mobile_splash_v2_seen');
     return !hasSeenSplash;
@@ -42,16 +42,15 @@ const MobileHome = () => {
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [selectedAge, setSelectedAge] = useState('All Ages');
 
-  // SEO: Set page title and meta description
+  // SEO
   useEffect(() => {
     document.title = "Discover Activities for Kids | RAYY";
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
-      metaDesc.setAttribute("content", "Find the best activities, workshops, camps, and classes for kids in your area. Sports, arts, coding, music and more.");
+      metaDesc.setAttribute("content", "Find the best activities, workshops, camps, and classes for kids in your area.");
     }
   }, []);
 
-  // Fetch data on mount and when dependencies change
   useEffect(() => {
     fetchHomeData();
   }, []);
@@ -65,7 +64,6 @@ const MobileHome = () => {
   const fetchHomeData = async () => {
     try {
       setLoading(true);
-      
       const locationParams = loc && loc.lat && loc.lng ? 
         `?lat=${loc.lat}&lng=${loc.lng}&radius_km=10` : '';
       
@@ -74,7 +72,6 @@ const MobileHome = () => {
         axios.get(`${API}/home/trials${locationParams}`)
       ]);
       
-      // Normalize data structure to match component expectations
       const normalizeListingData = (listings) => {
         return listings.map(listing => ({
           ...listing,
@@ -89,24 +86,16 @@ const MobileHome = () => {
       const trendingData = normalizeListingData(trendingRes?.data?.listings || []);
       const trialsData = normalizeListingData(trialsRes?.data?.listings || []);
       
-      // PERFORMANCE: Limit listings per section for faster mobile loading
       const MAX_LISTINGS_PER_SECTION = 10;
       
-      // IMPORTANT: Use different slices to avoid duplicate listings across sections
-      setTrending(trendingData.slice(0, MAX_LISTINGS_PER_SECTION)); // 0-10
+      setTrending(trendingData.slice(0, MAX_LISTINGS_PER_SECTION));
       setTrials(trialsData.slice(0, MAX_LISTINGS_PER_SECTION));
       
-      // Create derived sections with NON-OVERLAPPING data
       const topRatedListings = trendingData.filter(l => l.rating >= 4.5);
-      setTopRated(topRatedListings.slice(0, MAX_LISTINGS_PER_SECTION)); // Top rated only
-      
-      // Use different portion of trending data for Near You
-      setNearYou(trendingData.slice(10, 20)); // 10-20 (different from Trending)
-      
-      // New experiences from trials
+      setTopRated(topRatedListings.slice(0, MAX_LISTINGS_PER_SECTION));
+      setNearYou(trendingData.slice(10, 20));
       setNewExperiences(trialsData.slice(0, MAX_LISTINGS_PER_SECTION));
       
-      // Category-specific sections using actual category values
       const artCategories = ['art', 'painting', 'drawing', 'craft', 'activity'];
       const codingCategories = ['coding', 'programming', 'robotics', 'science', 'chess', 'educational'];
       const sportsCategories = ['sport', 'sports', 'fitness', 'yoga', 'dance', 'athletics', 'football', 'basketball', 'cricket', 'tennis'];
@@ -114,13 +103,11 @@ const MobileHome = () => {
       const workshopCategories = ['workshop', 'playzone', 'activity', 'drama', 'photography', 'cooking'];
       const campCategories = ['camp'];
       
-      // Filter by checking if listing title or category contains keywords
       const filterByKeywords = (listing, keywords) => {
-        const searchText = `${listing.title} ${listing.category}`.toLowerCase(); // Removed description for performance
+        const searchText = `${listing.title} ${listing.category}`.toLowerCase();
         return keywords.some(keyword => searchText.includes(keyword));
       };
       
-      // PERFORMANCE: Limit category results to 8 items each
       const MAX_CATEGORY_ITEMS = 8;
       setArtClasses(trendingData.filter(l => filterByKeywords(l, artCategories)).slice(0, MAX_CATEGORY_ITEMS));
       setCodingClasses(trendingData.filter(l => filterByKeywords(l, codingCategories)).slice(0, MAX_CATEGORY_ITEMS));
@@ -140,7 +127,6 @@ const MobileHome = () => {
     try {
       const token = localStorage.getItem('yuno_token');
       if (!token) return;
-      
       const response = await axios.get(`${API}/wishlist`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -155,16 +141,13 @@ const MobileHome = () => {
       toast.error('Please login to add to wishlist');
       return;
     }
-
     const token = localStorage.getItem('yuno_token');
     if (!token) {
       toast.error('Please login to continue');
       return;
     }
-
     try {
       const isInWishlist = wishlist.includes(listingId);
-      
       if (isInWishlist) {
         await axios.delete(`${API}/wishlist/${listingId}`, {
           headers: { Authorization: `Bearer ${token}` }
@@ -179,40 +162,27 @@ const MobileHome = () => {
         toast.success('Added to wishlist');
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Wishlist error:', error.response?.data || error.message);
-      }
       toast.error(error.response?.data?.detail || 'Failed to update wishlist');
     }
   }, [user, wishlist]);
 
   const getListingImage = (listing) => {
     let imageUrl = null;
-    
-    // Check normalized images array (from media)
     if (listing.images && Array.isArray(listing.images) && listing.images.length > 0) {
       imageUrl = listing.images[0];
-    }
-    // Check original media array
-    else if (listing.media && Array.isArray(listing.media) && listing.media.length > 0) {
+    } else if (listing.media && Array.isArray(listing.media) && listing.media.length > 0) {
       imageUrl = listing.media[0];
-    }
-    // Fallback to image_url
-    else if (listing.image_url) {
+    } else if (listing.image_url) {
       imageUrl = listing.image_url;
-    }
-    // Default placeholder image
-    else {
+    } else {
       imageUrl = 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop';
     }
     
-    // Fix Unsplash URLs to work with CORS by adding parameters if not already present
     if (imageUrl && imageUrl.includes('unsplash.com') && !imageUrl.includes('?')) {
       imageUrl += '?w=400&h=300&fit=crop&auto=format';
     } else if (imageUrl && imageUrl.includes('unsplash.com') && !imageUrl.includes('auto=format')) {
       imageUrl += '&auto=format';
     }
-    
     return imageUrl;
   };
 
@@ -225,29 +195,21 @@ const MobileHome = () => {
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: index * 0.05 }}
-        className="flex-shrink-0 w-64"
+        // Responsive: w-64 on mobile, w-72 on tablet, w-80 on desktop
+        className="flex-shrink-0 w-64 md:w-72 lg:w-80 cursor-pointer group"
         onClick={() => navigate(`/mobile/listing/${listing.id}`)}
       >
-        {/* Video/Image Container */}
-        <div className="relative rounded-2xl overflow-hidden shadow-lg mb-3 h-48">
-          {/* PERFORMANCE: Only show images on cards, videos only on detail page */}
+        <div className="relative rounded-2xl overflow-hidden shadow-lg mb-3 h-48 md:h-52 lg:h-56">
           <img 
             src={getListingImage(listing)}
             alt={listing.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
-            onLoad={(e) => {
-              // Add loaded class for fade-in animation
-              e.target.classList.add('loaded');
-            }}
             onError={(e) => {
-              // Fallback to placeholder on image load error
               e.target.src = 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop';
-              e.target.classList.add('loaded');
             }}
           />
           
-          {/* Video Badge - indicates video available on detail page */}
           {hasVideo && (
             <div className="absolute top-3 left-3 bg-gradient-to-r from-purple-500/90 to-pink-500/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-white text-xs font-bold flex items-center gap-1 shadow-lg">
               <span>📹</span>
@@ -255,24 +217,21 @@ const MobileHome = () => {
             </div>
           )}
           
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
           
-          {/* Wishlist Button */}
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={(e) => {
               e.stopPropagation();
               toggleWishlist(listing.id);
             }}
-            className="absolute top-3 right-3 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all"
+            className="absolute top-3 right-3 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all z-10"
           >
             <Heart 
               className={`w-5 h-5 ${isInWishlist ? 'fill-red-500 text-red-500' : 'text-gray-700'}`}
             />
           </motion.button>
           
-          {/* Price Badge */}
           {listing.price_per_session && (
             <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full">
               <span className="text-sm font-bold text-gray-900">₹{listing.price_per_session}</span>
@@ -281,38 +240,33 @@ const MobileHome = () => {
           )}
         </div>
         
-        {/* Content */}
         <div className="px-1">
-          {/* Title */}
-          <h3 className="font-bold text-base text-gray-900 mb-1 line-clamp-1">
+          <h3 className="font-bold text-base md:text-lg text-gray-900 mb-1 line-clamp-1 group-hover:text-blue-600 transition-colors">
             {listing.title}
           </h3>
           
-          {/* Location & Rating */}
           <div className="flex items-center justify-between mb-2">
             {listing.location && (
-              <div className="flex items-center text-xs text-gray-600">
-                <MapPin className="w-3 h-3 mr-1" />
+              <div className="flex items-center text-xs md:text-sm text-gray-600">
+                <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-1" />
                 <span className="line-clamp-1">{listing.location.city || listing.location.address}</span>
               </div>
             )}
             
             {listing.rating > 0 && (
               <div className="flex items-center">
-                <Star className="w-3 h-3 text-yellow-500 fill-yellow-500 mr-0.5" />
-                <span className="text-xs font-semibold text-gray-900">{listing.rating.toFixed(1)}</span>
+                <Star className="w-3 h-3 md:w-4 md:h-4 text-yellow-500 fill-yellow-500 mr-0.5" />
+                <span className="text-xs md:text-sm font-semibold text-gray-900">{listing.rating.toFixed(1)}</span>
               </div>
             )}
           </div>
           
-          {/* Safety Badge */}
           <div className="mb-2">
             <SafetyBadge type="verified" size="small" />
           </div>
           
-          {/* Partner Name */}
           {listing.partner_name && (
-            <p className="text-xs text-gray-500 line-clamp-1">
+            <p className="text-xs md:text-sm text-gray-500 line-clamp-1">
               by {listing.partner_name}
             </p>
           )}
@@ -325,27 +279,25 @@ const MobileHome = () => {
     if (!listings || listings.length === 0) return null;
     
     return (
-      <div className="mb-8">
-        {/* Section Header */}
-        <div className="flex items-center justify-between px-4 mb-4">
+      <div className="mb-8 md:mb-12 max-w-7xl mx-auto w-full">
+        <div className="flex items-center justify-between px-4 md:px-8 mb-4">
           <div className="flex items-center gap-2">
-            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-              <Icon className="w-5 h-5 text-white" />
+            <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+              <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900">{title}</h2>
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900">{title}</h2>
           </div>
           
           <button 
             onClick={() => navigate('/mobile/search')}
-            className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+            className="text-sm md:text-base font-semibold text-blue-600 hover:text-blue-700 px-3 py-1 hover:bg-blue-50 rounded-full transition-colors"
           >
             See all
           </button>
         </div>
         
-        {/* Horizontal Scroll - Fixed */}
-        <div className="overflow-x-scroll hide-scrollbar" style={{ WebkitOverflowScrolling: 'touch' }}>
-          <div className="flex px-4 gap-4" style={{ width: 'max-content' }}>
+        <div className="overflow-x-auto hide-scrollbar pb-4" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div className="flex px-4 md:px-8 gap-4 md:gap-6 w-max">
             {listings.map((listing, index) => (
               <ListingCard key={listing.id} listing={listing} index={index} />
             ))}
@@ -355,13 +307,11 @@ const MobileHome = () => {
     );
   });
 
-  // Handle splash screen completion
   const handleSplashComplete = useCallback(() => {
     setShowSplash(false);
     sessionStorage.setItem('mobile_splash_v2_seen', 'true');
   }, []);
 
-  // Show V2 splash screen first
   if (showSplash) {
     return <MobileSplashScreenV2 onComplete={handleSplashComplete} />;
   }
@@ -369,116 +319,93 @@ const MobileHome = () => {
   return (
     <MobileLayout>
       <div className="bg-gray-50 min-h-screen">
-        {/* Reimagined Hero Section - Beyond Imagination */}
-        <div className="relative bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 pt-safe pb-8 overflow-hidden">
-          {/* Animated Background Elements */}
+        {/* Responsive Hero Section */}
+        <div className="relative bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 pt-safe pb-8 md:pb-12 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
             <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                rotate: [0, 90, 0],
-              }}
+              animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"
+              className="absolute -top-20 -right-20 w-64 h-64 md:w-96 md:h-96 bg-white/10 rounded-full blur-3xl"
             />
             <motion.div
-              animate={{
-                scale: [1.2, 1, 1.2],
-                rotate: [90, 0, 90],
-              }}
+              animate={{ scale: [1.2, 1, 1.2], rotate: [90, 0, 90] }}
               transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-              className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"
+              className="absolute -bottom-20 -left-20 w-64 h-64 md:w-96 md:h-96 bg-white/10 rounded-full blur-3xl"
             />
           </div>
 
-          {/* Content */}
-          <div className="relative z-10 px-4">
-            {/* Top Header with Login Button */}
-            <div className="flex items-center justify-between mb-4 pt-2">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                  <Sparkles className="w-6 h-6 text-white" />
+          <div className="relative z-10 px-4 md:px-8 max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4 pt-2 md:pt-4">
+              <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                  <Sparkles className="w-6 h-6 md:w-7 md:h-7 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-white font-bold text-lg">rayy</h1>
-                  <p className="text-white/80 text-xs">Learn • Play • Shine</p>
+                  <h1 className="text-white font-bold text-lg md:text-2xl tracking-tight">rayy</h1>
+                  <p className="text-white/80 text-xs md:text-sm">Learn • Play • Shine</p>
                 </div>
               </div>
               
-              {/* Login/Profile Buttons */}
               <div className="flex items-center gap-2">
-                {/* Become a Partner Link - HIDDEN FOR MOBILE RELEASE */}
-                {/* {(!user || user.role === 'customer') && (
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate('/mobile/become-partner')}
-                  className="bg-white/20 backdrop-blur-sm text-white px-3 py-2 rounded-full font-semibold text-xs shadow-lg hover:shadow-xl transition-all border border-white/30"
-                >
-                  Become a Partner
-                </motion.button>)} */}
-
-                {/* Login/Profile Button */}
                 {!user ? (
-                 <>
                   <motion.button
                     whileTap={{ scale: 0.95 }}
-                    onClick={() =>  showAuthModal()}
-                    className="bg-white text-purple-600 px-4 py-2 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                    onClick={() => showAuthModal()}
+                    className="bg-white text-purple-600 px-4 py-2 md:px-6 md:py-2.5 rounded-full font-semibold text-sm md:text-base shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
                   >
-                    <Users className="w-4 h-4" />
+                    <Users className="w-4 h-4 md:w-5 md:h-5" />
                     Login
                   </motion.button>
-                  
-                  </>
                 ) : (
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => navigate('/mobile/profile')}
-                    className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg"
-                  >
-                    <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                      {user.name?.charAt(0).toUpperCase() || 'U'}
-                    </div>
-                  </motion.button>
+                  <div className="flex items-center gap-3">
+                     <span className="hidden md:block text-white font-medium text-sm">Hello, {user.name}</span>
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => navigate('/mobile/profile')}
+                      className="w-10 h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:bg-white/30 transition-all"
+                    >
+                      <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm md:text-base">
+                        {user.name?.charAt(0).toUpperCase() || 'U'}
+                      </div>
+                    </motion.button>
+                  </div>
                 )}
               </div>
             </div>
-            {/* Floating Search Bar with Magic Effect */}
-            <motion.div
-              initial={{ y: -50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ type: "spring", damping: 20 }}
-              className="mt-4 mb-6"
-            >
-              <div className="relative">
-                {/* Glow Effect */}
-                <div className="absolute inset-0 bg-white rounded-3xl blur-xl opacity-50" />
-                
-                {/* Main Search Bar */}
-                <div className="relative bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-4">
-                  {/* Search Input */}
-                  <div 
-                    onClick={() => navigate('/mobile/search')}
-                    className="flex items-center gap-3 cursor-pointer"
-                  >
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                      <Search className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-bold text-gray-900 text-base">Where to next?</p>
-                      <p className="text-xs text-gray-500">Find amazing activities for your kids</p>
-                    </div>
-                    <motion.div
-                      animate={{ rotate: [0, 10, 0] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                      className="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center"
-                    >
-                      <Sparkles className="w-5 h-5 text-white" />
-                    </motion.div>
-                  </div>
 
-                  {/* Creative Age & Location Pills */}
-                  <div className="flex gap-2">
+            {/* Hero Content & Search */}
+            <div className="flex flex-col items-center justify-center mt-6 md:mt-12 mb-8 md:mb-16">
+              <motion.div
+                initial={{ y: -50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ type: "spring", damping: 20 }}
+                className="w-full max-w-2xl"
+              >
+                <div className="relative">
+                  <div className="absolute inset-0 bg-white rounded-3xl blur-xl opacity-50" />
+                  <div className="relative bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-4 transition-transform hover:scale-[1.01]">
+                    <div 
+                      onClick={() => navigate('/mobile/search')}
+                      className="flex items-center gap-3 md:gap-5 cursor-pointer"
+                    >
+                      <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <Search className="w-6 h-6 md:w-8 md:h-8 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-bold text-gray-900 text-base md:text-xl">Where to next?</p>
+                        <p className="text-xs md:text-sm text-gray-500">Find amazing activities for your kids</p>
+                      </div>
+                      <motion.div
+                        animate={{ rotate: [0, 10, 0] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                        className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center"
+                      >
+                        <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                      </motion.div>
+                    </div>
+
+                    <div className="flex gap-2">
                     {/* Age Filter - Pill Style */}
                     {/* <motion.button
                       whileTap={{ scale: 0.95 }}
@@ -511,52 +438,53 @@ const MobileHome = () => {
                       </div>
                     </motion.button> */}
                   </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Floating Category Bubbles - Now Clickable */}
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="flex justify-center gap-3"
-            >
-              {[
-                { icon: '🎭', label: 'Activity', color: 'from-red-400 to-pink-400', search: 'activity' },
-                { icon: '⚽', label: 'Sports', color: 'from-blue-400 to-cyan-400', search: 'sports' },
-                { icon: '📚', label: 'Educational', color: 'from-purple-400 to-indigo-400', search: 'educational' },
-                { icon: '🎮', label: 'Playzone', color: 'from-green-400 to-emerald-400', search: 'playzone' },
-              ].map((category, index) => (
-                <motion.div
-                  key={category.label}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.3 + index * 0.1, type: "spring" }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate(`/mobile/search?category=${category.search}`)}
-                  className="flex flex-col items-center gap-2 cursor-pointer"
-                >
-                  <div className={`w-16 h-16 bg-gradient-to-br ${category.color} rounded-2xl shadow-xl flex items-center justify-center transform hover:rotate-6 transition-transform`}>
-                    <span className="text-3xl">{category.icon}</span>
                   </div>
-                  <span className="text-xs font-semibold text-white drop-shadow-lg">
-                    {category.label}
-                  </span>
-                </motion.div>
-              ))}
-            </motion.div>
+                </div>
+              </motion.div>
+
+              {/* Categories */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="flex flex-wrap justify-center gap-4 md:gap-8 mt-8 md:mt-12"
+              >
+                {[
+                  { icon: '🎭', label: 'Activity', color: 'from-red-400 to-pink-400', search: 'activity' },
+                  { icon: '⚽', label: 'Sports', color: 'from-blue-400 to-cyan-400', search: 'sports' },
+                  { icon: '📚', label: 'Educational', color: 'from-purple-400 to-indigo-400', search: 'educational' },
+                  { icon: '🎮', label: 'Playzone', color: 'from-green-400 to-emerald-400', search: 'playzone' },
+                ].map((category, index) => (
+                  <motion.div
+                    key={category.label}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.3 + index * 0.1, type: "spring" }}
+                    whileHover={{ scale: 1.1, translateY: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => navigate(`/mobile/search?category=${category.search}`)}
+                    className="flex flex-col items-center gap-2 cursor-pointer w-[72px] md:w-24"
+                  >
+                    <div className={`w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br ${category.color} rounded-2xl shadow-xl flex items-center justify-center transform hover:rotate-6 transition-transform`}>
+                      <span className="text-3xl md:text-4xl">{category.icon}</span>
+                    </div>
+                    <span className="text-xs md:text-sm font-bold text-white drop-shadow-lg tracking-wide">
+                      {category.label}
+                    </span>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
           </div>
         </div>
         
-        {/* Content */}
+        {/* Content Area */}
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
           </div>
         ) : (
-          <div className="pt-6 pb-8">
+          <div className="pt-6 pb-8 md:pt-12 md:pb-16 space-y-4 md:space-y-8">
             <HorizontalSection 
               title="Trending Now"
               icon={TrendingUp}
@@ -571,54 +499,48 @@ const MobileHome = () => {
               gradient="from-green-500 to-emerald-500"
             />
             
-            {/* Workshops Section - Special Design */}
+            {/* Workshops - Responsive Container */}
             {workshops.length > 0 && (
-              <div className="mb-8">
-                <div className="flex items-center justify-between px-4 mb-4">
+              <div className="mb-8 md:mb-12 max-w-7xl mx-auto w-full">
+                <div className="flex items-center justify-between px-4 md:px-8 mb-4">
                   <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center">
-                      <Sparkles className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center">
+                      <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-white" />
                     </div>
-                    <h2 className="text-xl font-bold text-gray-900">Workshops</h2>
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-900">Workshops</h2>
                   </div>
-                  <button 
-                    onClick={() => navigate('/mobile/search')}
-                    className="text-sm font-semibold text-blue-600"
-                  >
-                    See all
-                  </button>
+                  <button onClick={() => navigate('/mobile/search')} className="text-sm md:text-base font-semibold text-blue-600">See all</button>
                 </div>
-                <div className="overflow-x-scroll hide-scrollbar" style={{ WebkitOverflowScrolling: 'touch' }}>
-                  <div className="flex px-4 gap-4" style={{ width: 'max-content' }}>
+                <div className="overflow-x-auto hide-scrollbar pb-4" style={{ WebkitOverflowScrolling: 'touch' }}>
+                  <div className="flex px-4 md:px-8 gap-4 md:gap-6 w-max">
                     {workshops.map((workshop) => (
-                      <MobileWorkshopCard key={workshop.id} workshop={workshop} />
+                      <div key={workshop.id} className="w-[85vw] md:w-96">
+                        <MobileWorkshopCard workshop={workshop} />
+                      </div>
                     ))}
                   </div>
                 </div>
               </div>
             )}
             
-            {/* Weekend Camps Section - Special Design */}
+            {/* Camps - Responsive Container */}
             {camps.length > 0 && (
-              <div className="mb-8">
-                <div className="flex items-center justify-between px-4 mb-4">
+              <div className="mb-8 md:mb-12 max-w-7xl mx-auto w-full">
+                <div className="flex items-center justify-between px-4 md:px-8 mb-4">
                   <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center">
-                      <Tent className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center">
+                      <Tent className="w-5 h-5 md:w-6 md:h-6 text-white" />
                     </div>
-                    <h2 className="text-xl font-bold text-gray-900">Weekend Camps</h2>
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-900">Weekend Camps</h2>
                   </div>
-                  <button 
-                    onClick={() => navigate('/mobile/search')}
-                    className="text-sm font-semibold text-blue-600"
-                  >
-                    See all
-                  </button>
+                  <button onClick={() => navigate('/mobile/search')} className="text-sm md:text-base font-semibold text-blue-600">See all</button>
                 </div>
-                <div className="overflow-x-scroll hide-scrollbar" style={{ WebkitOverflowScrolling: 'touch' }}>
-                  <div className="flex px-4 gap-4" style={{ width: 'max-content' }}>
+                <div className="overflow-x-auto hide-scrollbar pb-4" style={{ WebkitOverflowScrolling: 'touch' }}>
+                  <div className="flex px-4 md:px-8 gap-4 md:gap-6 w-max">
                     {camps.map((camp) => (
-                      <MobileCampCard key={camp.id} camp={camp} />
+                      <div key={camp.id} className="w-[85vw] md:w-96">
+                        <MobileCampCard camp={camp} />
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -646,71 +568,48 @@ const MobileHome = () => {
               gradient="from-purple-500 to-pink-500"
             />
             
-            {/* Category-Specific Sections */}
+            {/* Category Sections */}
             {artClasses.length > 0 && (
-              <HorizontalSection 
-                title="Art & Craft"
-                icon={Palette}
-                listings={artClasses}
-                gradient="from-pink-500 to-rose-500"
-              />
+              <HorizontalSection title="Art & Craft" icon={Palette} listings={artClasses} gradient="from-pink-500 to-rose-500" />
             )}
-            
             {codingClasses.length > 0 && (
-              <HorizontalSection 
-                title="Coding & STEM"
-                icon={Code}
-                listings={codingClasses}
-                gradient="from-blue-500 to-cyan-500"
-              />
+              <HorizontalSection title="Coding & STEM" icon={Code} listings={codingClasses} gradient="from-blue-500 to-cyan-500" />
             )}
-            
             {sportsClasses.length > 0 && (
-              <HorizontalSection 
-                title="Sports & Fitness"
-                icon={Dumbbell}
-                listings={sportsClasses}
-                gradient="from-green-500 to-lime-500"
-              />
+              <HorizontalSection title="Sports & Fitness" icon={Dumbbell} listings={sportsClasses} gradient="from-green-500 to-lime-500" />
             )}
-            
             {musicClasses.length > 0 && (
-              <HorizontalSection 
-                title="Music & Dance"
-                icon={Music}
-                listings={musicClasses}
-                gradient="from-violet-500 to-fuchsia-500"
-              />
+              <HorizontalSection title="Music & Dance" icon={Music} listings={musicClasses} gradient="from-violet-500 to-fuchsia-500" />
             )}
 
-            {/* Safety Section - CRITICAL for Trust - BELOW ALL LISTINGS */}
-            <div className="px-4 mt-8 mb-8">
+            {/* Safety Section */}
+            <div className="px-4 md:px-8 mt-8 mb-8 max-w-7xl mx-auto">
               <SafetySection />
             </div>
 
-            {/* Become a Partner CTA - HIDDEN FOR MOBILE RELEASE */}
+            {/* Partner Banner */}
             {(!user || user.role === 'customer') && (
-            <div className="px-4 mb-8">
+            <div className="px-4 md:px-8 mb-8 max-w-7xl mx-auto">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl p-6 shadow-xl"
+                className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl p-6 md:p-10 shadow-xl"
                 onClick={() => navigate('/mobile/become-partner')}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-white mb-2">
+                    <h3 className="text-xl md:text-3xl font-bold text-white mb-2 md:mb-4">
                       Are you a Teacher?
                     </h3>
-                    <p className="text-white/90 text-sm mb-4">
+                    <p className="text-white/90 text-sm md:text-lg mb-4 md:mb-6">
                       Join 500+ partners and reach thousands of parents
                     </p>
-                    <button className="bg-white text-purple-600 px-6 py-2 rounded-full font-semibold text-sm shadow-lg hover:shadow-xl transition-all">
+                    <button className="bg-white text-purple-600 px-6 py-2 md:px-8 md:py-3 rounded-full font-semibold text-sm md:text-base shadow-lg hover:shadow-xl transition-all">
                       Become a Partner →
                     </button>
                   </div>
-                  <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center ml-4">
-                    <Users className="w-10 h-10 text-white" />
+                  <div className="w-20 h-20 md:w-32 md:h-32 bg-white/20 rounded-full flex items-center justify-center ml-4">
+                    <Users className="w-10 h-10 md:w-16 md:h-16 text-white" />
                   </div>
                 </div>
               </motion.div>
@@ -719,7 +618,6 @@ const MobileHome = () => {
         )}
       </div>
       
-      {/* Custom scrollbar hiding */}
       <style jsx>{`
         .hide-scrollbar::-webkit-scrollbar {
           display: none;
@@ -733,14 +631,14 @@ const MobileHome = () => {
         }
       `}</style>
 
-      {/* Age Filter Modal */}
+      {/* Age Filter Modal - Responsive */}
       <AnimatePresence>
         {showAgeModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end md:items-center justify-center p-4"
             onClick={() => setShowAgeModal(false)}
           >
             <motion.div
@@ -749,12 +647,17 @@ const MobileHome = () => {
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white w-full rounded-t-3xl p-6 pb-8"
+              className="bg-white w-full md:w-[600px] md:rounded-2xl rounded-t-3xl p-6 pb-8 md:pb-6 shadow-2xl"
             >
-              <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4" />
-              <h3 className="text-lg font-bold text-gray-900 mb-3">Select Age Group</h3>
+              {/* Handle for mobile only */}
+              <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4 md:hidden" />
               
-              <div className="grid grid-cols-2 gap-2 max-h-96 overflow-y-auto">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg md:text-xl font-bold text-gray-900">Select Age Group</h3>
+                <button onClick={() => setShowAgeModal(false)} className="hidden md:block text-gray-500 hover:text-gray-700">✕</button>
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 max-h-[70vh] overflow-y-auto">
                 {[
                   { label: 'All Ages', range: '0-18', gradient: 'from-gray-400 to-slate-500' },
                   { label: '0-2 years', range: 'Toddlers', gradient: 'from-pink-400 to-rose-500' },
@@ -771,16 +674,16 @@ const MobileHome = () => {
                       setShowAgeModal(false);
                       toast.success(`Filtered by ${age.label}`);
                     }}
-                    className={`p-3 rounded-xl border-2 transition-all ${
+                    className={`p-3 md:p-4 rounded-xl border-2 transition-all hover:shadow-md ${
                       selectedAge === age.label
                         ? 'border-blue-500 bg-blue-50'
                         : 'border-gray-200 bg-white hover:border-gray-300'
                     }`}
                   >
-                    <div className={`w-10 h-10 bg-gradient-to-br ${age.gradient} rounded-lg flex items-center justify-center mx-auto mb-2 shadow-md`}>
-                      <Users className="w-5 h-5 text-white" />
+                    <div className={`w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br ${age.gradient} rounded-lg flex items-center justify-center mx-auto mb-2 shadow-md`}>
+                      <Users className="w-5 h-5 md:w-6 md:h-6 text-white" />
                     </div>
-                    <p className="font-bold text-gray-900 text-xs">{age.label}</p>
+                    <p className="font-bold text-gray-900 text-xs md:text-sm">{age.label}</p>
                     <p className="text-xs text-gray-500">{age.range}</p>
                   </motion.button>
                 ))}
@@ -790,14 +693,14 @@ const MobileHome = () => {
         )}
       </AnimatePresence>
 
-      {/* Location Filter Modal */}
+      {/* Location Filter Modal - Responsive */}
       <AnimatePresence>
         {showLocationModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end md:items-center justify-center p-4"
             onClick={() => setShowLocationModal(false)}
           >
             <motion.div
@@ -806,12 +709,16 @@ const MobileHome = () => {
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white w-full rounded-t-3xl p-6 pb-8"
+              className="bg-white w-full md:w-[500px] md:rounded-2xl rounded-t-3xl p-6 pb-8 md:pb-6 shadow-2xl"
             >
-              <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4" />
-              <h3 className="text-lg font-bold text-gray-900 mb-3">Select Location</h3>
+              <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4 md:hidden" />
               
-              <div className="space-y-2 max-h-96 overflow-y-auto">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg md:text-xl font-bold text-gray-900">Select Location</h3>
+                <button onClick={() => setShowLocationModal(false)} className="hidden md:block text-gray-500 hover:text-gray-700">✕</button>
+              </div>
+              
+              <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
                 {[
                   { city: 'Gurgaon', state: 'Haryana' },
                   { city: 'Delhi', state: 'Delhi NCR' },
@@ -829,18 +736,18 @@ const MobileHome = () => {
                       setShowLocationModal(false);
                       toast.success(`Location set to ${location.city}`);
                     }}
-                    className={`w-full p-3 rounded-xl border-2 transition-all flex items-center gap-3 ${
+                    className={`w-full p-3 md:p-4 rounded-xl border-2 transition-all flex items-center gap-3 hover:shadow-sm ${
                       loc?.city === location.city
                         ? 'border-purple-500 bg-purple-50'
                         : 'border-gray-200 bg-white hover:border-gray-300'
                     }`}
                   >
-                    <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
-                      <MapPin className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
+                      <MapPin className="w-5 h-5 md:w-6 md:h-6 text-white" />
                     </div>
                     <div className="flex-1 text-left min-w-0">
-                      <p className="font-bold text-gray-900 text-sm">{location.city}</p>
-                      <p className="text-xs text-gray-500">{location.state}</p>
+                      <p className="font-bold text-gray-900 text-sm md:text-base">{location.city}</p>
+                      <p className="text-xs md:text-sm text-gray-500">{location.state}</p>
                     </div>
                     {loc?.city === location.city && (
                       <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0">

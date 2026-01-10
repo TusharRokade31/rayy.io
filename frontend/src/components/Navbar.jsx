@@ -1,8 +1,9 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../App';
-import { User, UserCircle, Wallet, Calendar, LogOut, LayoutDashboard, MapPin, TrendingUp, Award, FileText, Building2 } from 'lucide-react';
+import { User, UserCircle, Wallet, Calendar, LogOut, LayoutDashboard, MapPin, TrendingUp, Award, FileText, Building2, Sparkles, Users } from 'lucide-react';
 import axios from 'axios';
+import { motion } from 'framer-motion';
 
 const API = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -89,8 +90,8 @@ const Navbar = () => {
           justifyContent: 'space-between'
         }}>
           {/* LOGO */}
-          <Link 
-            to="/" 
+          <div 
+            className="flex items-center gap-2 cursor-pointer"
             data-testid="logo-link" 
             onClick={(e) => {
               if (window.location.pathname === '/') {
@@ -98,57 +99,19 @@ const Navbar = () => {
                 window.scrollTo({ top: 0, behavior: 'instant' });
                 setTimeout(() => window.location.reload(), 100);
               } else {
+                navigate('/');
                 setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
               }
             }}
-            style={{
-            textDecoration: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem'
-          }}>
-            <div style={{
-              width: '48px',
-              height: '48px',
-              background: 'linear-gradient(135deg, #6EE7B7 0%, #3B82F6 100%)',
-              borderRadius: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '24px',
-              fontWeight: 'bold',
-              color: 'white',
-              fontFamily: 'Outfit, sans-serif',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              <span style={{ position: 'relative', zIndex: 1 }}>R</span>
-              <div style={{
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 70%)',
-                pointerEvents: 'none'
-              }} />
+          >
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
+              <Sparkles className="w-6 h-6 md:w-7 md:h-7 text-white" />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.125rem' }}>
-              <span style={{
-                fontSize: '24px',
-                fontWeight: '800',
-                color: '#1e293b',
-                fontFamily: 'Outfit, sans-serif',
-                letterSpacing: '-0.5px',
-                lineHeight: '1'
-              }} className="rrray-logo">rayy</span>
-              <span className="desktop-only" style={{
-                fontSize: '10px',
-                fontWeight: '500',
-                color: '#64748B',
-                letterSpacing: '1px',
-                fontFamily: 'Outfit, sans-serif'
-              }}>Learn • Play • Shine</span>
+            <div>
+              <h1 className="text-slate-800 font-bold text-lg md:text-2xl tracking-tight">rayy</h1>
+              <p className="text-slate-600 text-xs md:text-sm hidden sm:block">Learn • Play • Shine</p>
             </div>
-          </Link>
+          </div>
 
           {/* DESKTOP NAVIGATION */}
           <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginLeft: 'auto' }}>
@@ -188,25 +151,15 @@ const Navbar = () => {
             )}
             
             {!user ? (
-              <button 
+              <motion.button
+                whileTap={{ scale: 0.95 }}
                 data-testid="login-button"
                 onClick={() => showAuth()}
-                className="btn-scale"
-                style={{
-                  background: 'linear-gradient(135deg, #6EE7B7 0%, #3B82F6 100%)',
-                  color: 'white',
-                  padding: '0.625rem 1.5rem',
-                  borderRadius: '9999px',
-                  fontWeight: '600',
-                  fontSize: '15px',
-                  fontFamily: 'Outfit, sans-serif',
-                  boxShadow: '0 4px 12px rgba(110, 231, 183, 0.3)',
-                  border: 'none',
-                  cursor: 'pointer'
-                }}
+                className="bg-gradient-to-r from-emerald-400 to-blue-500 text-white px-4 py-2 md:px-6 md:py-2.5 rounded-full font-semibold text-sm md:text-base shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
               >
-                Login / Sign Up
-              </button>
+                <Users className="w-4 h-4 md:w-5 md:h-5" />
+                Login
+              </motion.button>
             ) : (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 {user.role === 'customer' && walletBalance !== null && (
@@ -231,27 +184,21 @@ const Navbar = () => {
                     <span>{walletBalance}</span>
                   </button>
                 )}
+
+                <span className="hidden md:block text-slate-700 font-medium text-sm">Hello, {user.name}</span>
                 
                 {/* --- CUSTOM DESKTOP DROPDOWN --- */}
                 <div className="relative" ref={desktopMenuRef}>
-                  <button 
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
                     data-testid="user-menu-trigger"
                     onClick={() => setIsDesktopOpen(!isDesktopOpen)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      padding: '0.5rem 1rem',
-                      borderRadius: '9999px',
-                      background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-                      transition: 'background 0.2s',
-                      border: 'none',
-                      cursor: 'pointer'
-                    }}
+                    className="w-10 h-10 md:w-12 md:h-12 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center shadow-lg cursor-pointer transition-all"
                   >
-                    <User size={20} />
-                    <span style={{ fontWeight: '600' }}>{user.name}</span>
-                  </button>
+                    <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm md:text-base">
+                      {user.name?.charAt(0).toUpperCase() || 'U'}
+                    </div>
+                  </motion.button>
 
                   {isDesktopOpen && (
                     <div className="absolute right-0 top-full mt-2 w-56 rounded-xl border border-slate-200 bg-white shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-200">
@@ -328,41 +275,26 @@ const Navbar = () => {
             </button>
             
             {!user ? (
-              <button 
+              <motion.button
+                whileTap={{ scale: 0.95 }}
                 data-testid="login-button-mobile"
                 onClick={() => showAuth()}
-                style={{
-                  background: 'linear-gradient(135deg, #6EE7B7 0%, #3B82F6 100%)',
-                  color: 'white',
-                  padding: '0.5rem 1rem',
-                  borderRadius: '8px',
-                  fontWeight: '600',
-                  fontSize: '13px',
-                  fontFamily: 'Outfit, sans-serif',
-                  border: 'none',
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0
-                }}
+                className="bg-gradient-to-r from-emerald-400 to-blue-500 text-white px-4 py-2 rounded-full font-semibold text-sm shadow-lg flex items-center gap-2"
               >
+                <Users className="w-4 h-4" />
                 Login
-              </button>
+              </motion.button>
             ) : (
               <div className="relative" ref={mobileMenuRef}>
-                <button 
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setIsMobileOpen(!isMobileOpen)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.375rem',
-                    padding: '0.5rem 0.75rem',
-                    borderRadius: '8px',
-                    background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-                    border: 'none'
-                  }}
+                  className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:bg-slate-200 transition-all"
                 >
-                  <User size={18} />
-                  <span style={{ fontWeight: '600', fontSize: '13px' }}>{user.name?.split(' ')[0]}</span>
-                </button>
+                  <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                    {user.name?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                </motion.button>
 
                 {isMobileOpen && (
                   <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-slate-200 bg-white shadow-xl p-1.5 z-50">

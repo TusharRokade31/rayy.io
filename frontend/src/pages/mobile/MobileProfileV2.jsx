@@ -26,7 +26,7 @@ const MobileProfileV2 = () => {
     return (
       <MobileLayout>
         <div className="min-h-screen bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center p-4">
-          <GlassCard>
+          <GlassCard className="max-w-md w-full">
             <div className="text-center">
               <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <User className="w-10 h-10 text-white" />
@@ -35,7 +35,7 @@ const MobileProfileV2 = () => {
               <p className="text-gray-600 mb-4">Please log in to view your profile</p>
               <button
                 onClick={() => showAuthModal('customer')}
-                className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-xl shadow-lg"
+                className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-transform hover:scale-[1.02]"
               >
                 Login / Sign Up
               </button>
@@ -107,7 +107,7 @@ const MobileProfileV2 = () => {
         icon: ShieldCheck,
         label: 'Admin Overview',
         path: '/mobile/admin/dashboard',
-        gradient: 'from-red-500 to-orange-500' // Distinct styling for admin
+        gradient: 'from-red-500 to-orange-500' 
       },
       {
         icon: BarChart3,
@@ -150,15 +150,15 @@ const menuSections =
             transition={{ type: 'spring', delay: 0.2 }}
             className="flex justify-center mt-4"
           >
-            <div className="relative">
-              <div className="w-24 h-24 bg-gradient-to-br from-white to-purple-100 rounded-full flex items-center justify-center text-3xl font-bold text-purple-600 shadow-2xl">
+            <div className="relative group">
+              <div className="w-24 h-24 bg-gradient-to-br from-white to-purple-100 rounded-full flex items-center justify-center text-3xl font-bold text-purple-600 shadow-2xl transition-transform group-hover:scale-105">
                 {user.name?.charAt(0).toUpperCase() || 'U'}
               </div>
               
-              {/* Edit Profile Button (Restored for both roles) */}
+              {/* Edit Profile Button */}
               <button
                 onClick={() => navigate(user.role === 'partner_owner' ? '/partner/profile/edit' : '/mobile/edit-profile')}
-                className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg"
+                className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-purple-50 transition-colors"
               >
                 <Edit2 className="w-4 h-4 text-purple-600" />
               </button>
@@ -166,8 +166,8 @@ const menuSections =
           </motion.div>
         </MagicHeader>
 
-        {/* Content */}
-        <div className="p-4 pb-24 -mt-4">
+        {/* Content - Wrapped in Max Width Container */}
+        <div className="p-4 pb-24 -mt-4 max-w-7xl mx-auto w-full">
           
           {/* Child Profiles (Customer Only) */}
           {!isPartner && user.child_profiles && user.child_profiles.length > 0 && (
@@ -176,25 +176,27 @@ const menuSections =
                 <h2 className="text-lg font-bold text-gray-900">Child Profiles</h2>
                 <button
                   onClick={() => navigate('/mobile/child-profiles')}
-                  className="text-sm text-purple-600 font-semibold"
+                  className="text-sm text-purple-600 font-semibold hover:text-purple-700 hover:underline"
                 >
                   Manage
                 </button>
               </div>
-              <div className="flex gap-3 overflow-x-auto hide-scrollbar">
+              
+              {/* Responsive Grid/Scroll Container */}
+              <div className="flex md:grid gap-3 md:gap-6 overflow-x-auto md:overflow-visible md:grid-cols-4 lg:grid-cols-6 hide-scrollbar">
                 {user.child_profiles.map((child, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.2 + index * 0.1 }}
-                    className="flex-shrink-0"
+                    className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
                   >
-                    <div className="w-20 text-center">
-                      <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-xl mb-2 mx-auto shadow-lg">
+                    <div className="w-20 md:w-full text-center">
+                      <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-xl mb-2 mx-auto shadow-lg">
                         {child.name.charAt(0).toUpperCase()}
                       </div>
-                      <p className="text-xs font-semibold text-gray-900 truncate">{child.name}</p>
+                      <p className="text-xs md:text-sm font-semibold text-gray-900 truncate">{child.name}</p>
                       <p className="text-xs text-gray-500">{child.age}y</p>
                     </div>
                   </motion.div>
@@ -203,59 +205,63 @@ const menuSections =
             </GlassCard>
           )}
 
-          {/* Menu Sections (Dynamic based on Role) */}
-          {menuSections.map((section, sectionIndex) => (
-            <div key={section.title} className="mb-6">
-              <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-3 px-2">
-                {section.title}
-              </h3>
-              <GlassCard delay={0.2 + sectionIndex * 0.1}>
-                <div className="space-y-1">
-                  {section.items.map((item, itemIndex) => {
-                    const Icon = item.icon;
-                    return (
-                      <motion.div
-                        key={item.label}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3 + itemIndex * 0.05 }}
-                        onClick={() => navigate(item.path)}
-                        className="flex items-center gap-3 p-3 rounded-2xl hover:bg-purple-50 transition-colors cursor-pointer group"
-                      >
-                        <div className={`w-10 h-10 bg-gradient-to-br ${item.gradient} rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
-                          <Icon className="w-5 h-5 text-white" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-semibold text-gray-900 flex items-center gap-2">
-                            {item.label}
-                            {item.badge && (
-                              <span className="px-2 py-0.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full">
-                                {item.badge}
-                              </span>
-                            )}
-                          </p>
-                        </div>
-                        <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-purple-600 group-hover:translate-x-1 transition-all" />
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              </GlassCard>
-            </div>
-          ))}
+          {/* Menu Sections Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {menuSections.map((section, sectionIndex) => (
+              <div key={section.title} className="flex flex-col">
+                <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-3 px-2">
+                  {section.title}
+                </h3>
+                <GlassCard delay={0.2 + sectionIndex * 0.1} className="h-full">
+                  <div className="space-y-1">
+                    {section.items.map((item, itemIndex) => {
+                      const Icon = item.icon;
+                      return (
+                        <motion.div
+                          key={item.label}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.3 + itemIndex * 0.05 }}
+                          onClick={() => navigate(item.path)}
+                          className="flex items-center gap-3 p-3 rounded-2xl hover:bg-purple-50 transition-colors cursor-pointer group"
+                        >
+                          <div className={`w-10 h-10 bg-gradient-to-br ${item.gradient} rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                            <Icon className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-semibold text-gray-900 flex items-center gap-2">
+                              {item.label}
+                              {item.badge && (
+                                <span className="px-2 py-0.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full">
+                                  {item.badge}
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                          <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-purple-600 group-hover:translate-x-1 transition-all" />
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                </GlassCard>
+              </div>
+            ))}
+          </div>
 
           {/* Logout Button */}
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={handleLogout}
-            className="w-full py-4 bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold rounded-2xl shadow-lg flex items-center justify-center gap-2 mb-6"
-          >
-            <LogOut className="w-5 h-5" />
-            Logout
-          </motion.button>
+          <div className="mt-8 md:flex md:justify-center">
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleLogout}
+              className="w-full md:w-auto md:min-w-[300px] py-4 bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold rounded-2xl shadow-lg flex items-center justify-center gap-2 mb-6 hover:shadow-xl hover:brightness-105 transition-all"
+            >
+              <LogOut className="w-5 h-5" />
+              Logout
+            </motion.button>
+          </div>
         </div>
       </div>
     </MobileLayout>

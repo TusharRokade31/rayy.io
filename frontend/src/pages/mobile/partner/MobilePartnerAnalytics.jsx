@@ -23,7 +23,7 @@ const MobilePartnerAnalytics = () => {
     recentActivity: []
   });
   const [loading, setLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState('week'); // week, month, year
+  const [timeRange, setTimeRange] = useState('week');
 
   useEffect(() => {
     fetchAnalytics();
@@ -34,7 +34,6 @@ const MobilePartnerAnalytics = () => {
       setLoading(true);
       const token = localStorage.getItem('yuno_token');
       
-      // Use existing stats endpoint and mock analytics for now
       const response = await axios.get(`${API}/partners/my/stats`, {
         headers: { Authorization: `Bearer ${token}` }
       }).catch(() => ({ data: {} }));
@@ -105,15 +104,15 @@ const MobilePartnerAnalytics = () => {
           gradient="from-green-500 via-emerald-500 to-teal-500"
         />
 
-        <div className="px-4 pb-24 mt-10">
+        <div className="px-3 sm:px-4 md:px-6 lg:px-8 pb-24 mt-6 sm:mt-8 md:mt-10 max-w-7xl mx-auto">
           {/* Time Range Filter */}
-          <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
+          <div className="flex items-center gap-2 mb-4 sm:mb-6 overflow-x-auto pb-2 scrollbar-hide">
             {timeRangeOptions.map(option => (
               <motion.button
                 key={option.value}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setTimeRange(option.value)}
-                className={`px-6 py-2.5 rounded-full font-semibold text-sm whitespace-nowrap transition-all flex items-center justify-center ${
+                className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-semibold text-xs sm:text-sm whitespace-nowrap transition-all flex items-center justify-center ${
                   timeRange === option.value
                     ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg'
                     : 'bg-white text-gray-700 border-2 border-gray-200'
@@ -126,29 +125,29 @@ const MobilePartnerAnalytics = () => {
 
           {loading ? (
             <div className="flex justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent"></div>
+              <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-4 border-green-500 border-t-transparent"></div>
             </div>
           ) : (
             <>
               {/* Key Metrics */}
-              <div className="grid grid-cols-2 gap-3 mb-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
                 {statCards.map((stat, index) => {
                   const Icon = stat.icon;
                   return (
                     <GlassCard key={stat.label} delay={0.1 * index}>
-                      <div className={`bg-gradient-to-br ${stat.bgColor} rounded-xl p-4`}>
-                        <div className={`w-10 h-10 bg-gradient-to-br ${stat.color} rounded-lg flex items-center justify-center mb-3`}>
-                          <Icon className="w-5 h-5 text-white" />
+                      <div className={`bg-gradient-to-br ${stat.bgColor} rounded-xl p-3 sm:p-4 h-full`}>
+                        <div className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br ${stat.color} rounded-lg flex items-center justify-center mb-2 sm:mb-3`}>
+                          <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                         </div>
-                        <div className="text-2xl font-bold text-gray-900 mb-1">
+                        <div className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-1 truncate">
                           {stat.value}
                         </div>
-                        <div className="flex items-center justify-between">
-                          <div className="text-xs text-gray-600">
+                        <div className="flex items-center justify-between gap-1">
+                          <div className="text-xs text-gray-600 truncate">
                             {stat.label}
                           </div>
                           {stat.growth !== undefined && (
-                            <div className={`flex items-center gap-1 text-xs font-semibold ${
+                            <div className={`flex items-center gap-0.5 sm:gap-1 text-xs font-semibold whitespace-nowrap ${
                               stat.growth >= 0 ? 'text-green-600' : 'text-red-600'
                             }`}>
                               {stat.growth >= 0 ? (
@@ -168,26 +167,28 @@ const MobilePartnerAnalytics = () => {
 
               {/* Top Performing Listings */}
               {analytics.topListings && analytics.topListings.length > 0 && (
-                <div className="mb-6">
-                  <h2 className="text-lg font-bold text-gray-900 mb-3 px-2">Top Performing Listings</h2>
-                  <div className="space-y-3">
+                <div className="mb-4 sm:mb-6">
+                  <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-3 px-1 sm:px-2">
+                    Top Performing Listings
+                  </h2>
+                  <div className="space-y-2 sm:space-y-3">
                     {analytics.topListings.map((listing, index) => (
                       <GlassCard key={listing.id} delay={0.1 * index}>
-                        <div className="p-4 flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center flex-shrink-0">
-                            <Package className="w-6 h-6 text-green-600" />
+                        <div className="p-3 sm:p-4 flex items-center gap-3 sm:gap-4">
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center flex-shrink-0">
+                            <Package className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-bold text-gray-900 truncate mb-1">
+                            <h3 className="font-bold text-sm sm:text-base text-gray-900 truncate mb-1">
                               {listing.title}
                             </h3>
-                            <div className="flex items-center gap-4 text-sm text-gray-600">
+                            <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 flex-wrap">
                               <span className="flex items-center gap-1">
-                                <Calendar className="w-4 h-4" />
+                                <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
                                 {listing.bookings} bookings
                               </span>
                               <span className="flex items-center gap-1">
-                                <DollarSign className="w-4 h-4" />
+                                <DollarSign className="w-3 h-3 sm:w-4 sm:h-4" />
                                 ₹{listing.revenue}
                               </span>
                             </div>
@@ -201,10 +202,12 @@ const MobilePartnerAnalytics = () => {
 
               {/* Coming Soon: Charts */}
               <GlassCard>
-                <div className="p-6 text-center">
-                  <BarChart3 className="w-16 h-16 mx-auto mb-3 text-gray-300" />
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">Detailed Charts Coming Soon</h3>
-                  <p className="text-sm text-gray-600">
+                <div className="p-4 sm:p-6 text-center">
+                  <BarChart3 className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-3 text-gray-300" />
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1 sm:mb-2">
+                    Detailed Charts Coming Soon
+                  </h3>
+                  <p className="text-xs sm:text-sm text-gray-600">
                     We&apos;re working on advanced analytics with interactive charts and insights.
                   </p>
                 </div>

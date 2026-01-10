@@ -525,7 +525,13 @@ function App() {
                 allowModeToggle={false}  // MOBILE: Disable partner toggle completely
               />
             ) : (
-              <AuthModal mode={authMode} onClose={() => setShowAuth(false)} />
+             <ModernAuthModalV2 
+                isOpen={showAuth}
+                mode="customer"  // MOBILE: Customer login only, no partner access
+                onClose={() => setShowAuth(false)}
+                onSuccess={login}
+                allowModeToggle={false}  // MOBILE: Disable partner toggle completely
+              />
             )
           )}
            {/* {showAuth &&  (
