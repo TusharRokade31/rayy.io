@@ -15,7 +15,7 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
   // Register / Wizard State
   const [wizardStep, setWizardStep] = useState('identifier_input');
   const [identifier, setIdentifier] = useState('');
-  const [otp, setOtp] = useState(['', '', '', '']);
+  const [otp, setOtp] = useState(['', '', '', '','', '']);
   
   // Signup Form Data
   const [registerData, setRegisterData] = useState({ name: '', password: '' });
@@ -23,14 +23,15 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
   const [loading, setLoading] = useState(false);
   const [loginMode, setLoginMode] = useState(mode);
 
-  const otpRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
+  const otpRefs = [useRef(null), useRef(null), useRef(null), 
+  useRef(null), useRef(null), useRef(null)];
 
   useEffect(() => {
     if (isOpen) {
       setWizardStep('identifier_input');
       setUseOtpForLogin(false);
       setIdentifier('');
-      setOtp(['', '', '', '']);
+      setOtp(['', '', '', '', '', '']);
       setLoginData({ email: '', password: '' });
       setRegisterData({ name: '', password: '' });
     }
@@ -147,12 +148,12 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-    if (value && index < 3) otpRefs[index + 1].current?.focus();
+    if (value && index < 5) otpRefs[index + 1].current?.focus();
   };
 
   const handleVerifyOTP = async () => {
     const otpCode = otp.join('');
-    if (otpCode.length < 4) {
+    if (otpCode.length < 6) {
       toast.error('Invalid OTP');
       return;
     }
