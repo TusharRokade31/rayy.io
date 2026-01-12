@@ -9,16 +9,16 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
   const [activeTab, setActiveTab] = useState('login');
   
   // Login State
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [loginData, setLoginData] = useState({ identifier: '', password: '' });
   const [useOtpForLogin, setUseOtpForLogin] = useState(false);
 
   // Register / Wizard State
   const [wizardStep, setWizardStep] = useState('identifier_input');
-  const [identifier, setIdentifier] = useState('');
+  const [identifier, setIdentifier] = useState(''); // This captures the initial input (Email or Phone)
   const [otp, setOtp] = useState(['', '', '', '','', '']);
   
   // Signup Form Data
-  const [registerData, setRegisterData] = useState({ name: '', password: '' });
+  const [registerData, setRegisterData] = useState({ name: '', password: '', extraEmail: '' });
 
   const [loading, setLoading] = useState(false);
   const [loginMode, setLoginMode] = useState(mode);
@@ -32,8 +32,8 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
       setUseOtpForLogin(false);
       setIdentifier('');
       setOtp(['', '', '', '', '', '']);
-      setLoginData({ email: '', password: '' });
-      setRegisterData({ name: '', password: '' });
+      setLoginData({ identifier: '', password: '' });
+      setRegisterData({ name: '', password: '', extraEmail: '' });
     }
   }, [isOpen, activeTab]);
 
@@ -45,43 +45,41 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
 
   if (!isOpen) return null;
 
-  const isEmail = identifier.includes('@');
-  const isPhone = /^\d+$/.test(identifier);
+  // Helper to check input type
+  const isEmail = (text) => text.includes('@');
+  const isPhone = (text) => /^\d+$/.test(text);
 
   // --- 1. CHECK USER (Using send-otp API) ---
   const handleContinue = async () => {
-    if (!identifier || (!isEmail && !isPhone)) {
+    if (!identifier || (!isEmail(identifier) && !isPhone(identifier))) {
       toast.error('Please enter a valid email or phone number');
       return;
     }
 
     setLoading(true);
     try {
-      // We use send-otp to check status since it returns is_new_user
+      // Use send-otp to check status (returns is_new_user)
       const response = await axios.post(`${API}/auth/send-otp`, { identifier });
       const isNewUser = response.data?.is_new_user;
 
       if (activeTab === 'register') {
         // --- REGISTER FLOW ---
         if (!isNewUser) {
-          // Account EXISTS -> Error
           toast.error('Account already exists. Please login.');
           setLoading(false);
           return;
         } else {
-          // Account NEW -> Go to Signup Form
-          // (Note: An OTP was sent by the API, but we ignore it for Password signup flow)
+          // New User -> Go to Signup Form
           setWizardStep('signup_form');
         }
       } else {
         // --- LOGIN FLOW (OTP) ---
         if (isNewUser) {
-          // Account NEW -> Error (cannot login)
           toast.error('Account not found. Please sign up.');
           setLoading(false);
           return;
         }
-        // Account EXISTS -> OTP was sent successfully by the check above -> Go to Input
+        // Existing User -> Go to OTP Input
         setWizardStep('otp_input');
         toast.success('OTP sent successfully!');
       }
@@ -96,20 +94,38 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
 
   // --- 2. SIGNUP (Name + Password) ---
   const handleCompleteSignup = async () => {
+    // Validation
     if (!registerData.name.trim() || !registerData.password) {
       toast.error('Please fill in all fields');
       return;
     }
 
+    // Since backend requires email, if user started with Phone, we must check extraEmail
+    if (isPhone(identifier) && !registerData.extraEmail) {
+        toast.error('Email is required for registration');
+        return;
+    }
+
     setLoading(true);
     try {
-      // NOTE: Using /register endpoint for password-based signup
-      const response = await axios.post(`${API}/auth/register`, {
-        email: identifier,
+      // Construct Payload based on input type
+      const payload = {
         name: registerData.name,
         password: registerData.password,
         role: loginMode === 'partner' ? 'partner_owner' : 'customer'
-      });
+      };
+
+      if (isEmail(identifier)) {
+        // Case 1: Started with Email
+        payload.email = identifier;
+        payload.phone = null; // Optional
+      } else {
+        // Case 2: Started with Phone
+        payload.email = registerData.extraEmail; // Valid EmailStr required by backend
+        payload.phone = identifier;
+      }
+
+      const response = await axios.post(`${API}/auth/register`, payload);
 
       if (onSuccess) onSuccess(response.data.access_token, response.data.user, true);
       toast.success('Account created successfully!');
@@ -126,8 +142,10 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
     e.preventDefault();
     setLoading(true);
     try {
+      // Sending 'identifier' as 'email' because Backend UserLogin likely maps first field to email
+      // Ensure your backend allows searching by phone in the 'email' field if you want phone login here
       const response = await axios.post(`${API}/auth/login`, {
-        email: loginData.email,
+        email: loginData.identifier, 
         password: loginData.password,
         role: loginMode === 'partner' ? 'partner_owner' : 'customer'
       });
@@ -164,6 +182,7 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
         otp: otpCode,
         role: loginMode === 'partner' ? 'partner_owner' : 'customer'
       });
+      console.log(response)
       if (onSuccess) onSuccess(response.data.access_token, response.data.user, false);
       onClose();
     } catch (error) {
@@ -180,7 +199,7 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
   const handleBack = () => {
     setWizardStep('identifier_input');
     setOtp(['', '', '', '']);
-    setRegisterData({ name: '', password: '' });
+    setRegisterData({ name: '', password: '', extraEmail: '' });
   };
 
   return (
@@ -242,16 +261,16 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
                   // Password Login
                   <form onSubmit={handlePasswordLogin} className="space-y-4">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Email or Phone</label>
                       <div className="relative">
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <input 
-                          type="email" 
+                          type="text" 
                           required
-                          value={loginData.email}
-                          onChange={(e) => setLoginData({...loginData, email: e.target.value})}
+                          value={loginData.identifier}
+                          onChange={(e) => setLoginData({...loginData, identifier: e.target.value})}
                           className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-xl focus:border-purple-500 outline-none"
-                          placeholder="email@example.com"
+                          placeholder="Email or Phone Number"
                         />
                       </div>
                     </div>
@@ -285,7 +304,7 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
                             value={identifier}
                             onChange={(e) => setIdentifier(e.target.value)}
                             className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-xl focus:border-purple-500 outline-none"
-                            placeholder="email@example.com"
+                            placeholder="Email or Phone Number"
                           />
                         </div>
                         <button onClick={handleContinue} disabled={loading} className="w-full py-4 bg-purple-600 text-white font-bold rounded-xl hover:bg-purple-700 transition-all mt-2">
@@ -322,14 +341,14 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
                 {wizardStep === 'identifier_input' && (
                   <div className="space-y-6">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Enter Email</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Enter Email or Phone</label>
                       <div className="relative">
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <input
                           type="text"
                           value={identifier}
                           onChange={(e) => setIdentifier(e.target.value)}
-                          placeholder="email@example.com"
+                          placeholder="email@example.com or 98765..."
                           className="w-full pl-12 pr-4 py-4 text-lg bg-gray-50 border-2 border-gray-100 rounded-xl focus:border-purple-500 outline-none transition-all"
                         />
                       </div>
@@ -351,14 +370,36 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
                         You are new here! Please complete your profile.
                      </div>
                      
-                     {/* Read-Only Identifier */}
+                     {/* Read-Only Identifier (Email or Phone) */}
                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                           {isPhone(identifier) ? 'Verified Phone' : 'Verified Email'}
+                        </label>
                         <div className="relative">
-                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                           {isPhone(identifier) ? 
+                             <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" /> :
+                             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                           }
                             <input type="text" value={identifier} disabled className="w-full pl-12 pr-4 py-3.5 bg-gray-100 border-2 border-gray-100 rounded-xl text-gray-500 cursor-not-allowed" />
                         </div>
                      </div>
+
+                     {/* If user used PHONE, we MUST ask for Email (Backend requirement) */}
+                     {isPhone(identifier) && (
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address <span className='text-red-500'>*</span></label>
+                          <div className="relative">
+                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <input
+                              type="email"
+                              placeholder="Required for account recovery"
+                              value={registerData.extraEmail}
+                              onChange={(e) => setRegisterData({...registerData, extraEmail: e.target.value})}
+                              className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-xl focus:border-purple-500 outline-none"
+                            />
+                          </div>
+                        </div>
+                     )}
 
                      {/* Name */}
                      <div>

@@ -610,9 +610,9 @@ function App() {
           return null;
         })()}
         {/* Partner Onboarding: Desktop only - hidden for mobile release */}
-        {/* {showOnboarding && onboardingType === 'partner' && window.innerWidth > 768 && (
+        {showOnboarding && onboardingType === 'partner' && window.innerWidth > 768 && (
           <PartnerOnboardingWizard onComplete={completeOnboarding} />
-        )} */}
+        )}
         
         {/* PWA Install Prompt */}
         <InstallPrompt />

@@ -241,7 +241,7 @@ const PartnerOnboardingWizard = ({ onComplete }) => {
   };
 
   const renderBasicInfo = () => (
-    <div style={{ padding: '2rem' }}>
+    <div  className='bg-white' style={{ padding: '2rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <div style={{
           width: '64px',
@@ -466,7 +466,7 @@ const PartnerOnboardingWizard = ({ onComplete }) => {
   );
 
   const renderKYCDocuments = () => (
-    <div style={{ padding: '2rem' }}>
+    <div  style={{ padding: '2rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <div style={{
           width: '64px',
@@ -1038,6 +1038,7 @@ const PartnerOnboardingWizard = ({ onComplete }) => {
           {/* Step Content */}
           <AnimatePresence mode="wait">
             <motion.div
+              className='bg-white'
               key={step}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
