@@ -173,7 +173,7 @@ const CustomerOnboarding = ({ onComplete }) => {
     } finally {
       setLoading(false);
     }
-  };
+   };
 
   const handleSkip = () => {
     toast('You can complete your profile anytime from settings');
@@ -191,7 +191,7 @@ const CustomerOnboarding = ({ onComplete }) => {
           overflow: 'hidden',
           maxHeight: '90vh'
         }}
-        hideClose={true}
+        // hideClose={true}
       >
         {/* Progress Bar */}
         <div style={{

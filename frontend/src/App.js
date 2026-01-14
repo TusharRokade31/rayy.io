@@ -429,7 +429,7 @@ function App() {
               <Route path="/mobile/admin/settings" element={user?.role === 'admin' ? <MobileAdminSettings /> : <Navigate to="/mobile" />} />
               
               {/* Mobile Customer/General Routes - Come AFTER specific partner/admin routes */}
-              <Route path="/mobile" element={<MobileHome />} />
+              <Route path="/" element={<MobileHome />} />
               <Route path="/mobile/home" element={<MobileHome />} />
               <Route path="/mobile/search" element={<MobileSearch />} />
               <Route path="/mobile/listing/:id" element={<MobileListingV2 />} />
@@ -449,9 +449,9 @@ function App() {
               <Route path="/mobile/help" element={<MobileHelpCenter />} />
               <Route path="/mobile/leaderboard" element={<MobileLeaderboard />} />
               
-              <Route path="/partner-landing" element={<PartnerLanding />} />
-              <Route path="/search" element={<SearchResults />} />
-              <Route path="/listings/:id" element={<ListingDetail />} />
+              {/* <Route path="/partner-landing" element={<PartnerLanding />} /> */}
+              {/* <Route path="/search" element={<SearchResults />} /> */}
+              {/* <Route path="/listings/:id" element={<ListingDetail />} /> */}
               <Route path="/checkout/:sessionId" element={user ? <Checkout /> : <Navigate to="/" />} />
               <Route path="/checkout/plan/:listingId/:planId" element={user ? <Checkout /> : <Navigate to="/" />} />
               <Route path="/dashboard" element={user?.role === 'customer' ? <AccountDashboard /> : <Navigate to="/" />} />
