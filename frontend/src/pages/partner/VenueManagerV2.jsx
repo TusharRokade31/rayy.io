@@ -157,9 +157,9 @@ const VenueManagerV2 = () => {
 
   const handleBackToListing = () => {
     if (returningFromListingCreation) {
-      navigate('/partner/listings/new');
+      navigate('/mobile/partner/listings/create');
     } else {
-      navigate('/partner/listings');
+      navigate('/mobile/partner/listings');
     }
   };
 
@@ -221,7 +221,7 @@ const VenueManagerV2 = () => {
           </div>
           <Button
             onClick={openAddModal}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:shadow-lg transition-all flex items-center gap-2 w-full sm:w-auto justify-center text-sm sm:text-base"
+            className="bg-gradient-to-r from-indigo-600 text-white to-purple-600 hover:shadow-lg transition-all flex items-center gap-2 w-full sm:w-auto justify-center text-sm sm:text-base"
           >
             <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
             Add Venue
@@ -244,7 +244,7 @@ const VenueManagerV2 = () => {
             </p>
             <Button
               onClick={openAddModal}
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:shadow-lg transition-all flex items-center gap-2 mx-auto text-sm sm:text-base"
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:shadow-lg text-white transition-all flex items-center gap-2 mx-auto text-sm sm:text-base"
             >
               <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
               Add Your First Venue

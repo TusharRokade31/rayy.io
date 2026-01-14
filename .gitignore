@@ -12,6 +12,9 @@ node_modules/
 /backend/firebase-service-account.json
 /frontend/node_modules
 
+backend
+docs
+mobile
 /.pnp
 .pnp.js
 .yarn/install-state.gz

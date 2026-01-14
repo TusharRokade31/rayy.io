@@ -52,7 +52,6 @@ const VenueManagerV2 = lazy(() => import('./pages/partner/VenueManagerV2'));
 const PartnerProfileEdit = lazy(() => import('./pages/partner/PartnerProfileEdit'));
 const PartnerBusinessDetails = lazy(() => import('./pages/partner/PartnerBusinessDetails'));
 const PartnerSettings = lazy(() => import('./pages/partner/PartnerSettings'));
-
 // Lazy load admin pages - New Comprehensive Admin Panel
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const AdminFinancials = lazy(() => import('./pages/admin/AdminFinancials'));
