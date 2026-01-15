@@ -127,7 +127,7 @@ const MobilePartnerDashboard = () => {
       icon: Plus,
       label: 'Create Listing',
       color: 'from-purple-500 to-pink-500',
-      action: () => navigate('/mobile/partner/listings/create')
+      action: () => navigate('/partner/listings/create')
     },
     {
       icon: Calendar,
