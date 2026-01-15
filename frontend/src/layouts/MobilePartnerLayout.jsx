@@ -10,8 +10,8 @@ const MobilePartnerLayout = ({ children, hideNav = false }) => {
   const { user } = useContext(AuthContext);
 
   const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/mobile/partner/dashboard' },
-    { icon: Package, label: 'Listings', path: '/mobile/partner/listings' },
+    { icon: LayoutDashboard, label: 'Dashboard', path: '/partner/dashboard' },
+    { icon: Package, label: 'Listings', path: '/partner/listings' },
     { icon: Calendar, label: 'Bookings', path: '/mobile/partner/bookings' },
     { icon: BarChart3, label: 'Analytics', path: '/mobile/partner/analytics' },
     { icon: User, label: 'Profile', path: '/mobile/partner/profile' }

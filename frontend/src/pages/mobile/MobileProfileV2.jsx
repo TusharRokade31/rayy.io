@@ -79,7 +79,7 @@ const MobileProfileV2 = () => {
     {
       title: 'Partner Management',
       items: [
-        { icon: LayoutDashboard, label: 'Dashboard', path: '/mobile/partner/dashboard', gradient: 'from-blue-600 to-indigo-600' },
+        { icon: LayoutDashboard, label: 'Dashboard', path: '/partner/dashboard', gradient: 'from-blue-600 to-indigo-600' },
         { icon: UserCircle, label: 'Partner Profile', path: '/mobile/partner/profile', gradient: 'from-violet-600 to-purple-600' },
         { icon: Wallet, label: 'Financials', path: '/partner/financials', gradient: 'from-emerald-500 to-teal-500' },
       ]

@@ -92,7 +92,7 @@ const PartnerProfile = () => {
 
   // Show wizard if requested
   if (showWizard) {
-    return <PartnerOnboardingWizard onComplete={handleWizardComplete} />;
+    return <PartnerOnboardingWizard onComplete={handleWizardComplete}  onClose={() => setShowWizard(false)} />;
   }
 
   if (loading) {

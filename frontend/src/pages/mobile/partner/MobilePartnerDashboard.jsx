@@ -1,20 +1,29 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion'; // Added AnimatePresence
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext, API } from '../../../App';
 import MobilePartnerLayout from '../../../layouts/MobilePartnerLayout';
 import MagicHeader from '../../../components/mobile/MagicHeader';
 import GlassCard from '../../../components/mobile/GlassCard';
+import PartnerOnboardingWizard from '../../../components/PartnerOnboardingWizard'; // Make sure path is correct
 import { 
   TrendingUp, Package, Calendar, DollarSign, Users, 
-  Star, ArrowRight, Plus, Eye, CheckCircle, Clock
+  Star, ArrowRight, Plus, Eye, CheckCircle, Clock, 
+  AlertTriangle, ChevronRight // Added AlertTriangle & ChevronRight
 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const MobilePartnerDashboard = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  
+  // State for Wizard Visibility
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  
+  // State for KYC Status
+  const [kycStatus, setKycStatus] = useState('unverified'); 
+
   const [stats, setStats] = useState({
     totalListings: 0,
     activeListings: 0,
@@ -35,7 +44,6 @@ const MobilePartnerDashboard = () => {
       setLoading(true);
       const token = localStorage.getItem('yuno_token');
       
-      // Fetch partner stats and recent bookings
       const [statsRes, bookingsRes] = await Promise.all([
         axios.get(`${API}/partners/my/stats`, {
           headers: { Authorization: `Bearer ${token}` }
@@ -45,8 +53,9 @@ const MobilePartnerDashboard = () => {
         }).catch(() => ({ data: [] }))
       ]);
       
-      // Parse stats from API response
       const apiStats = statsRes.data || {};
+      
+      // Update stats
       setStats({
         totalListings: apiStats.total_listings || 0,
         activeListings: apiStats.active_listings || 0,
@@ -55,23 +64,29 @@ const MobilePartnerDashboard = () => {
         totalRevenue: apiStats.total_revenue || 0,
         avgRating: apiStats.avg_rating || 0
       });
+
+      // SET KYC STATUS HERE
+      // Assuming your API returns kyc_status in the stats or user object
+      // If the API doesn't return it yet, it defaults to 'unverified' per your requirement
+      if (apiStats.kyc_status) {
+        setKycStatus(apiStats.kyc_status);
+      }
       
-      // Get recent bookings (take first 5)
       const allBookings = Array.isArray(bookingsRes.data) ? bookingsRes.data : [];
       setRecentBookings(allBookings.slice(0, 5));
+
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
-      setStats({
-        totalListings: 0,
-        activeListings: 0,
-        totalBookings: 0,
-        pendingBookings: 0,
-        totalRevenue: 0,
-        avgRating: 0
-      });
     } finally {
       setLoading(false);
     }
+  };
+
+  // Callback when wizard completes
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+    fetchDashboardData(); // Refresh data to update status to 'pending' or 'verified'
+    toast.success("KYC Submitted Successfully");
   };
 
   const statCards = [
@@ -138,7 +153,7 @@ const MobilePartnerDashboard = () => {
     <MobilePartnerLayout>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50">
         
-        {/* Mobile Header - Hidden on Desktop */}
+        {/* Mobile Header */}
         <div className="md:hidden">
             <MagicHeader
             title="Partner Dashboard"
@@ -147,7 +162,7 @@ const MobilePartnerDashboard = () => {
             />
         </div>
 
-        {/* Desktop Header - Visible on Medium+ screens */}
+        {/* Desktop Header */}
         <div className="hidden md:block bg-white shadow-sm border-b border-gray-100 px-8 py-6">
             <div className="max-w-7xl mx-auto flex justify-between items-center">
                 <div>
@@ -164,42 +179,81 @@ const MobilePartnerDashboard = () => {
 
         {/* Main Content Container */}
         <div className="px-4 pb-24 mt-10 md:mt-0 md:p-8 max-w-7xl mx-auto">
-          
-          {/* Stats Grid - 2 cols on mobile, 4 on desktop */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-8">
-            {statCards.map((stat, index) => {
-              const Icon = stat.icon;
-              return (
-                <GlassCard key={stat.label} delay={0.1 * index} className="h-full">
-                  <div className={`bg-gradient-to-br ${stat.bgColor} rounded-xl p-4 md:p-6 h-full transition-all hover:shadow-md`}>
-                    <div className="flex items-center justify-between mb-3">
-                        <div className={`w-10 h-10 bg-gradient-to-br ${stat.color} rounded-lg flex items-center justify-center`}>
-                        <Icon className="w-5 h-5 text-white" />
-                        </div>
-                        {stat.total && (
-                             <span className="text-xs font-medium text-gray-500 bg-white/60 px-2 py-1 rounded-full">
-                                Total: {stat.total}
-                             </span>
-                        )}
+
+          {/* --- KYC VERIFICATION BANNER --- */}
+          {kycStatus === 'unverified' && (
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6"
+            >
+              <div 
+                onClick={() => setShowOnboarding(true)}
+                className="bg-gradient-to-r rounded-xl p-1 shadow-lg cursor-pointer transform transition-transform active:scale-95"
+              >
+                <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <AlertTriangle className="w-5 h-5 text-orange-600" />
                     </div>
-                    <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
-                      {stat.value}
-                    </div>
-                    <div className="text-xs md:text-sm text-gray-600 font-medium">
-                      {stat.label}
+                    <div>
+                      <h3 className="font-bold text-gray-900">Account Not Verified</h3>
+                      <p className="text-xs text-gray-600">Complete KYC to accept bookings & withdraw earnings.</p>
                     </div>
                   </div>
-                </GlassCard>
-              );
-            })}
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+           {/* --- PENDING STATUS BANNER (Optional Good-to-have) --- */}
+           {kycStatus === 'pending' && (
+            <div className="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center gap-3">
+              <Clock className="w-5 h-5 text-blue-500" />
+              <div>
+                <h3 className="font-bold text-blue-900 text-sm">Verification Pending</h3>
+                <p className="text-xs text-blue-700">We are reviewing your documents. This usually takes 24 hours.</p>
+              </div>
+            </div>
+          )}
+          
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-8">
+            {/* ... (Existing Stat Cards Code) ... */}
+            {statCards.map((stat, index) => {
+               const Icon = stat.icon;
+               return (
+                 <GlassCard key={stat.label} delay={0.1 * index} className="h-full">
+                   <div className={`bg-gradient-to-br ${stat.bgColor} rounded-xl p-4 md:p-6 h-full transition-all hover:shadow-md`}>
+                     <div className="flex items-center justify-between mb-3">
+                         <div className={`w-10 h-10 bg-gradient-to-br ${stat.color} rounded-lg flex items-center justify-center`}>
+                         <Icon className="w-5 h-5 text-white" />
+                         </div>
+                         {stat.total && (
+                              <span className="text-xs font-medium text-gray-500 bg-white/60 px-2 py-1 rounded-full">
+                                 Total: {stat.total}
+                              </span>
+                         )}
+                     </div>
+                     <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
+                       {stat.value}
+                     </div>
+                     <div className="text-xs md:text-sm text-gray-600 font-medium">
+                       {stat.label}
+                     </div>
+                   </div>
+                 </GlassCard>
+               );
+             })}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            {/* Left Column (Bookings) - Takes 2/3 width on Large screens */}
+            {/* Left Column (Bookings) */}
             <div className="lg:col-span-2 space-y-6">
                 
-                {/* Quick Actions - Mobile/Tablet Only (If you prefer them above bookings on small screens) */}
+                {/* Quick Actions (Mobile) */}
                 <div className="lg:hidden mb-6">
                     <h2 className="text-lg font-bold text-gray-900 mb-3 px-2">Quick Actions</h2>
                     <div className="grid grid-cols-2 gap-3">
@@ -220,7 +274,7 @@ const MobilePartnerDashboard = () => {
                     </div>
                 </div>
 
-                {/* Recent Bookings */}
+                {/* Recent Bookings Section (Existing Code) */}
                 <div>
                     <div className="flex items-center justify-between mb-4 px-2">
                         <h2 className="text-lg md:text-xl font-bold text-gray-900">Recent Bookings</h2>
@@ -286,7 +340,7 @@ const MobilePartnerDashboard = () => {
                 </div>
             </div>
 
-            {/* Right Column (Quick Actions Desktop) - Takes 1/3 width on Large screens */}
+            {/* Right Column (Quick Actions Desktop - Existing Code) */}
             <div className="hidden lg:block space-y-6">
                 <div className="bg-white/60 backdrop-blur-md rounded-2xl p-6 shadow-sm border border-white/50">
                     <h2 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h2>
@@ -309,7 +363,6 @@ const MobilePartnerDashboard = () => {
                     </div>
                 </div>
 
-                {/* Additional Sidebar Content (Optional Placeholder) */}
                 <div className="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl p-6 text-white shadow-lg">
                     <div className="flex items-center gap-3 mb-4">
                         <div className="p-2 bg-white/20 rounded-lg">
@@ -331,6 +384,17 @@ const MobilePartnerDashboard = () => {
 
           </div>
         </div>
+
+        {/* --- KYC WIZARD MODAL --- */}
+        <AnimatePresence>
+          {showOnboarding && (
+            <PartnerOnboardingWizard 
+              onClose={() => setShowOnboarding(false)}
+              onComplete={handleOnboardingComplete}
+            />
+          )}
+        </AnimatePresence>
+        
       </div>
     </MobilePartnerLayout>
   );

@@ -416,20 +416,20 @@ function App() {
               <Route path="*" element={<Navigate to="/" replace />} />
               
               {/* Mobile Partner Routes - MUST come FIRST to avoid route conflicts */}
-              <Route path="/mobile/partner/dashboard" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerDashboard /> : <Navigate to="/mobile" />} />
-              <Route path="/mobile/partner/listings" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerListings /> : <Navigate to="/mobile" />} />
-              <Route path="/mobile/partner/listings/create" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobileCreateListing /> : <Navigate to="/mobile" />} />
-              <Route path="/mobile/partner/listings/edit/:id" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobileCreateListing /> : <Navigate to="/mobile" />} />
-              <Route path="/mobile/partner/bookings" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerBookings /> : <Navigate to="/mobile" />} />
-              <Route path="/mobile/partner/analytics" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerAnalytics /> : <Navigate to="/mobile" />} />
-              <Route path="/mobile/partner/profile" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerProfile /> : <Navigate to="/mobile" />} />
+              <Route path="/partner/dashboard" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerDashboard /> : <Navigate to="/" />} />
+              <Route path="/partner/listings" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerListings /> : <Navigate to="/" />} />
+              <Route path="/partner/listings/create" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobileCreateListing /> : <Navigate to="/" />} />
+              <Route path="/partner/listings/edit/:id" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobileCreateListing /> : <Navigate to="/" />} />
+              <Route path="/mobile/partner/bookings" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerBookings /> : <Navigate to="/" />} />
+              <Route path="/mobile/partner/analytics" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerAnalytics /> : <Navigate to="/" />} />
+              <Route path="/mobile/partner/profile" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerProfile /> : <Navigate to="/" />} />
               
               {/* Mobile Admin Routes */}
-              <Route path="/mobile/admin/dashboard" element={user?.role === 'admin' ? <MobileAdminDashboard /> : <Navigate to="/mobile" />} />
-              <Route path="/mobile/admin/users" element={user?.role === 'admin' ? <MobileAdminUsers /> : <Navigate to="/mobile" />} />
-              <Route path="/mobile/admin/partners" element={user?.role === 'admin' ? <MobileAdminPartners /> : <Navigate to="/mobile" />} />
+              <Route path="/mobile/admin/dashboard" element={user?.role === 'admin' ? <MobileAdminDashboard /> : <Navigate to="/" />} />
+              <Route path="/mobile/admin/users" element={user?.role === 'admin' ? <MobileAdminUsers /> : <Navigate to="/" />} />
+              <Route path="/mobile/admin/partners" element={user?.role === 'admin' ? <MobileAdminPartners /> : <Navigate to="/" />} />
               <Route path="/mobile/admin/listings" element={user?.role === 'admin' ? <MobileAdminListingsV2 /> : <MobileAdminListings />} />
-              <Route path="/mobile/admin/settings" element={user?.role === 'admin' ? <MobileAdminSettings /> : <Navigate to="/mobile" />} />
+              <Route path="/mobile/admin/settings" element={user?.role === 'admin' ? <MobileAdminSettings /> : <Navigate to="/" />} />
               
               {/* Mobile Customer/General Routes - Come AFTER specific partner/admin routes */}
               <Route path="/" element={<MobileHome />} />
@@ -468,13 +468,13 @@ function App() {
             {/* <Route path="/partner/signup" element={<HomeRebuild />} /> */}
             <Route path="/partner/onboarding" element={user?.role === 'partner_owner' ? <PartnerProfile /> : <Navigate to="/" />} />
             <Route path="/partner/profile" element={user?.role === 'partner_owner' ? <PartnerProfile /> : <Navigate to="/" />} />
-            <Route path="/partner/dashboard" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <PartnerDashboard /> : <Navigate to="/" />} />
+            {/* <Route path="/partner/dashboard" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <PartnerDashboard /> : <Navigate to="/" />} /> */}
             <Route path="/partner/analytics" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <PartnerAnalyticsDashboard /> : <Navigate to="/" />} />
             <Route path="/partner/customers" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <PartnerCustomers /> : <Navigate to="/" />} />
             <Route path="/partner/invoices" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <PartnerInvoices /> : <Navigate to="/" />} />
-            <Route path="/partner/listings" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <PartnerListingsManager /> : <Navigate to="/" />} />
-            <Route path="/partner/listings/new" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <ListingCreationWizard /> : <Navigate to="/" />} />
-            <Route path="/partner/listings/edit/:id" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <ListingCreationWizard /> : <Navigate to="/" />} />
+            {/* <Route path="/partner/listings" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <PartnerListingsManager /> : <Navigate to="/" />} /> */}
+            {/* <Route path="/partner/listings/new" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <ListingCreationWizard /> : <Navigate to="/" />} /> */}
+            {/* <Route path="/partner/listings/edit/:id" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <ListingCreationWizard /> : <Navigate to="/" />} /> */}
             <Route path="/partner/sessions" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <SessionScheduler /> : <Navigate to="/" />} />
             <Route path="/partner/bookings" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <PartnerBookings /> : <Navigate to="/" />} />
             <Route path="/partner/financials" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <PartnerFinancials /> : <Navigate to="/" />} />

@@ -11,7 +11,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { getErrorMessage } from '../utils/errorHandler';
 
-const PartnerOnboardingWizard = ({ onComplete }) => {
+const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
   const { user, token, setUser } = useContext(AuthContext);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -990,14 +990,37 @@ const PartnerOnboardingWizard = ({ onComplete }) => {
 
   return (
     <>
-      <Dialog open={true}>
+      <Dialog open={true} onOpenChange={onClose}>
         <DialogContent style={{
           maxWidth: '600px',
+          background: 'white',
           maxHeight: '90vh',
           overflow: 'auto',
           borderRadius: '16px',
           padding: 0
         }}>
+          <button
+            onClick={onClose}
+            style={{
+              position: 'absolute',
+              right: '1rem',
+              top: '1rem',
+              zIndex: 50,
+              background: 'rgba(255,255,255,0.8)',
+              border: 'none',
+              borderRadius: '50%',
+              padding: '0.5rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'background 0.2s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.background = '#F1F5F9'}
+            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.8)'}
+          >
+            <X size={20} color="#64748B" />
+          </button>
           {/* Progress Bar */}
           <div style={{
             position: 'sticky',
