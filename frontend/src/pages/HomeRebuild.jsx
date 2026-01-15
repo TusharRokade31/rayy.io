@@ -1447,7 +1447,7 @@ const HomeRebuild = () => {
       )}
 
       {/* ========== SECTION 8: WHY PARENTS ❤️ rayy (STATS) ========== */}
-      <section style={{ padding: '5rem 2rem', background: 'white' }}>
+     <section style={{ padding: '5rem 2rem', background: 'white' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <motion.h2
             initial={{ opacity: 0 }}
@@ -1479,48 +1479,10 @@ const HomeRebuild = () => {
             {[
               { value: 10000, label: 'Happy Learners', icon: '😊', color: '#6EE7B7' },
               { value: 200, label: 'Studios', icon: '🏫', color: '#3B82F6' },
-              { value: 4.8, label: 'Average Rating', icon: '⭐', color: '#FBBF24', suffix: '' }
-            ].map((stat, idx) => {
-              const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.3 });
-              return (
-                <motion.div
-                  key={idx}
-                  ref={ref}
-                  variants={scaleIn}
-                  style={{
-                    background: `linear-gradient(135deg, ${stat.color}15 0%, ${stat.color}05 100%)`,
-                    padding: '3rem 2rem',
-                    borderRadius: '24px',
-                    textAlign: 'center',
-                    border: `2px solid ${stat.color}30`
-                  }}
-                >
-                  <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>{stat.icon}</div>
-                  <div style={{
-                    fontSize: '3rem',
-                    fontWeight: '800',
-                    color: '#1E293B',
-                    marginBottom: '0.5rem',
-                    fontFamily: 'Outfit, sans-serif'
-                  }}>
-                    {inView && (
-                      <CountUp
-                        end={stat.value}
-                        duration={2.5}
-                        decimals={stat.value === 4.8 ? 1 : 0}
-                        suffix={idx === 0 ? 'k' : (idx === 1 ? '+' : '⭐')}
-                      />
-                    )}
-                  </div>
-                  <div style={{
-                    fontSize: '1.1rem',
-                    color: '#64748B',
-                    fontWeight: '600',
-                    fontFamily: 'Outfit, sans-serif'
-                  }}>{stat.label}</div>
-                </motion.div>
-              );
-            })}
+              { value: 4.8, label: 'Average Rating', icon: '⭐', color: '#FBBF24' }
+            ].map((stat, idx) => (
+              <StatItem key={idx} stat={stat} idx={idx} />
+            ))}
           </motion.div>
         </div>
       </section>
@@ -1980,6 +1942,51 @@ const HomeRebuild = () => {
         }
       `}</style>
     </div>
+  );
+};
+
+const StatItem = ({ stat, idx }) => {
+  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.3 });
+  
+  return (
+    <motion.div
+      ref={ref}
+      variants={{
+        hidden: { scale: 0.8, opacity: 0 },
+        visible: { scale: 1, opacity: 1, transition: { duration: 0.5, ease: 'easeOut' } }
+      }}
+      style={{
+        background: `linear-gradient(135deg, ${stat.color}15 0%, ${stat.color}05 100%)`,
+        padding: '3rem 2rem',
+        borderRadius: '24px',
+        textAlign: 'center',
+        border: `2px solid ${stat.color}30`
+      }}
+    >
+      <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>{stat.icon}</div>
+      <div style={{
+        fontSize: '3rem',
+        fontWeight: '800',
+        color: '#1E293B',
+        marginBottom: '0.5rem',
+        fontFamily: 'Outfit, sans-serif'
+      }}>
+        {inView && (
+          <CountUp
+            end={stat.value}
+            duration={2.5}
+            decimals={stat.value === 4.8 ? 1 : 0}
+            suffix={idx === 0 ? 'k' : (idx === 1 ? '+' : '⭐')}
+          />
+        )}
+      </div>
+      <div style={{
+        fontSize: '1.1rem',
+        color: '#64748B',
+        fontWeight: '600',
+        fontFamily: 'Outfit, sans-serif'
+      }}>{stat.label}</div>
+    </motion.div>
   );
 };
 

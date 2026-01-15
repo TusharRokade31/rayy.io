@@ -145,7 +145,7 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
       // Sending 'identifier' as 'email' because Backend UserLogin likely maps first field to email
       // Ensure your backend allows searching by phone in the 'email' field if you want phone login here
       const response = await axios.post(`${API}/auth/login`, {
-        email: loginData.identifier, 
+        identifier: loginData.identifier, 
         password: loginData.password,
         role: loginMode === 'partner' ? 'partner_owner' : 'customer'
       });
@@ -325,11 +325,11 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
                   </div>
                 )}
                 {/* Mode Toggle */}
-                {loginMode === 'customer' && (
+                
                   <button onClick={() => { setUseOtpForLogin(!useOtpForLogin); setWizardStep('identifier_input'); }} className="block w-full text-center text-purple-600 text-sm font-semibold mt-4 hover:underline">
                     {useOtpForLogin ? "Use Password" : "Use OTP"}
                   </button>
-                )}
+               
               </motion.div>
             )}
 

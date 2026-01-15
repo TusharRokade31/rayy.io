@@ -7,6 +7,12 @@ import axios from 'axios';
 import { Toaster } from 'sonner';
 import LoadingFallback from './components/LoadingFallback';
 
+import { useLocationPref } from './hooks/useLocationPref';
+import { registerServiceWorker } from './utils/pwa';
+import CapacitorService from './services/capacitor';
+import { setupAccessibilityObserver } from './utils/accessibilityFix';
+import { API_URL } from './config/runtime';
+
 // Eagerly load critical components
 import HomeRebuild from './pages/HomeRebuild';
 import AuthModal from './components/AuthModal';
@@ -115,11 +121,7 @@ const ListStudio = lazy(() => import('./pages/ListStudio'));
 const Resources = lazy(() => import('./pages/Resources'));
 const FAQ = lazy(() => import('./pages/FAQ'));
 
-import { useLocationPref } from './hooks/useLocationPref';
-import { registerServiceWorker } from './utils/pwa';
-import CapacitorService from './services/capacitor';
-import { setupAccessibilityObserver } from './utils/accessibilityFix';
-import { API_URL } from './config/runtime';
+
 
 export const API = API_URL;
 
@@ -406,11 +408,12 @@ function App() {
       <div className="App">
         <BrowserRouter>
           <ScrollToTop />
-          <MobileDetector />
-          <MobileRedirect />
+          {/* <MobileDetector /> */}
+          {/* <MobileRedirect /> */}
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
               <Route path="/" element={<MobileHome />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
               
               {/* Mobile Partner Routes - MUST come FIRST to avoid route conflicts */}
               <Route path="/mobile/partner/dashboard" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerDashboard /> : <Navigate to="/mobile" />} />
@@ -461,8 +464,8 @@ function App() {
               <Route path="/profile" element={user ? <Profile /> : <Navigate to="/" />} />
             
             {/* Partner Routes */}
-            <Route path="/partner" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <Navigate to="/partner/dashboard" /> : <HomeRebuild />} />
-            <Route path="/partner/signup" element={<HomeRebuild />} />
+            {/* <Route path="/partner" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <Navigate to="/partner/dashboard" /> : <HomeRebuild />} /> */}
+            {/* <Route path="/partner/signup" element={<HomeRebuild />} /> */}
             <Route path="/partner/onboarding" element={user?.role === 'partner_owner' ? <PartnerProfile /> : <Navigate to="/" />} />
             <Route path="/partner/profile" element={user?.role === 'partner_owner' ? <PartnerProfile /> : <Navigate to="/" />} />
             <Route path="/partner/dashboard" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <PartnerDashboard /> : <Navigate to="/" />} />
@@ -609,9 +612,9 @@ function App() {
           return null;
         })()}
         {/* Partner Onboarding: Desktop only - hidden for mobile release */}
-        {showOnboarding && onboardingType === 'partner' && window.innerWidth > 768 && (
+        {/* {showOnboarding && onboardingType === 'partner' && window.innerWidth > 768 && (
           <PartnerOnboardingWizard onComplete={completeOnboarding} />
-        )}
+        )} */}
         
         {/* PWA Install Prompt */}
         <InstallPrompt />

@@ -37,7 +37,7 @@ const BookingsManager = () => {
   };
 
   const handleAction = async (bookingId, action) => {
-    if (!confirm(`Are you sure you want to ${action} this booking?`)) return;
+    if (!window.confirm(`Are you sure you want to ${action} this booking?`)) return;
 
     try {
       await axios.post(
