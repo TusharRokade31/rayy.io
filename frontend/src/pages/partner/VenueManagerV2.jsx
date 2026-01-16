@@ -157,9 +157,9 @@ const VenueManagerV2 = () => {
 
   const handleBackToListing = () => {
     if (returningFromListingCreation) {
-      navigate('/mobile/partner/listings/create');
+      navigate('/partner/listings/create');
     } else {
-      navigate('/mobile/partner/listings/create');
+      navigate('/partner/listings/create');
     }
   };
 
