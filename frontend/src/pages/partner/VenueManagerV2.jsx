@@ -159,7 +159,7 @@ const VenueManagerV2 = () => {
     if (returningFromListingCreation) {
       navigate('/mobile/partner/listings/create');
     } else {
-      navigate('/mobile/partner/listings');
+      navigate('/mobile/partner/listings/create');
     }
   };
 

@@ -212,7 +212,7 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
       if (onComplete) onComplete();
       
       // Force navigation to partner dashboard
-      window.location.href = '/partner/dashboard';
+      // window.location.href = '/partner/dashboard';
     } catch (error) {
       console.error('Partner creation error:', error);
       toast.error(getErrorMessage(error, 'Failed to create partner profile'));
@@ -241,18 +241,20 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
   };
 
   const renderBasicInfo = () => (
-    <div  className='bg-white' style={{ padding: '2rem' }}>
+    <div className='bg-white' style={{ padding: '2rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <div style={{
-          width: '64px',
-          height: '64px',
-          background: 'linear-gradient(135deg, #6EE7B7 0%, #3B82F6 100%)',
-          borderRadius: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto 1rem'
-        }}>
+        <div 
+          className="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500"
+          style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 1rem'
+          }}
+        >
           <Building2 size={32} color="white" />
         </div>
         <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '0.5rem' }}>
@@ -466,18 +468,20 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
   );
 
   const renderKYCDocuments = () => (
-    <div  style={{ padding: '2rem' }}>
+    <div style={{ padding: '2rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <div style={{
-          width: '64px',
-          height: '64px',
-          background: 'linear-gradient(135deg, #FBBF24 0%, #F97316 100%)',
-          borderRadius: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto 1rem'
-        }}>
+        <div 
+          className="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500"
+          style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 1rem'
+          }}
+        >
           <FileText size={32} color="white" />
         </div>
         <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '0.5rem' }}>
@@ -594,16 +598,18 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
   const renderBankDetails = () => (
     <div style={{ padding: '2rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <div style={{
-          width: '64px',
-          height: '64px',
-          background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
-          borderRadius: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto 1rem'
-        }}>
+        <div 
+          className="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500"
+          style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 1rem'
+          }}
+        >
           <CreditCard size={32} color="white" />
         </div>
         <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '0.5rem' }}>
@@ -731,16 +737,18 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
   const renderPartnerPhoto = () => (
     <div style={{ padding: '2rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <div style={{
-          width: '64px',
-          height: '64px',
-          background: 'linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%)',
-          borderRadius: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto 1rem'
-        }}>
+        <div 
+          className="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500"
+          style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 1rem'
+          }}
+        >
           <Camera size={32} color="white" />
         </div>
         <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '0.5rem' }}>
@@ -762,16 +770,18 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
   const renderTermsAndConditions = () => (
     <div style={{ padding: '2rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <div style={{
-          width: '64px',
-          height: '64px',
-          background: 'linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)',
-          borderRadius: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto 1rem'
-        }}>
+        <div 
+          className="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500"
+          style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 1rem'
+          }}
+        >
           <FileText size={32} color="white" />
         </div>
         <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '0.5rem' }}>
@@ -898,16 +908,18 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
   const renderReview = () => (
     <div style={{ padding: '2rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <div style={{
-          width: '64px',
-          height: '64px',
-          background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-          borderRadius: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto 1rem'
-        }}>
+        <div 
+          className="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500"
+          style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 1rem'
+          }}
+        >
           <CheckCircle2 size={32} color="white" />
         </div>
         <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '0.5rem' }}>
@@ -1046,12 +1058,12 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
               overflow: 'hidden'
             }}>
               <motion.div
+                className="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500"
                 initial={{ width: 0 }}
                 animate={{ width: `${(step / totalSteps) * 100}%` }}
                 transition={{ duration: 0.3 }}
                 style={{
                   height: '100%',
-                  background: 'linear-gradient(90deg, #06B6D4 0%, #3B82F6 100%)',
                   borderRadius: '999px'
                 }}
               />
@@ -1110,10 +1122,10 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
               <button
                 onClick={handleNext}
                 disabled={loading}
+                className="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500"
                 style={{
                   flex: 1,
                   padding: '0.875rem',
-                  background: 'linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%)',
                   color: 'white',
                   border: 'none',
                   borderRadius: '8px',
@@ -1131,12 +1143,11 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
               <button
                 onClick={handleSubmit}
                 disabled={loading}
+                className={!loading ? "bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500" : ""}
                 style={{
                   flex: 1,
                   padding: '0.875rem',
-                  background: loading 
-                    ? '#94A3B8'
-                    : 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                  background: loading ? '#94A3B8' : undefined,
                   color: 'white',
                   border: 'none',
                   borderRadius: '8px',
