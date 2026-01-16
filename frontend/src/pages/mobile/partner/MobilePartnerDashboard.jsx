@@ -139,13 +139,13 @@ const MobilePartnerDashboard = () => {
       icon: TrendingUp,
       label: 'Analytics',
       color: 'from-green-500 to-emerald-500',
-      action: () => navigate('/mobile/partner/analytics')
+      action: () => navigate('/partner/analytics')
     },
     {
       icon: Package,
       label: 'My Listings',
       color: 'from-orange-500 to-red-500',
-      action: () => navigate('/mobile/partner/listings')
+      action: () => navigate('/partner/listings')
     }
   ];
 
@@ -374,7 +374,7 @@ const MobilePartnerDashboard = () => {
                         Complete your listing details to increase visibility by up to 40%.
                     </p>
                     <button 
-                        onClick={() => navigate('/mobile/partner/listings')}
+                        onClick={() => navigate('/partner/listings')}
                         className="w-full py-2 bg-white text-purple-600 rounded-lg text-sm font-bold hover:bg-purple-50 transition-colors"
                     >
                         Manage Listings

@@ -67,7 +67,7 @@ const MobilePartnerListings = () => {
           <div className="mb-4 sm:mb-6">
             <motion.button
               whileTap={{ scale: 0.98 }}
-              onClick={() => navigate('/mobile/partner/listings/create')}
+              onClick={() => navigate('/partner/listings/create')}
               className="w-full py-3 sm:py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold rounded-xl sm:rounded-2xl shadow-lg flex items-center justify-center gap-2 transition-all text-sm sm:text-base"
             >
               <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -154,7 +154,7 @@ const MobilePartnerListings = () => {
                     <div className="flex gap-2">
                       <motion.button
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => navigate(`/mobile/partner/listings/edit/${listing.id}`)}
+                        onClick={() => navigate(`/partner/listings/edit/${listing.id}`)}
                         className="flex-1 py-1.5 sm:py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg font-semibold text-xs sm:text-sm flex items-center justify-center gap-1 transition-colors"
                       >
                         <Edit className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -162,7 +162,7 @@ const MobilePartnerListings = () => {
                       </motion.button>
                       <motion.button
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => navigate(`/mobile/listing/${listing.id}`)}
+                        onClick={() => navigate(`/listing/${listing.id}`)}
                         className="flex-1 py-1.5 sm:py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg font-semibold text-xs sm:text-sm flex items-center justify-center gap-1 transition-colors"
                       >
                         <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -185,7 +185,7 @@ const MobilePartnerListings = () => {
             </p>
             <motion.button
               whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/mobile/partner/listings/create')}
+              onClick={() => navigate('/partner/listings/create')}
               className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold rounded-xl inline-flex items-center gap-2 text-xs sm:text-sm transition-all"
             >
               <Plus className="w-4 h-4 sm:w-5 sm:h-5" />

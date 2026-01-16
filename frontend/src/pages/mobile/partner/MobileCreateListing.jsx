@@ -225,7 +225,7 @@ const MobileCreateListing = () => {
     } catch (error) {
       console.error('Error fetching listing:', error);
       toast.error('Failed to load listing data');
-      navigate('/mobile/partner/listings');
+      navigate('/partner/listings');
     } finally {
       setLoading(false);
     }
@@ -478,7 +478,7 @@ const MobileCreateListing = () => {
       sessionStorage.removeItem('draft_listing_data');
       
       toast.success(isEditMode ? '🎉 Listing updated successfully!' : '🎉 Listing and plans created successfully!');
-      navigate('/mobile/partner/listings');
+      navigate('/partner/listings');
     } catch (error) {
       console.error('Error creating listing:', error);
       toast.error(getErrorMessage(error, 'Failed to create listing'));

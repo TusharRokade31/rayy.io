@@ -1,16 +1,27 @@
-import React, { useContext } from 'react';
-import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../../App';
-import MobilePartnerLayout from '../../../layouts/MobilePartnerLayout';
-import MagicHeader from '../../../components/mobile/MagicHeader';
-import GlassCard from '../../../components/mobile/GlassCard';
-import { 
-  User, Mail, Phone, MapPin, Building2, Star,
-  Settings, HelpCircle, Shield, FileText, LogOut,
-  Edit, ChevronRight, Award
-} from 'lucide-react';
-import { toast } from 'sonner';
+import React, { useContext } from "react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../App";
+import MobilePartnerLayout from "../../../layouts/MobilePartnerLayout";
+import MagicHeader from "../../../components/mobile/MagicHeader";
+import GlassCard from "../../../components/mobile/GlassCard";
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Building2,
+  Star,
+  Settings,
+  HelpCircle,
+  Shield,
+  FileText,
+  LogOut,
+  Edit,
+  ChevronRight,
+  Award,
+} from "lucide-react";
+import { toast } from "sonner";
 
 const MobilePartnerProfile = () => {
   const { user, logout } = useContext(AuthContext);
@@ -18,27 +29,57 @@ const MobilePartnerProfile = () => {
 
   const handleLogout = () => {
     logout();
-    toast.success('Logged out successfully');
-    navigate('/mobile');
+    toast.success("Logged out successfully");
+    navigate("/mobile");
   };
 
   const menuSections = [
     {
-      title: 'Account',
+      title: "Account",
       items: [
-        { icon: User, label: 'Edit Profile', action: () => navigate('/partner/profile/edit'), color: 'text-purple-600' },
-        { icon: Building2, label: 'Business Details', action: () => navigate('/partner/profile/business'), color: 'text-blue-600' },
-        { icon: Settings, label: 'Settings', action: () => navigate('/partner/settings'), color: 'text-gray-600' }
-      ]
+        {
+          icon: User,
+          label: "Edit Profile",
+          action: () => navigate("/partner/profile/edit"),
+          color: "text-purple-600",
+        },
+        {
+          icon: Building2,
+          label: "Business Details",
+          action: () => navigate("/partner/profile/business"),
+          color: "text-blue-600",
+        },
+        {
+          icon: Settings,
+          label: "Settings",
+          action: () => navigate("/partner/settings"),
+          color: "text-gray-600",
+        },
+      ],
     },
     {
-      title: 'Support & Legal',
+      title: "Support & Legal",
       items: [
-        { icon: HelpCircle, label: 'Help Center', action: () => navigate('/mobile/help'), color: 'text-green-600' },
-        { icon: Shield, label: 'Privacy Policy', action: () => navigate('/mobile/privacy'), color: 'text-indigo-600' },
-        { icon: FileText, label: 'Terms of Service', action: () => navigate('/mobile/terms'), color: 'text-orange-600' }
-      ]
-    }
+        {
+          icon: HelpCircle,
+          label: "Help Center",
+          action: () => navigate("/mobile/help"),
+          color: "text-green-600",
+        },
+        {
+          icon: Shield,
+          label: "Privacy Policy",
+          action: () => navigate("/mobile/privacy"),
+          color: "text-indigo-600",
+        },
+        {
+          icon: FileText,
+          label: "Terms of Service",
+          action: () => navigate("/mobile/terms"),
+          color: "text-orange-600",
+        },
+      ],
+    },
   ];
 
   return (
@@ -57,13 +98,13 @@ const MobilePartnerProfile = () => {
               <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
                 {/* Avatar */}
                 <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xl sm:text-2xl font-bold flex-shrink-0">
-                  {user?.name?.charAt(0).toUpperCase() || 'P'}
+                  {user?.name?.charAt(0).toUpperCase() || "P"}
                 </div>
-                
+
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                   <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 truncate">
-                    {user?.name || 'Partner'}
+                    {user?.name || "Partner"}
                   </h2>
                   <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 mb-1">
                     <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
@@ -78,10 +119,26 @@ const MobilePartnerProfile = () => {
                 </div>
               </div>
 
+              
+
               {/* Badge */}
               <div className="flex items-center justify-center gap-2 p-2.5 sm:p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl">
-                <Award className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-600 flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-gray-900">Verified Partner</span>
+                {!user?.onboarding_complete ? (
+                  <>
+                    
+                    <span className="text-xs sm:text-sm font-semibold text-gray-900">
+                      Unverified Partner
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Award className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-600 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-gray-900">
+                  Verified Partner
+                </span>
+                  </>
+                )}
+                
               </div>
             </div>
           </GlassCard>
@@ -103,7 +160,9 @@ const MobilePartnerProfile = () => {
                         whileTap={{ scale: 0.98 }}
                         className="w-full p-3 sm:p-4 flex items-center gap-3 hover:bg-gray-50 transition-colors"
                       >
-                        <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 ${item.color}`}>
+                        <div
+                          className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 ${item.color}`}
+                        >
                           <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
                         <span className="flex-1 text-left font-medium text-sm sm:text-base text-gray-900 truncate">

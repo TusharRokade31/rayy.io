@@ -13,8 +13,8 @@ const MobilePartnerLayout = ({ children, hideNav = false }) => {
     { icon: LayoutDashboard, label: 'Dashboard', path: '/partner/dashboard' },
     { icon: Package, label: 'Listings', path: '/partner/listings' },
     { icon: Calendar, label: 'Bookings', path: '/mobile/partner/bookings' },
-    { icon: BarChart3, label: 'Analytics', path: '/mobile/partner/analytics' },
-    { icon: User, label: 'Profile', path: '/mobile/partner/profile' }
+    { icon: BarChart3, label: 'Analytics', path: '/partner/analytics' },
+    { icon: User, label: 'Profile', path: '/partner/profile' }
   ];
 
   const isActive = (path) => location.pathname === path;

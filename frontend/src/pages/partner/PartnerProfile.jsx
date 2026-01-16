@@ -134,9 +134,10 @@ const PartnerProfile = () => {
 
           <button
             onClick={handleCompleteProfile}
+            className='bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500'
             style={{
               padding: '1rem 3rem',
-              background: 'linear-gradient(135deg, #6EE7B7 0%, #3B82F6 100%)',
+              // background: 'linear-gradient(135deg, #6EE7B7 0%, #3B82F6 100%)',
               color: 'white',
               border: 'none',
               borderRadius: '12px',

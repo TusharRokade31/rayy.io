@@ -421,8 +421,8 @@ function App() {
               <Route path="/partner/listings/create" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobileCreateListing /> : <Navigate to="/" />} />
               <Route path="/partner/listings/edit/:id" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobileCreateListing /> : <Navigate to="/" />} />
               <Route path="/mobile/partner/bookings" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerBookings /> : <Navigate to="/" />} />
-              <Route path="/mobile/partner/analytics" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerAnalytics /> : <Navigate to="/" />} />
-              <Route path="/mobile/partner/profile" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerProfile /> : <Navigate to="/" />} />
+              {/* <Route path="/partner/analytics" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerAnalytics /> : <Navigate to="/" />} /> */}
+              {/* <Route path="/partner/profile" element={user?.role === 'partner_owner' || user?.role === 'partner_staff' ? <MobilePartnerProfile /> : <Navigate to="/" />} /> */}
               
               {/* Mobile Admin Routes */}
               <Route path="/mobile/admin/dashboard" element={user?.role === 'admin' ? <MobileAdminDashboard /> : <Navigate to="/" />} />
