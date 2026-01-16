@@ -428,7 +428,7 @@ function App() {
               <Route path="/mobile/admin/dashboard" element={user?.role === 'admin' ? <MobileAdminDashboard /> : <Navigate to="/" />} />
               <Route path="/mobile/admin/users" element={user?.role === 'admin' ? <MobileAdminUsers /> : <Navigate to="/" />} />
               <Route path="/mobile/admin/partners" element={user?.role === 'admin' ? <MobileAdminPartners /> : <Navigate to="/" />} />
-              <Route path="/mobile/admin/listings" element={user?.role === 'admin' ? <MobileAdminListingsV2 /> : <MobileAdminListings />} />
+              <Route path="/admin/listings" element={user?.role === 'admin' ? <MobileAdminListingsV2 /> : <MobileAdminListings />} />
               <Route path="/mobile/admin/settings" element={user?.role === 'admin' ? <MobileAdminSettings /> : <Navigate to="/" />} />
               
               {/* Mobile Customer/General Routes - Come AFTER specific partner/admin routes */}

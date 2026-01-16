@@ -8,7 +8,7 @@ import {
   TrendingUp, TrendingDown, Users, Building2, Calendar, IndianRupee,
   DollarSign, Activity, AlertCircle, CheckCircle, Clock, ArrowUpRight,
   ArrowDownRight, Zap, Target, Award, ShoppingBag, CreditCard, UserCheck,
-  RefreshCw, Download, Filter, Eye
+  RefreshCw, Download, Filter, Eye, Package
 } from 'lucide-react';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import {
@@ -733,9 +733,10 @@ const AdminDashboard = () => {
           gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
           gap: '1.5rem'
         }}>
+          {/* New Listing Approvals Card */}
           <button
-            onClick={() => navigate('/admin/financials')}
-            style={{
+            onClick={() => navigate('/admin/listings')}
+             style={{
               padding: '1.5rem',
               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               border: 'none',
@@ -750,6 +751,29 @@ const AdminDashboard = () => {
               fontSize: '16px',
               fontFamily: 'Outfit, sans-serif',
               boxShadow: '0 8px 24px rgba(102, 126, 234, 0.3)'
+            }}
+           
+          >
+            <Package size={28} color="#10b981" />
+            Listing Approvals
+          </button>
+
+          <button
+            onClick={() => navigate('/admin/financials')}
+             style={{
+              padding: '1.5rem',
+              background: 'white',
+              border: '2px solid #e2e8f0',
+              borderRadius: '20px',
+              color: '#1e293b',
+              fontWeight: '700',
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              gap: '0.75rem',
+              fontSize: '16px',
+              fontFamily: 'Outfit, sans-serif'
             }}
           >
             <DollarSign size={28} />

@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'; // Added AnimatePresence
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext, API } from '../../../App';
 import MobilePartnerLayout from '../../../layouts/MobilePartnerLayout';
 import MagicHeader from '../../../components/mobile/MagicHeader';
 import GlassCard from '../../../components/mobile/GlassCard';
-import PartnerOnboardingWizard from '../../../components/PartnerOnboardingWizard'; // Make sure path is correct
+import PartnerOnboardingWizard from '../../../components/PartnerOnboardingWizard';
 import { 
   TrendingUp, Package, Calendar, DollarSign, Users, 
   Star, ArrowRight, Plus, Eye, CheckCircle, Clock, 
-  AlertTriangle, ChevronRight // Added AlertTriangle & ChevronRight
+  AlertTriangle, ChevronRight
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -44,16 +44,22 @@ const MobilePartnerDashboard = () => {
       setLoading(true);
       const token = localStorage.getItem('yuno_token');
       
-      const [statsRes, bookingsRes] = await Promise.all([
+      // FETCH PARTNER DATA ALONGSIDE STATS AND BOOKINGS
+      const [statsRes, bookingsRes, partnerRes] = await Promise.all([
         axios.get(`${API}/partners/my/stats`, {
           headers: { Authorization: `Bearer ${token}` }
         }).catch(() => ({ data: {} })),
         axios.get(`${API}/partner/bookings`, {
           headers: { Authorization: `Bearer ${token}` }
-        }).catch(() => ({ data: [] }))
+        }).catch(() => ({ data: [] })),
+        // Added this call to get accurate KYC status from partner profile
+        axios.get(`${API}/partners/my`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }).catch(() => ({ data: null }))
       ]);
       
       const apiStats = statsRes.data || {};
+      const partnerData = partnerRes.data;
       
       // Update stats
       setStats({
@@ -65,11 +71,12 @@ const MobilePartnerDashboard = () => {
         avgRating: apiStats.avg_rating || 0
       });
 
-      // SET KYC STATUS HERE
-      // Assuming your API returns kyc_status in the stats or user object
-      // If the API doesn't return it yet, it defaults to 'unverified' per your requirement
-      if (apiStats.kyc_status) {
-        setKycStatus(apiStats.kyc_status);
+      // SET KYC STATUS FROM PARTNER DATA
+      if (partnerData && partnerData.kyc_status) {
+        setKycStatus(partnerData.kyc_status);
+      } else {
+        // Fallback if partner profile doesn't exist or status is missing
+        setKycStatus('unverified');
       }
       
       const allBookings = Array.isArray(bookingsRes.data) ? bookingsRes.data : [];
@@ -207,7 +214,7 @@ const MobilePartnerDashboard = () => {
             </motion.div>
           )}
 
-           {/* --- PENDING STATUS BANNER (Optional Good-to-have) --- */}
+           {/* --- PENDING STATUS BANNER --- */}
            {kycStatus === 'pending' && (
             <div className="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center gap-3">
               <Clock className="w-5 h-5 text-blue-500" />

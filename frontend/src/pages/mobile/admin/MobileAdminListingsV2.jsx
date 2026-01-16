@@ -6,8 +6,9 @@ import { API } from '../../../App';
 import MobileAdminLayout from '../../../layouts/MobileAdminLayout';
 import MagicHeader from '../../../components/mobile/MagicHeader';
 import GlassCard from '../../../components/mobile/GlassCard';
-import { Package, Eye, CheckCircle, XCircle, DollarSign, MapPin } from 'lucide-react';
+import { Package, Eye, CheckCircle, XCircle, DollarSign, MapPin, Filter } from 'lucide-react';
 import { toast } from 'sonner';
+import { ListingStatusCards } from '../../../components/ListingStats';
 
 const MobileAdminListingsV2 = () => {
   const navigate = useNavigate();
@@ -26,8 +27,6 @@ const MobileAdminListingsV2 = () => {
       const response = await axios.get(`${API}/admin/listings`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-
-      console.log('Fetched listings:', response);
       setListings(Array.isArray(response.data.listings) ? response.data.listings : []);
     } catch (error) {
       console.error('Failed to fetch listings:', error);
@@ -66,138 +65,184 @@ const MobileAdminListingsV2 = () => {
   ];
 
   return (
-    <MobileAdminLayout>
+    
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50">
-        <MagicHeader
-          title="Listings"
-          subtitle="Review and approve listings"
-          gradient="from-green-500 via-emerald-500 to-teal-500"
-        />
+        <div className=" mx-auto w-full">
+          <MagicHeader
+            title="Listings"
+            subtitle="Review and approve listings"
+            gradient="from-green-500 via-emerald-500 to-teal-500"
+          />
 
-        <div className="px-4 pb-24 mt-10">
-          {/* Filter Pills */}
-          <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
-            {filterOptions.map(option => (
-              <motion.button
-                key={option.value}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setFilter(option.value)}
-                className={`px-4 py-2.5 rounded-full font-semibold text-sm whitespace-nowrap transition-all flex items-center justify-center ${
-                  filter === option.value
-                    ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg'
-                    : 'bg-white text-gray-700 border-2 border-gray-200'
-                }`}
-              >
-                {option.label} ({option.count})
-              </motion.button>
-            ))}
-          </div>
+          <div className="px-4 pb-24 mt-6 md:mt-10">
 
-          {/* Listings List */}
-          {loading ? (
-            <div className="flex justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent"></div>
-            </div>
-          ) : filteredListings.length > 0 ? (
-            <div className="space-y-4">
-              {filteredListings.map((listing, index) => (
-                <GlassCard key={listing.id} delay={0.05 * index}>
-                  <div className="p-4">
-                    <div className="flex gap-4">
-                      {/* Image */}
-                      <div className="w-24 h-24 rounded-xl overflow-hidden bg-gradient-to-br from-green-100 to-emerald-100 flex-shrink-0">
+            {/* ADD THIS HERE: The Status Cards */}
+            <ListingStatusCards 
+              stats={{ 
+                total: listings.length,
+                pending: listings.filter(l => l.approval_status === 'pending').length,
+                approved: listings.filter(l => l.approval_status === 'approved').length,
+                rejected: listings.filter(l => l.approval_status === 'rejected').length
+              }} 
+            />
+
+
+            {/* <div className="mb-8">
+              <div className="flex items-center gap-2 mb-4 md:hidden overflow-x-auto pb-2 scrollbar-hide">
+
+                {filterOptions.map(option => (
+                  <FilterPill key={option.value} option={option} current={filter} setFilter={setFilter} />
+                ))}
+              </div>
+              
+              <div className="hidden md:flex flex-wrap items-center gap-3 p-2 bg-white/50 backdrop-blur-sm rounded-2xl border border-white/20 shadow-sm w-fit">
+
+                {filterOptions.map(option => (
+                  <FilterPill key={option.value} option={option} current={filter} setFilter={setFilter} />
+                ))}
+              </div>
+            </div> */}
+
+            {/* Listings Grid */}
+            {loading ? (
+              <div className="flex justify-center py-20">
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent"></div>
+              </div>
+            ) : filteredListings.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                {filteredListings.map((listing, index) => (
+                  <GlassCard key={listing.id} delay={0.05 * index} className="h-full flex flex-col">
+                    <div className="p-4 flex flex-row md:flex-col gap-4 h-full">
+                      {/* Image - Adapts from left-side (mobile) to top (desktop) */}
+                      <div className="w-24 h-24 md:w-full md:h-48 rounded-xl overflow-hidden bg-gradient-to-br from-green-100 to-emerald-100 flex-shrink-0 relative group">
                         {listing.images && listing.images[0] ? (
                           <img 
                             src={listing.images[0]} 
                             alt={listing.title}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <Package className="w-8 h-8 text-green-400" />
+                            <Package className="w-8 h-8 md:w-12 md:h-12 text-green-400" />
                           </div>
                         )}
+                        <div className="absolute top-2 right-2 md:hidden">
+                           <StatusBadge status={listing.approval_status} />
+                        </div>
                       </div>
 
                       {/* Content */}
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 flex flex-col">
                         <div className="flex items-start justify-between gap-2 mb-2">
-                          <h3 className="font-bold text-gray-900 line-clamp-2">
+                          <h3 className="font-bold text-gray-900 line-clamp-2 md:text-lg">
                             {listing.title}
                           </h3>
-                          <div className={`px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
-                            listing.approval_status === 'approved' ? 'bg-green-100 text-green-700' :
-                            listing.approval_status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-red-100 text-red-700'
-                          }`}>
-                            {listing.approval_status}
+                          <div className="hidden md:block">
+                            <StatusBadge status={listing.approval_status} />
                           </div>
                         </div>
 
-                        <div className="space-y-1 mb-3">
+                        <div className="space-y-1 mb-4 flex-1">
                           <div className="text-sm text-gray-600 truncate">
-                            By: {listing.partner_name || 'Partner'}
+                            By: <span className="font-medium text-gray-800">{listing.partner_name || 'Partner'}</span>
                           </div>
                           <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <DollarSign className="w-4 h-4" />
-                            <span>₹{listing.price_per_session || listing.base_price_inr}/session</span>
+                            <DollarSign className="w-4 h-4 text-green-600" />
+                            <span className="font-medium">₹{listing.price_per_session || listing.base_price_inr}/session</span>
                           </div>
                           {listing.location?.city && (
                             <div className="flex items-center gap-2 text-sm text-gray-600">
-                              <MapPin className="w-4 h-4" />
+                              <MapPin className="w-4 h-4 text-blue-500" />
                               <span className="truncate">{listing.location.city}</span>
                             </div>
                           )}
                         </div>
 
                         {/* Actions */}
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 mt-auto pt-2 border-t border-gray-100 md:pt-4">
                           <motion.button
                             whileTap={{ scale: 0.95 }}
                             onClick={() => navigate(`/mobile/listing/${listing.id}`)}
-                            className="flex-1 py-2 bg-blue-100 text-blue-700 rounded-lg font-semibold text-sm flex items-center justify-center gap-1"
+                            className="flex-1 py-2 md:py-2.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-colors"
                           >
                             <Eye className="w-4 h-4" />
                             View
                           </motion.button>
+                          
                           {listing.approval_status === 'pending' && (
                             <>
-                              <motion.button
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => handleListingAction(listing.id, 'approve')}
-                                className="px-3 py-2 bg-green-500 text-white rounded-lg font-semibold text-sm"
-                              >
-                                <CheckCircle className="w-4 h-4" />
-                              </motion.button>
-                              <motion.button
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => handleListingAction(listing.id, 'reject')}
-                                className="px-3 py-2 bg-red-500 text-white rounded-lg font-semibold text-sm"
-                              >
-                                <XCircle className="w-4 h-4" />
-                              </motion.button>
+                              <ActionBtn 
+                                onClick={() => handleListingAction(listing.id, 'approve')} 
+                                icon={CheckCircle} 
+                                bg="bg-green-500 hover:bg-green-600" 
+                              />
+                              <ActionBtn 
+                                onClick={() => handleListingAction(listing.id, 'reject')} 
+                                icon={XCircle} 
+                                bg="bg-red-500 hover:bg-red-600" 
+                              />
                             </>
                           )}
                         </div>
                       </div>
                     </div>
-                  </div>
-                </GlassCard>
-              ))}
-            </div>
-          ) : (
-            <GlassCard>
-              <div className="text-center py-12">
-                <Package className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                <h3 className="text-lg font-bold text-gray-900 mb-2">No listings found</h3>
-                <p className="text-gray-600">Try adjusting your filter</p>
+                  </GlassCard>
+                ))}
               </div>
-            </GlassCard>
-          )}
+            ) : (
+              <GlassCard>
+                <div className="text-center py-20">
+                  <Package className="w-20 h-20 mx-auto mb-6 text-gray-300" />
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">No listings found</h3>
+                  <p className="text-gray-600">There are no listings in the "{filter}" category currently.</p>
+                </div>
+              </GlassCard>
+            )}
+          </div>
         </div>
       </div>
-    </MobileAdminLayout>
+    
   );
 };
+
+// Sub-components for cleaner code
+const FilterPill = ({ option, current, setFilter }) => (
+  <motion.button
+    whileTap={{ scale: 0.95 }}
+    onClick={() => setFilter(option.value)}
+    className={`px-4 py-2.5 rounded-full font-semibold text-sm whitespace-nowrap transition-all flex items-center justify-center gap-2 ${
+      current === option.value
+        ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/30'
+        : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+    }`}
+  >
+    {option.label}
+    <span className={`px-2 py-0.5 rounded-full text-xs ${
+      current === option.value ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-600'
+    }`}>
+      {option.count}
+    </span>
+  </motion.button>
+);
+
+const StatusBadge = ({ status }) => (
+  <div className={`px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap uppercase tracking-wider ${
+    status === 'approved' ? 'bg-green-100 text-green-700 border border-green-200' :
+    status === 'pending' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
+    'bg-red-100 text-red-700 border border-red-200'
+  }`}>
+    {status}
+  </div>
+);
+
+const ActionBtn = ({ onClick, icon: Icon, bg }) => (
+  <motion.button
+    whileTap={{ scale: 0.95 }}
+    onClick={onClick}
+    className={`px-3 md:px-4 py-2 ${bg} text-white rounded-lg font-semibold text-sm flex items-center justify-center transition-colors shadow-sm`}
+  >
+    <Icon className="w-4 h-4" />
+  </motion.button>
+);
 
 export default MobileAdminListingsV2;

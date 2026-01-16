@@ -13,7 +13,7 @@ const MobileAdminLayout = ({ children, hideNav = false }) => {
     { icon: LayoutDashboard, label: 'Dashboard', path: '/mobile/admin/dashboard' },
     { icon: Users, label: 'Users', path: '/mobile/admin/users' },
     { icon: Building2, label: 'Partners', path: '/mobile/admin/partners' },
-    { icon: Package, label: 'Listings', path: '/mobile/admin/listings' },
+    { icon: Package, label: 'Listings', path: '/admin/listings' },
     { icon: Settings, label: 'Settings', path: '/mobile/admin/settings' }
   ];
 
