@@ -8,14 +8,17 @@ import {
   ArrowRight, ArrowLeft, Upload, AlertCircle, X, Eye
 } from 'lucide-react';
 import axios from 'axios';
-import { toast } from 'sonner';
+import { toast, Toaster } from 'sonner';
 import { getErrorMessage } from '../utils/errorHandler';
+import { uploadFile } from '../utils/uploadService'; // Import the helper
+import { Loader2 } from 'lucide-react'; // Add Loader icon
 
 const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
   const { user, token, setUser } = useContext(AuthContext);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [uploadingFields, setUploadingFields] = useState({});
   
   const totalSteps = 6; // Added Terms & Conditions step
   
@@ -52,34 +55,37 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
     tncVersion: '1.0'
   });
 
-  const handleFileChange = async (e, fieldName) => {
+const handleFileChange = async (e, fieldName, isPrivate = false) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       toast.error('File size must be less than 5MB');
       return;
     }
 
-    // Validate file type
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'application/pdf'];
-    if (!validTypes.includes(file.type)) {
-      toast.error('Only JPG, PNG, WEBP, or PDF files are allowed');
-      return;
-    }
+    setUploadingFields(prev => ({ ...prev, [fieldName]: true }));
 
-    // Convert to base64
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64String = reader.result;
+    try {
+      // 1. Upload
+      const { key, url } = await uploadFile(file, isPrivate);
+
+      // 2. Update State
       setFormData(prev => ({
         ...prev,
-        [fieldName]: base64String,
-        [`${fieldName}_preview`]: file.type.startsWith('image/') ? base64String : null
+        // CRITICAL: If private, save KEY to DB. If public, save URL.
+        [fieldName]: isPrivate ? key : url, 
+        // Preview always uses the URL (whether public or presigned)
+        [`${fieldName}_preview`]: file.type.startsWith('image/') ? url : null 
       }));
-    };
-    reader.readAsDataURL(file);
+      
+      toast.success('Document uploaded successfully');
+    } catch (error) {
+      toast.error('Failed to upload document');
+      console.error(error);
+    } finally {
+      setUploadingFields(prev => ({ ...prev, [fieldName]: false }));
+    }
   };
 
   const validateStep = () => {
@@ -369,14 +375,13 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
     </div>
   );
 
-  const FileUploadField = ({ label, fieldName, accept, required, hint, currentFile }) => (
+const FileUploadField = ({ label, fieldName, accept, required, hint, currentFile, isPrivate }) => (
     <div>
       <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#334155' }}>
         {label} {required && '*'}
       </label>
-      {hint && (
-        <p style={{ fontSize: '0.875rem', color: '#64748B', marginBottom: '0.5rem' }}>{hint}</p>
-      )}
+      {hint && <p style={{ fontSize: '0.875rem', color: '#64748B', marginBottom: '0.5rem' }}>{hint}</p>}
+      
       <div style={{
         border: '2px dashed #CBD5E1',
         borderRadius: '8px',
@@ -386,7 +391,13 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
         borderColor: currentFile ? '#86EFAC' : '#CBD5E1',
         position: 'relative'
       }}>
-        {formData[`${fieldName}_preview`] ? (
+        {/* LOADING STATE */}
+        {uploadingFields[fieldName] ? (
+           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#3B82F6' }}>
+             <Loader2 className="animate-spin" size={32} />
+             <p style={{ marginTop: '0.5rem', fontSize: '0.875rem' }}>Uploading to secure storage...</p>
+           </div>
+        ) : formData[`${fieldName}_preview`] ? (
           <div>
             <img
               src={formData[`${fieldName}_preview`]}
@@ -433,15 +444,10 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
               </button>
             </div>
           </div>
-        ) : currentFile ? (
-          <div>
-            <CheckCircle2 size={32} color="#22C55E" style={{ margin: '0 auto 0.5rem' }} />
-            <p style={{ color: '#059669', fontWeight: '600', fontSize: '0.875rem' }}>Document uploaded</p>
-          </div>
         ) : (
-          <div>
+           <div>
             <Upload size={32} color="#94A3B8" style={{ margin: '0 auto 0.5rem' }} />
-            <p style={{ color: '#64748B', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
+              <p style={{ color: '#64748B', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
               Click to upload or drag and drop
             </p>
             <p style={{ color: '#94A3B8', fontSize: '0.75rem' }}>
@@ -449,18 +455,17 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
             </p>
           </div>
         )}
+
         <input
           type="file"
           accept={accept || "image/*,.pdf"}
-          onChange={(e) => handleFileChange(e, fieldName)}
+          // Pass isPrivate flag here
+          onChange={(e) => handleFileChange(e, fieldName, isPrivate)}
+          disabled={uploadingFields[fieldName]}
           style={{
             position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            opacity: 0,
-            cursor: 'pointer'
+            top: 0, left: 0, width: '100%', height: '100%',
+            opacity: 0, cursor: uploadingFields[fieldName] ? 'not-allowed' : 'pointer'
           }}
         />
       </div>
@@ -521,6 +526,7 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
             label="PAN Card (Optional)"
             fieldName="pan_document"
             currentFile={formData.pan_document}
+            isPrivate={true} // SECURE UPLOAD
             hint="You can upload this later if needed"
           />
         </div>
@@ -554,6 +560,7 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
             label="Aadhaar Card (Optional)"
             fieldName="aadhaar_document"
             currentFile={formData.aadhaar_document}
+            isPrivate={true} // SECURE UPLOAD
             hint="You can upload this later if needed"
           />
         </div>
@@ -587,6 +594,7 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
             <FileUploadField
               label="GST Certificate"
               fieldName="gst_document"
+              isPrivate={true} // SECURE UPLOAD
               currentFile={formData.gst_document}
             />
           )}
@@ -726,6 +734,7 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
 
         <FileUploadField
           label="Cancelled Cheque (Optional)"
+          isPrivate={true} // SECURE UPLOAD
           fieldName="cancelled_cheque_document"
           hint="Helps in faster verification"
           currentFile={formData.cancelled_cheque_document}
@@ -760,6 +769,7 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
       <FileUploadField
         label="Your Photo (Optional)"
         fieldName="partner_photo"
+        isPrivate={false} // PUBLIC UPLOAD
         accept="image/*"
         hint="You can upload this later. This helps customers recognize you during classes"
         currentFile={formData.partner_photo}
@@ -1002,8 +1012,26 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
 
   return (
     <>
-      <Dialog open={true} onOpenChange={onClose}>
-        <DialogContent style={{
+      <Dialog open={true} className=" overflow-y-hidden" onOpenChange={onClose}>
+        <DialogContent 
+        className="
+    /* Layout & Sizing *
+    max-w-[600px] w-full bg-white max-h-[50vh] rounded-2xl p-0
+    
+    /* Scroll Behavior */
+    overflow-y-hidden
+    
+    /* Custom Scrollbar Styling (Tailwind Arbitrary Variants) */
+    [&::-webkit-scrollbar]:w-2
+    [&::-webkit-scrollbar-track]:bg-transparent
+    [&::-webkit-scrollbar-thumb]:bg-gray-200
+    [&::-webkit-scrollbar-thumb]:rounded-full
+    [&::-webkit-scrollbar-thumb]:border-2
+    [&::-webkit-scrollbar-thumb]:border-transparent
+    [&::-webkit-scrollbar-thumb]:bg-clip-content
+    hover:[&::-webkit-scrollbar-thumb]:bg-gray-300
+  "
+        style={{
           maxWidth: '600px',
           background: 'white',
           maxHeight: '90vh',
@@ -1011,6 +1039,9 @@ const PartnerOnboardingWizard = ({ onComplete, onClose }) => {
           borderRadius: '16px',
           padding: 0
         }}>
+           <Toaster richColors 
+                   position="top-center" 
+                   style={{ zIndex: 99999 }}/>
           <button
             onClick={onClose}
             style={{

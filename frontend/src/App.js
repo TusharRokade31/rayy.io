@@ -620,7 +620,9 @@ function App() {
         <InstallPrompt />
         
         {/* Toast Notifications */}
-        <Toaster />
+        <Toaster richColors 
+         position="top-center" 
+         style={{ zIndex: 99999 }}/>
       </div>
     </AuthContext.Provider>
   );

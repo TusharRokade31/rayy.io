@@ -4,7 +4,7 @@ import Navbar from '../../components/Navbar';
 import PartnerOnboardingWizard from '../../components/PartnerOnboardingWizard';
 import DocumentUploadModal from '../../components/DocumentUploadModal';
 import ProfileCompletionIndicator from '../../components/ProfileCompletionIndicator';
-import { Building2, FileText, CreditCard, Camera, Edit2, CheckCircle, AlertCircle, Upload } from 'lucide-react';
+import { Building2, FileText, CreditCard, Camera, Edit2, CheckCircle, AlertCircle, Upload, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { getErrorMessage } from '../../utils/errorHandler';
@@ -88,6 +88,29 @@ const PartnerProfile = () => {
   const handleCancelEdit = () => {
     setEditMode(false);
     setEditData({});
+  };
+
+
+  const viewDocument = async (key) => {
+    if (!key) return;
+    
+    const loadingToast = toast.loading('Accessing secure document...');
+    try {
+      const token = localStorage.getItem('yuno_token');
+      const response = await axios.get(`${API}/kyc/view`, {
+        params: { key },
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      toast.dismiss(loadingToast);
+      if (response.data.presigned_url) {
+        window.open(response.data.presigned_url, '_blank');
+      }
+    } catch (error) {
+      toast.dismiss(loadingToast);
+      console.error('View error:', error);
+      toast.error('Failed to view document');
+    }
   };
 
   // Show wizard if requested
@@ -473,31 +496,79 @@ const PartnerProfile = () => {
             ) : (
               <div style={{ display: 'grid', gap: '0.75rem' }}>
                 {partner.pan_number ? (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: '#F8FAFC', borderRadius: '8px' }}>
-                    <span style={{ fontSize: '0.9375rem', color: '#334155' }}>PAN: {partner.pan_number}</span>
-                    <CheckCircle size={18} color="#10B981" />
-                  </div>
-                ) : (
-                  <div style={{ padding: '0.75rem', background: '#FEF3C7', borderRadius: '8px', color: '#92400E', fontSize: '0.875rem' }}>
-                    ⚠️ PAN Number not provided - Click Edit to add
-                  </div>
-                )}
-                {partner.aadhaar_number ? (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: '#F8FAFC', borderRadius: '8px' }}>
-                    <span style={{ fontSize: '0.9375rem', color: '#334155' }}>Aadhaar: ****-****-{partner.aadhaar_number.slice(-4)}</span>
-                    <CheckCircle size={18} color="#10B981" />
-                  </div>
-                ) : (
-                  <div style={{ padding: '0.75rem', background: '#FEF3C7', borderRadius: '8px', color: '#92400E', fontSize: '0.875rem' }}>
-                    ⚠️ Aadhaar Number not provided - Click Edit to add
-                  </div>
-                )}
-                {partner.gst_number && (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: '#F8FAFC', borderRadius: '8px' }}>
-                    <span style={{ fontSize: '0.9375rem', color: '#334155' }}>GST: {partner.gst_number}</span>
-                    <CheckCircle size={18} color="#10B981" />
-                  </div>
-                )}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: '#F8FAFC', borderRadius: '8px' }}>
+        <div style={{display:'flex', flexDirection:'column'}}>
+           <span style={{ fontSize: '0.9375rem', color: '#334155', fontWeight:'500' }}>PAN: {partner.pan_number}</span>
+           {partner.pan_document && (
+             <button 
+               onClick={() => viewDocument(partner.pan_document)}
+               style={{ 
+                 background:'none', border:'none', color:'#3B82F6', 
+                 fontSize:'12px', cursor:'pointer', padding:0, textAlign:'left', marginTop:'4px',
+                 display:'flex', alignItems:'center', gap:'4px'
+               }}
+             >
+               <Eye size={12} /> View Document
+             </button>
+           )}
+        </div>
+        <CheckCircle size={18} color="#10B981" />
+      </div>
+    ) : (
+      <div style={{ padding: '0.75rem', background: '#FEF3C7', borderRadius: '8px', color: '#92400E', fontSize: '0.875rem' }}>
+        ⚠️ PAN Number not provided
+      </div>
+    )}
+
+    {/* AADHAAR ROW */}
+    {partner.aadhaar_number ? (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: '#F8FAFC', borderRadius: '8px' }}>
+        <div style={{display:'flex', flexDirection:'column'}}>
+          <span style={{ fontSize: '0.9375rem', color: '#334155', fontWeight:'500' }}>
+            Aadhaar: ****-****-{partner.aadhaar_number.slice(-4)}
+          </span>
+          {partner.aadhaar_document && (
+             <button 
+               onClick={() => viewDocument(partner.aadhaar_document)}
+               style={{ 
+                 background:'none', border:'none', color:'#3B82F6', 
+                 fontSize:'12px', cursor:'pointer', padding:0, textAlign:'left', marginTop:'4px',
+                 display:'flex', alignItems:'center', gap:'4px'
+               }}
+             >
+               <Eye size={12} /> View Document
+             </button>
+           )}
+        </div>
+        <CheckCircle size={18} color="#10B981" />
+      </div>
+    ) : (
+      <div style={{ padding: '0.75rem', background: '#FEF3C7', borderRadius: '8px', color: '#92400E', fontSize: '0.875rem' }}>
+        ⚠️ Aadhaar Number not provided
+      </div>
+    )}
+
+    {/* GST ROW */}
+    {partner.gst_number && (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', background: '#F8FAFC', borderRadius: '8px' }}>
+        <div style={{display:'flex', flexDirection:'column'}}>
+          <span style={{ fontSize: '0.9375rem', color: '#334155', fontWeight:'500' }}>GST: {partner.gst_number}</span>
+          {partner.gst_document && (
+             <button 
+               onClick={() => viewDocument(partner.gst_document)}
+               style={{ 
+                 background:'none', border:'none', color:'#3B82F6', 
+                 fontSize:'12px', cursor:'pointer', padding:0, textAlign:'left', marginTop:'4px',
+                 display:'flex', alignItems:'center', gap:'4px'
+               }}
+             >
+               <Eye size={12} /> View Document
+             </button>
+           )}
+        </div>
+        <CheckCircle size={18} color="#10B981" />
+      </div>
+    )}
               </div>
             )}
           </div>

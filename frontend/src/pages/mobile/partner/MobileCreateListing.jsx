@@ -16,6 +16,8 @@ import { getErrorMessage } from '../../../utils/errorHandler';
 import PlanOptionsBuilder from '../../../components/PlanOptionsBuilder';
 import BatchManager from '../../../components/BatchManager';
 import SessionSlotGenerator from '../../../components/SessionSlotGenerator';
+import { uploadFile } from '../../../utils/uploadService';
+import { Loader2 } from 'lucide-react';
 
 const MobileCreateListing = () => {
   const { user } = useContext(AuthContext);
@@ -27,6 +29,7 @@ const MobileCreateListing = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCatIndex, setSelectedCatIndex] = useState("");
   const [venues, setVenues] = useState([]);
+  const [isUploadingMedia, setIsUploadingMedia] = useState(false);
 
   const [sessionConfig, setSessionConfig] = useState(null);
 
@@ -242,48 +245,42 @@ const MobileCreateListing = () => {
   };
 
   // Handle multiple image/video uploads
-  const handleMediaUpload = async (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length === 0) return;
+const handleMediaUpload = async (e) => {
+  const files = Array.from(e.target.files);
+  if (files.length === 0) return;
 
-    // Limit to 5 files
-    if (listingData.media.length + files.length > 5) {
-      toast.error('Maximum 5 photos/videos allowed');
-      return;
-    }
+  setIsUploadingMedia(true);
+  const loadingToast = toast.loading(`Uploading ${files.length} file(s)...`);
 
-    // Validate file size (max 10MB per file)
-    for (const file of files) {
-      if (file.size > 10 * 1024 * 1024) {
-        toast.error(`${file.name} is too large. Maximum 10MB per file.`);
-        return;
-      }
-    }
-
-    // Convert to base64
-    const mediaPromises = files.map(file => {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          resolve({
-            data: reader.result,
-            type: file.type,
-            name: file.name
-          });
-        };
-        reader.readAsDataURL(file);
-      });
+  try {
+    const uploadPromises = files.map(async (file) => {
+      // 1. Upload to Public Endpoint
+      const { url } = await uploadFile(file, false); 
+      
+      return {
+        data: url, // For public files, we save the full URL
+        type: file.type,
+        name: file.name
+      };
     });
 
-    const mediaFiles = await Promise.all(mediaPromises);
+    const uploadedFiles = await Promise.all(uploadPromises);
+
     setListingData(prev => ({
       ...prev,
-      media: [...prev.media, ...mediaFiles]
+      media: [...prev.media, ...uploadedFiles]
     }));
     
-    toast.success(`${files.length} file(s) added`);
-  };
-
+    toast.dismiss(loadingToast);
+    toast.success('Media uploaded successfully');
+  } catch (error) {
+    console.error(error);
+    toast.dismiss(loadingToast);
+    toast.error('Failed to upload some files');
+  } finally {
+    setIsUploadingMedia(false);
+  }
+};
   const removeMedia = (index) => {
     setListingData(prev => ({
       ...prev,
@@ -1207,16 +1204,18 @@ const MobileCreateListing = () => {
                                 fontWeight: '600',
                                 marginBottom: '1rem'
                               }}>
-                                <Upload size={20} />
-                                Choose Files
+                               {isUploadingMedia ? <Loader2 className="animate-spin" /> : <Upload size={20} />}
+                              {isUploadingMedia ? 'Uploading...' : 'Choose Files'}
                                 <input
                                   type="file"
                                   multiple
                                   accept="image/*,video/*"
                                   onChange={handleMediaUpload}
                                   style={{ display: 'none' }}
+                                  disabled={isUploadingMedia}
                                 />
                               </label>
+                              
             
                               {/* Media Preview */}
                               {listingData.media.length > 0 && (

@@ -10,7 +10,7 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
   
   // Login State
   const [loginData, setLoginData] = useState({ identifier: '', password: '' });
-  const [useOtpForLogin, setUseOtpForLogin] = useState(false);
+  const [useOtpForLogin, setUseOtpForLogin] = useState(true);
 
   // Register / Wizard State
   const [wizardStep, setWizardStep] = useState('identifier_input');
@@ -29,7 +29,7 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
   useEffect(() => {
     if (isOpen) {
       setWizardStep('identifier_input');
-      setUseOtpForLogin(false);
+      setUseOtpForLogin(true);
       setIdentifier('');
       setOtp(['', '', '', '', '', '']);
       setLoginData({ identifier: '', password: '' });
@@ -58,10 +58,18 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
     }
   };
 
-  // --- 1. CHECK USER (Using send-otp API) ---
+  // --- 1. CHECK USER (Modified to skip OTP for Register) ---
   const handleContinue = async () => {
     if (!isValidMobile(identifier)) {
       toast.error('Please enter a valid 10-digit mobile number');
+      return;
+    }
+
+    // --- MODIFICATION: Skip OTP/Check for Register Flow ---
+    // If we are registering, we go straight to the form.
+    // The backend register endpoint will handle "User already exists" errors.
+    if (activeTab === 'register') {
+      setWizardStep('signup_form');
       return;
     }
 
@@ -71,30 +79,15 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
       const response = await axios.post(`${API}/auth/send-otp`, { identifier });
       const isNewUser = response.data?.is_new_user;
 
-      if (activeTab === 'register') {
-        // --- REGISTER FLOW ---
-        if (!isNewUser) {
-          // User already exists - offer OTP login instead
-          toast.info('Account already exists! Sending OTP to login...');
-          setWizardStep('otp_input');
-          // Optional: You can switch to login tab
-          // setActiveTab('login');
-        } else {
-          // New User -> Go to Signup Form
-          setWizardStep('signup_form');
-          toast.success('OTP sent successfully!');
-        }
-      } else {
-        // --- LOGIN FLOW (OTP) ---
-        if (isNewUser) {
-          toast.error('Account not found. Please sign up.');
-          setLoading(false);
-          return;
-        }
-        // Existing User -> Go to OTP Input
-        setWizardStep('otp_input');
-        toast.success('OTP sent successfully!');
+      // --- LOGIN FLOW (OTP) ---
+      if (isNewUser) {
+        toast.error('Account not found. Please sign up.');
+        setLoading(false);
+        return;
       }
+      // Existing User -> Go to OTP Input
+      setWizardStep('otp_input');
+      toast.success('OTP sent successfully!');
 
     } catch (error) {
         console.error(error);
@@ -134,6 +127,7 @@ const ModernAuthModalV2 = ({ isOpen, onClose, onSuccess, mode = 'customer', allo
       toast.success('Account created successfully!');
       onClose();
     } catch (error) {
+      // This will now catch "User already exists" errors since we skipped the initial check
       toast.error(error.response?.data?.detail || 'Registration failed');
     } finally {
       setLoading(false);
