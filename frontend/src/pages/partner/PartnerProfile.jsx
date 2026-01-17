@@ -106,7 +106,7 @@ const PartnerProfile = () => {
     );
   }
 
-  if (!partner || !partner.kyc_documents_submitted) {
+  if (partner.kyc_status === 'unverified') {
     return (
       <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #e8f4f8 100%)' }}>
         <Navbar />
